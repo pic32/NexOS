@@ -20,6 +20,19 @@ The main design goals of the NexOS are as follows:
  - Execution Speed
  - Functionality (A main goal of a RTOS should be to afford the user enough functionality to get the Idle task to run as much as possible!)
  - Deterministic Runtime Behavior (this is only a wish and has not been fully evaluated...)
+ 
+The repository has the main source code for the NexOS and a bunch of demonstation projects.  As of now the demonstration projects are setup to work with just MPLAB Simulator, or the Ethernet Starter Kit from Microchip.  Below is a quick description of the folders included in this repository.
+ - Simple Task Creation: The smallest possible project to get the NexOS up and running.  This is a good starting point.
+ - Advanced Task Creation: A demonstration project showing advanced features of task creation and execution.
+ - Callback Timer: A demonstration project showing how to use a callback timer.
+ - Event Timer: A demonstration project showing how to use an event timer.
+ - External Event: A demonstration project showing how a task can block on an external event.
+ - Generic Libraries: A folder containing data structures and libraries not specific to the OS and could be used in other projects.
+ - Handling Exceptions: A demonstration project showing how to handle and recover from CPU exceptions.
+ - NexOS: A folder containing all the source code for the NexOS.
+ - Pipe: A demonstration project showing two tasks communicating through a pipe.
+ - Simple Semaphore: A demonstration project showing how to use a semaphore.
+ - Task Check In: A demonstration project showing the software watch dog timer feature.
 
 The main goal of offering the source for this project is for other people to use it and provide feedback. I cannot possibly test all the scenarios the RTOS should be put through as this is essentially an infinite list. That is the goal I hope people playing with it would fill. I will try to fix any and every bug that is reported.
 
