@@ -4,7 +4,9 @@ The NexOS is a RTOS written and tested on the PIC32MX series and its hardware fe
 The NexOS RTOS offers a few sets of unique features which are either not common or found in other available RTOS:
 
 The ability to restart a task
+
 Software watchdog timers for tasks
+
 Built in hardware events for task synchronization and execution
 Event timers for measuring the time between events (tasks don't need to be running to measure this time)
 Real time heap monitoring (how much of the heap have I used?)
