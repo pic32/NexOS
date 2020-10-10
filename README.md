@@ -23,4 +23,6 @@ The main design goals of the NexOS are as follows:
 
 The main goal of offering the source for this project is for other people to use it and provide feedback. I cannot possibly test all the scenarios the RTOS should be put through as this is essentially an infinite list. That is the goal I hope people playing with it would fill. I will try to fix any and every bug that is reported.
 
+There is a list of items in the Git Projects tab.  The list contains all the items that will be added to the RTOS and any items that are currently being worked on.
+
 Please be sure to refer to the Getting Started Guide file located in the project tree to see the best way to progress using this project.
