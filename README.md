@@ -11,7 +11,7 @@ The NexOS RTOS offers a few sets of unique features which are either not common 
  - Extensive user callbacks for various conditions and events
  - Starvation protection for certain resources
  - Exception handling and recovery (system at least wouldn't be totally halted if it occurs)
- - Buffers for the TX or RX of data (in progress, and not really designed around being real time or efficient)
+ - Buffers for the TX or RX of data (in progress)
 
 
 The main design goals of the NexOS are as follows:
