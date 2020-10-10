@@ -13,7 +13,6 @@ The NexOS RTOS offers a few sets of unique features which are either not common 
  - Exception handling and recovery (system at least wouldn't be totally halted if it occurs)
  - Buffers for the TX or RX of data (in progress)
 
-
 The main design goals of the NexOS are as follows:
  - Runtime Safety
  - Code Modularity and Clarity
@@ -34,8 +33,6 @@ The repository has the main source code for the NexOS and a bunch of demonstatio
  - Simple Semaphore: A demonstration project showing how to use a semaphore.
  - Task Check In: A demonstration project showing the software watch dog timer feature.
 
-The main goal of offering the source for this project is for other people to use it and provide feedback. I cannot possibly test all the scenarios the RTOS should be put through as this is essentially an infinite list. That is the goal I hope people playing with it would fill. I will try to fix any and every bug that is reported.
-
-There is a list of items in the Git Projects tab.  The list contains all the items that will be added to the RTOS and any items that are currently being worked on.
+The main goal of offering the source for this project is for other people to use it and provide feedback. I cannot possibly test all the scenarios the RTOS should be put through as this is essentially an infinite list. That is the goal I hope people playing with it would fill. I will try to fix any and every bug that is reported.  It also serves as a good learning tool for anyone else interested in learning about Real Time Operating Systems.  There is also a list of items in the Git Projects tab.  The list contains all the items that will be added to the RTOS and any items that are currently being worked on.
 
 Please be sure to refer to the NexOS Quick Start Guide located in the project tree to see the quickest way to progress using this project.
