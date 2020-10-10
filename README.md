@@ -25,4 +25,4 @@ The main goal of offering the source for this project is for other people to use
 
 There is a list of items in the Git Projects tab.  The list contains all the items that will be added to the RTOS and any items that are currently being worked on.
 
-Please be sure to refer to the Getting Started Guide file located in the project tree to see the best way to progress using this project.
+Please be sure to refer to the NexOS Quick Start Guide located in the project tree to see the quickest way to progress using this project.
