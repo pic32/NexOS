@@ -1,0 +1,3 @@
+v1.00.00 10/14/2020
+
+- This is the original release of the NexOS.
