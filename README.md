@@ -20,7 +20,7 @@ The main design goals of the NexOS are as follows:
  - Deterministic Runtime Behavior (this is only a wish and has not been fully evaluated...)
  
 The repository has the main source code for the NexOS and a bunch of demonstation projects.  As of now the demonstration projects are setup to work with just MPLAB Simulator, or the Ethernet Starter Kit from Microchip.  Below is a quick description of the folders included in this repository.
- - Simple Task Creation: The smallest possible project to get the NexOS up and running.  This is a good starting point.
+ - Simple Task Creation: This project just crates a few simple tasks.  The smallest possible project to get the NexOS up and running.  This is a good starting point.
  - Advanced Task Creation: A demonstration project showing advanced features of task creation and execution.
  - Callback Timer: A demonstration project showing how to use a callback timer.
  - Event Timer: A demonstration project showing how to use an event timer.
