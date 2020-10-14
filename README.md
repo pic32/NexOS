@@ -8,7 +8,6 @@ The NexOS RTOS offers a few sets of unique features which are either not common 
  - Built in hardware events for task synchronization and execution
  - Event timers for measuring the time between events (tasks don't need to be running to measure this time)
  - Real time heap monitoring (how much of the heap have I used?)
- - Extensive user callbacks for various conditions and events
  - Starvation protection for certain resources
  - Exception handling and recovery (system at least wouldn't be totally halted if it occurs)
  - Buffers for the TX or RX of data (in progress)
