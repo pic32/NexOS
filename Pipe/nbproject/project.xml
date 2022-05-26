@@ -3,7 +3,7 @@
     <type>com.microchip.mplab.nbide.embedded.makeproject</type>
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/make-project/1">
-            <name>PipeCommunication</name>
+            <name>Pipe</name>
             <creation-uuid>c3fa86d5-2c3a-4313-918a-199141e81ffb</creation-uuid>
             <make-project-type>0</make-project-type>
             <c-extensions>c</c-extensions>

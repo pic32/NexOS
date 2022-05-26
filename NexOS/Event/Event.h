@@ -1,6 +1,6 @@
 /*
-    NexOS Kernel Version v1.00.00
-    Copyright (c) 2020 brodie
+    NexOS Kernel Version v1.01.00
+    Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
@@ -96,25 +96,13 @@ typedef enum
 		ADC_1_EVENT,
 	#endif // end of #if(USING_ADC_1_EVENT == 1)
 
-	#if(USING_ADC_2_EVENT == 1)
-		ADC_2_EVENT,
-	#endif // end of #if(USING_ADC_2_EVENT == 1)
-
-	#if(USING_ADC_3_EVENT == 1)
-		ADC_3_EVENT,
-	#endif // end of #if(USING_ADC_3_EVENT == 1)
-
-	#if(USING_ADC_4_EVENT == 1)
-		ADC_4_EVENT,
-	#endif // end of #if(USING_ADC_4_EVENT == 1)
-
-	#if(USING_ADC_5_EVENT == 1)
-		ADC_5_EVENT,
-	#endif // end of #if(USING_ADC_5_EVENT == 1)
-
 	#if(USING_RTCC_ALARM_EVENT == 1)
 		RTCC_ALARM_EVENT,
 	#endif // end of #if(USING_RTCC_ALARM_EVENT == 1)
+
+    #if(USING_EXT_OSC_FAILED_EVENT == 1)
+		EXTERNAL_OSCILLATOR_FAILED_EVENT,
+	#endif // end of #if(USING_EXT_OSC_FAILED_EVENT == 1)
 
 	#if(USING_UART_1_TX_DONE_EVENT == 1)
 		UART_1_TX_DONE_EVENT,
@@ -188,21 +176,21 @@ typedef enum
 		UART_6_ERROR_EVENT,
 	#endif // end of #if(USING_UART_6_ERROR_EVENT == 1)
 
-	#if(USING_CAN_1_RX_EVENT == 1)
-		CAN_1_RX_EVENT,
-	#endif // end of #if(USING_CAN_1_RX_EVENT == 1)
-
-	#if(USING_CAN_2_RX_EVENT == 1)
-		CAN_2_RX_EVENT,
-	#endif // end of #if(USING_CAN_2_RX_EVENT == 1)
-
-	#if(USING_CAN_1_TX_EVENT == 1)
-		CAN_1_TX_EVENT,
+    #if(USING_CAN_1_TX_EVENT == 1)
+		CAN_1_TX_DONE_EVENT,
 	#endif // end of #if(USING_CAN_1_TX_EVENT == 1)
 
 	#if(USING_CAN_2_TX_EVENT == 1)
-		CAN_2_TX_EVENT,
+		CAN_2_TX_DONE_EVENT,
 	#endif // end of #if(USING_CAN_2_TX_EVENT == 1)
+
+	#if(USING_CAN_1_RX_EVENT == 1)
+		CAN_1_RX_DONE_EVENT,
+	#endif // end of #if(USING_CAN_1_RX_EVENT == 1)
+
+	#if(USING_CAN_2_RX_EVENT == 1)
+		CAN_2_RX_DONE_EVENT,
+	#endif // end of #if(USING_CAN_2_RX_EVENT == 1)
 
 	#if(USING_CAN_1_ERROR_EVENT == 1)
 		CAN_1_ERROR_EVENT,
@@ -211,18 +199,6 @@ typedef enum
 	#if(USING_CAN_2_ERROR_EVENT == 1)
 		CAN_2_ERROR_EVENT,
 	#endif // end of #if(USING_CAN_2_ERROR_EVENT == 1)
-
-	#if(USING_USB_HID_TX_COMPLETE_EVENT == 1)
-		USB_HID_TX_COMPLETE_EVENT,
-	#endif // end of #if(USING_USB_HID_TX_COMPLETE_EVENT == 1)
-
-	#if(USING_USB_HID_RX_COMPLETE_EVENT == 1)
-		USB_HID_RX_COMPLETE_EVENT,
-	#endif // end of #if(USING_USB_HID_RX_COMPLETE_EVENT == 1)
-
-	#if(USING_EXT_OSC_FAILED_EVENT == 1)
-		EXTERNAL_OSCILLATOR_FAILED_EVENT,
-	#endif // end of #if(USING_EXT_OSC_FAILED_EVENT == 1)
 
 	#if(USING_MEMORY_WARNING_EVENT == 1)
 		MEMORY_WARNING_EVENT,
@@ -236,41 +212,9 @@ typedef enum
 		CPU_EXCEPTION_RAISED_EVENT,
 	#endif // end of #if(USING_CPU_EXCEPTION_RAISED_EVENT == 1)
 
-	#if(USING_FLASH_CONTROLLER_EVENT == 1)
-		FLASH_CONTROLLER_EVENT,
-	#endif // end of #if(USING_FLASH_CONTROLLER_EVENT == 1)
-
-	#if(USING_PARALLEL_PORT_TX_EVENT == 1)
-		PARALLEL_PORT_TX_EVENT,
-	#endif // end of #if(USING_PARALLEL_PORT_TX_EVENT == 1)
-
-	#if(USING_PARALLEL_PORT_RX_EVENT == 1)
-		PARALLEL_PORT_RX_EVENT,
-	#endif // end of #if(USING_PARALLEL_PORT_RX_EVENT == 1)
-
-	#if(USING_PARALLEL_PORT_ERROR_EVENT == 1)
-		PARALLEL_PORT_ERROR_EVENT,
-	#endif // end of #if(USING_PARALLEL_PORT_ERROR_EVENT == 1)
-
-    #if(USING_DMA_CHANNEL_1_ERROR_EVENT == 1)
-		DMA_CHANNEL_1_ERROR_EVENT,
-	#endif // end of #if(USING_DMA_CHANNEL_1_ERROR_EVENT == 1)
-
-    #if(USING_DMA_CHANNEL_1_ABORT_EVENT == 1)
-		DMA_CHANNEL_1_ABORT_EVENT,
-	#endif // end of #if(USING_DMA_CHANNEL_1_ABORT_EVENT == 1)
-
-    #if(USING_DMA_CHANNEL_1_BLOCK_TRANSFER_COMPLETE_EVENT == 1)
-		DMA_CHANNEL_1_BLOCK_TRANSFER_COMPLETE_EVENT,
-	#endif // end of #if(USING_DMA_CHANNEL_1_BLOCK_TRANSFER_COMPLETE_EVENT == 1)
-
-    #if(USING_DMA_CHANNEL_1_SOURCE_ADDRESS_EVENT == 1)
-		DMA_CHANNEL_1_SOURCE_ADDRESS_EVENT,
-	#endif // end of #if(USING_DMA_CHANNEL_1_SOURCE_ADDRESS_EVENT == 1)
-
-    #if(USING_DMA_CHANNEL_1_DESTINATION_ADDRESS_EVENT == 1)
-		DMA_CHANNEL_1_DESTINATION_ADDRESS_EVENT,
-	#endif // end of #if(USING_DMA_CHANNEL_1_DESTINATION_ADDRESS_EVENT == 1)
+    #if (USING_IO_BUFFER_OVERFLOW_EVENT == 1)
+        IO_BUFFER_OVERFLOW_EVENT,
+    #endif // end of #if (USING_IO_BUFFER_OVERFLOW_EVENT == 1)
 
 	#if(USING_USER_1_EVENT == 1)
 		USER_1_EVENT,
@@ -405,7 +349,7 @@ OS_RESULT RaiseEvent(EVENT Event);
 
 		UINT32 TimeoutInTicks - If a timeout is desired a value greater than
 		zero should be specified.  Otherwise a value of zero means to wait
-		indefinetly for the event to occur.  The timeout is in OS timer ticks.
+		indefinitely for the event to occur.  The timeout is in OS timer ticks.
 
 	Returns: OS_SUCCESS if the event was successfully encountered within the
 	specified timeout, or another OS_RESULT value otherwise.

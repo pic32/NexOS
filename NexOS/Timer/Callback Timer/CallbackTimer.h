@@ -1,6 +1,6 @@
 /*
-    NexOS Kernel Version v1.00.00
-    Copyright (c) 2020 brodie
+    NexOS Kernel Version v1.01.00
+    Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal

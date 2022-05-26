@@ -1,6 +1,6 @@
 /*
-    NexOS Kernel Version v1.00.00
-    Copyright (c) 2020 brodie
+    NexOS Kernel Version v1.01.00
+    Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
@@ -57,16 +57,16 @@
  *  Notes:  
  *      This demo code is designed to work with the Ethernet Starter Kit II, but can
  *      be run in the simulator.  When using MPLAB X IDE go to Window-->Simulator-->Stimulus
- *      to pull up the menu for triggering the change notification interrupt.  If you do 
- *      not trigger the RD6 input often enough the CheckInTask will be killed off by
- *      the OS.
+ *      to pull up the menu for triggering the change notification interrupt (Pin RD6).  
+ *      If you do not trigger the RD6 input often enough the CheckInTask will be killed 
+ *      off by the OS.
  */
 
 // this is the callback method which is called once the CheckIn TASK is deleted.
 void CheckInTaskExitCallback(void)
 {
 	#ifdef SIMULATION
-        printf("You let the Check In TASK die...!\r\n");
+        printf("YOU LET THE CHECK IN TASK DIE...!\r\n");
 	#endif // end of #if SIMULATION
 }
 
@@ -101,6 +101,10 @@ UINT32 CheckInTaskCode(void *Args)
                 // we shall check in
                 if(TaskCheckIn() != OS_SUCCESS)
                     while(1);
+                    
+                #ifdef SIMULATION
+                    printf("TASK CHECKIN SUCCESSFUL!\r\n");
+                #endif // end of #if SIMULATION
             }
             
             // now delay for 100 milliseconds

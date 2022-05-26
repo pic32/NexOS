@@ -1,6 +1,6 @@
 /*
-    NexOS Kernel Version v1.00.00
-    Copyright (c) 2020 brodie
+    NexOS Kernel Version v1.01.00
+    Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
@@ -28,11 +28,11 @@
 #include "KernelTasks.h"
 #include "CriticalSection.h"
 #include "OS_Callback.h"
+#include "Task.h"
 
 #if (USING_DELETE_TASK == 1 || USING_RESTART_TASK == 1)
     #include "../../Generic Libraries/Double Linked List/DoubleLinkedList.h"
 	#include "Kernel.h"
-	#include "Task.h"
 
     #if (USING_GET_NUMBER_OF_TASKS_METHOD == 1)
         extern UINT32 gNumberOfTasks;
@@ -245,3 +245,36 @@ UINT32 IdleTaskCode(void *Args)
 		}
 	}
 #endif // end of #if ((USING_DELETE_TASK == 1 && IDLE_TASK_PERFORM_DELETE_TASK == 0) || USING_RESTART_TASK == 1)
+
+#if (USING_IO_BUFFERS == 1)
+    #if (USING_TASK_DELAY_TICKS_METHOD == 0)
+        #error "USING_TASK_DELAY_TICKS_METHOD must be defined as 1 if USING_IO_BUFFERS == 1"
+    #endif // end of #if (USING_TASK_DELAY_TICKS_METHOD == 0)
+    
+    #include "../IOBuffer/IOBuffer.h"
+    #include "IOBufferPort.h"
+    
+	UINT32 IOBufferTaskCode(void *Args)
+	{
+		IO_BUFFER_ID CurrentIOBuffer;
+	
+		while(1)
+		{
+            for(CurrentIOBuffer = INVALID_IO_BUFFER + 1; CurrentIOBuffer < NUMBER_OF_BUFFER_IDS; CurrentIOBuffer++)
+            {
+                EnterCritical();
+
+                // update the CurrentIOBuffer here
+                OSUpdateIOBuffer(CurrentIOBuffer);
+
+                ExitCritical();
+            }
+            
+			#if (USING_IO_BUFFER_TASK_USER_CALLBACK == 1)
+				IOBufferTaskUserCallback(Args);
+			#endif // end of #if (USING_IO_BUFFER_TASK_USER_CALLBACK == 1)
+
+            TaskDelayTicks(IO_BUFFER_TASK_PERIODICITY_IN_OS_TICKS);
+		}
+	}
+#endif // end of #if (USING_IO_BUFFERS == 1)

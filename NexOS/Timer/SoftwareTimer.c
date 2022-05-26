@@ -1,6 +1,6 @@
 /*
-    NexOS Kernel Version v1.00.00
-    Copyright (c) 2020 brodie
+    NexOS Kernel Version v1.01.00
+    Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
@@ -23,8 +23,8 @@
 
 #include <string.h>
 
-#include "SoftwareTimer.h"
 #include "CriticalSection.h"
+#include "../Timer/SoftwareTimer.h"
 #include "../Kernel/Memory.h"
 #include "../Kernel/Kernel.h"
 
@@ -113,6 +113,7 @@ SOFTWARE_TIMER *CreateSoftwareTimer(SOFTWARE_TIMER *SoftwareTimer, BOOL Enable)
 		}
 	}
 
+    // initialize the SOFTWARE_TIMER
 	SoftwareTimer->Ticks = 0;
 	SoftwareTimer->Active = FALSE;
 	SoftwareTimer->TimerListNode.Data = (void*)SoftwareTimer;
@@ -152,26 +153,20 @@ SOFTWARE_TIMER *CreateSoftwareTimer(SOFTWARE_TIMER *SoftwareTimer, BOOL Enable)
 	// stops timer and sets the CurrentCount to 0
 	OS_RESULT SoftwareTimerReset(SOFTWARE_TIMER *SoftwareTimer)
 	{
-        #if (USING_CHECK_SOFTWARE_TIMER_PARAMETERS == 1)
+        OS_RESULT Result;
+        
+		#if (USING_CHECK_SOFTWARE_TIMER_PARAMETERS == 1)
             if (RAMAddressValid((OS_WORD)SoftwareTimer) == FALSE)
                 return OS_INVALID_ARGUMENT_ADDRESS;
         #endif // end of #if (USING_CHECK_SOFTWARE_TIMER_PARAMETERS == 1)
-
+		
 		EnterCritical();
 
-		SoftwareTimer->Ticks = 0;
-
-		// if it is on, turn it off and remove it from the list
-		if (SoftwareTimer->Active == TRUE)
-		{
-			SoftwareTimer->Active = FALSE;
-
-			RemoveNodeFromDoubleLinkedList(&gSoftwareTimerList, &(SoftwareTimer->TimerListNode));
-		}
+		Result = SoftwareTimerResetFromISR(SoftwareTimer);
 
 		ExitCritical();
 
-		return OS_SUCCESS;
+		return Result;
 	}
 #endif // end of #if (USING_SOFTWARE_TIMER_RESET_METHOD == 1)
 
@@ -179,26 +174,20 @@ SOFTWARE_TIMER *CreateSoftwareTimer(SOFTWARE_TIMER *SoftwareTimer, BOOL Enable)
 	// puts the current count to 0 and enables the counter if disabled
 	OS_RESULT SoftwareTimerRestart(SOFTWARE_TIMER *SoftwareTimer)
 	{
-        #if (USING_CHECK_SOFTWARE_TIMER_PARAMETERS == 1)
+        OS_RESULT Result;
+
+		#if (USING_CHECK_SOFTWARE_TIMER_PARAMETERS == 1)
             if (RAMAddressValid((OS_WORD)SoftwareTimer) == FALSE)
                 return OS_INVALID_ARGUMENT_ADDRESS;
         #endif // end of #if (USING_CHECK_SOFTWARE_TIMER_PARAMETERS == 1)
 
-		EnterCritical();
+    	EnterCritical();
 
-		SoftwareTimer->Ticks = 0;
-
-		// if it is off, turn it on and remove it from the list
-		if (SoftwareTimer->Active == FALSE)
-		{
-			SoftwareTimer->Active = TRUE;
-
-			InsertNodeAtEndOfDoubleLinkedList(&gSoftwareTimerList, &(SoftwareTimer->TimerListNode));
-		}
+		Result = SoftwareTimerRestartFromISR(SoftwareTimer);
 
 		ExitCritical();
 
-		return OS_SUCCESS;
+		return Result;
 	}
 #endif // end of #if (USING_SOFTWARE_TIMER_RESTART_METHOD == 1)
 
@@ -206,6 +195,8 @@ SOFTWARE_TIMER *CreateSoftwareTimer(SOFTWARE_TIMER *SoftwareTimer, BOOL Enable)
 	// clears the current timer, but does not change the state
 	OS_RESULT SoftwareTimerClear(SOFTWARE_TIMER *SoftwareTimer)
 	{
+		OS_RESULT Result;
+
         #if (USING_CHECK_SOFTWARE_TIMER_PARAMETERS == 1)
             if (RAMAddressValid((OS_WORD)SoftwareTimer) == FALSE)
                 return OS_INVALID_ARGUMENT_ADDRESS;
@@ -214,11 +205,11 @@ SOFTWARE_TIMER *CreateSoftwareTimer(SOFTWARE_TIMER *SoftwareTimer, BOOL Enable)
 		EnterCritical();
 
 		// just clear the ticks
-		OS_SoftwareTimerClear(SoftwareTimer);
+		Result = SoftwareTimerClearFromISR(SoftwareTimer);
 
 		ExitCritical();
 
-		return OS_SUCCESS;
+		return Result;
 	}
 #endif // end of #if (USING_SOFTWARE_TIMER_CLEAR_METHOD == 1)
 
@@ -234,7 +225,7 @@ SOFTWARE_TIMER *CreateSoftwareTimer(SOFTWARE_TIMER *SoftwareTimer, BOOL Enable)
 
 		EnterCritical();
 
-		Ticks = SoftwareTimer->Ticks;
+		Ticks = SoftwareTimerGetTicksFromISR(SoftwareTimer);
 
 		ExitCritical();
 
@@ -265,7 +256,7 @@ SOFTWARE_TIMER *CreateSoftwareTimer(SOFTWARE_TIMER *SoftwareTimer, BOOL Enable)
 
 		EnterCritical();
 
-		Running = SoftwareTimer->Active;
+		Running = SoftwareTimerIsRunningFromISR(SoftwareTimer);
 
 		ExitCritical();
 
@@ -302,3 +293,114 @@ SOFTWARE_TIMER *CreateSoftwareTimer(SOFTWARE_TIMER *SoftwareTimer, BOOL Enable)
 		return Result;
 	}
 #endif // end of #if (USING_SOFTWARE_TIMER_DELETE_METHOD == 1)
+
+#if (USING_SOFTWARE_TIMER_ENABLE_FROM_ISR_METHOD == 1)
+	OS_RESULT SoftwareTimerEnableFromISR(SOFTWARE_TIMER *SoftwareTimer, BOOL Enable)
+	{
+        #if (USING_CHECK_SOFTWARE_TIMER_PARAMETERS == 1)
+            if (RAMAddressValid((OS_WORD)SoftwareTimer) == FALSE)
+                return OS_INVALID_ARGUMENT_ADDRESS;
+        #endif // end of #if (USING_CHECK_SOFTWARE_TIMER_PARAMETERS == 1)
+
+		OS_SoftwareTimerEnable(SoftwareTimer, Enable);
+
+		return OS_SUCCESS;
+	}
+#endif // end of #if (USING_SOFTWARE_TIMER_ENABLE_FROM_ISR_METHOD == 1)
+    
+#if (USING_SOFTWARE_TIMER_RESET_FROM_ISR_METHOD == 1)
+	// stops timer and sets the CurrentCount to 0
+	OS_RESULT SoftwareTimerResetFromISR(SOFTWARE_TIMER *SoftwareTimer)
+	{
+        #if (USING_CHECK_SOFTWARE_TIMER_PARAMETERS == 1)
+            if (RAMAddressValid((OS_WORD)SoftwareTimer) == FALSE)
+                return OS_INVALID_ARGUMENT_ADDRESS;
+        #endif // end of #if (USING_CHECK_SOFTWARE_TIMER_PARAMETERS == 1)
+
+		OS_SoftwareTimerClear(SoftwareTimer);
+
+		// if it is on, turn it off and remove it from the list
+		if (SoftwareTimer->Active == TRUE)
+		{
+			SoftwareTimer->Active = FALSE;
+
+			RemoveNodeFromDoubleLinkedList(&gSoftwareTimerList, &(SoftwareTimer->TimerListNode));
+		}
+
+		return OS_SUCCESS;
+	}
+#endif // end of #if (USING_SOFTWARE_TIMER_RESET_FROM_ISR_METHOD == 1)
+    
+#if (USING_SOFTWARE_TIMER_RESTART_FROM_ISR_METHOD == 1)
+	// puts the current count to 0 and enables the counter if disabled
+	OS_RESULT SoftwareTimerRestartFromISR(SOFTWARE_TIMER *SoftwareTimer)
+	{
+        #if (USING_CHECK_SOFTWARE_TIMER_PARAMETERS == 1)
+            if (RAMAddressValid((OS_WORD)SoftwareTimer) == FALSE)
+                return OS_INVALID_ARGUMENT_ADDRESS;
+        #endif // end of #if (USING_CHECK_SOFTWARE_TIMER_PARAMETERS == 1)
+
+		OS_SoftwareTimerClear(SoftwareTimer);
+
+		// if it is off, turn it on and remove it from the list
+		if (SoftwareTimer->Active == FALSE)
+		{
+			SoftwareTimer->Active = TRUE;
+
+			InsertNodeAtEndOfDoubleLinkedList(&gSoftwareTimerList, &(SoftwareTimer->TimerListNode));
+		}
+
+		return OS_SUCCESS;
+	}
+#endif // end of #if (USING_SOFTWARE_TIMER_RESTART_FROM_ISR_METHOD == 1)
+    
+#if (USING_SOFTWARE_TIMER_CLEAR_FROM_ISR_METHOD == 1)
+	// clears the current timer, but does not change the state
+	OS_RESULT SoftwareTimerClearFromISR(SOFTWARE_TIMER *SoftwareTimer)
+	{
+        #if (USING_CHECK_SOFTWARE_TIMER_PARAMETERS == 1)
+            if (RAMAddressValid((OS_WORD)SoftwareTimer) == FALSE)
+                return OS_INVALID_ARGUMENT_ADDRESS;
+        #endif // end of #if (USING_CHECK_SOFTWARE_TIMER_PARAMETERS == 1)
+
+		// just clear the ticks
+		OS_SoftwareTimerClear(SoftwareTimer);
+
+		return OS_SUCCESS;
+	}
+#endif // end of #if (USING_SOFTWARE_TIMER_CLEAR_FROM_ISR_METHOD == 1)
+    
+#if (USING_SOFTWARE_TIMER_GET_TICKS_FROM_ISR_METHOD == 1)
+	UINT32 SoftwareTimerGetTicksFromISR(SOFTWARE_TIMER *SoftwareTimer)
+	{
+        #if (USING_CHECK_SOFTWARE_TIMER_PARAMETERS == 1)
+            if (RAMAddressValid((OS_WORD)SoftwareTimer) == FALSE)
+                return 0;
+        #endif // end of #if (USING_CHECK_SOFTWARE_TIMER_PARAMETERS == 1)
+
+		return OS_SoftwareTimerGetTicks(SoftwareTimer);
+	}
+#endif // end of #if (USING_SOFTWARE_TIMER_GET_TICKS_FROM_ISR_METHOD == 1)
+    
+#if (USING_SOFTWARE_TIMER_GET_MILLISECONDS_FROM_ISR_METHOD == 1)
+	UINT32 SoftwareTimerGetMillisecondsFromISR(SOFTWARE_TIMER *SoftwareTimer)
+	{
+		UINT32 Result = SoftwareTimerGetTicksFromISR(SoftwareTimer);
+
+		Result = TicksToMilliseconds(Result);
+
+		return Result;
+	}
+#endif // end of #if (USING_SOFTWARE_TIMER_GET_MILLISECONDS_FROM_ISR_METHOD == 1)
+    
+#if (USING_SOFTWARE_TIMER_IS_RUNNING_FROM_ISR_METHOD == 1)
+	BOOL SoftwareTimerIsRunningFromISR(SOFTWARE_TIMER *SoftwareTimer)
+	{
+        #if (USING_CHECK_SOFTWARE_TIMER_PARAMETERS == 1)
+            if (RAMAddressValid((OS_WORD)SoftwareTimer) == FALSE)
+                return FALSE;
+        #endif // end of #if (USING_CHECK_SOFTWARE_TIMER_PARAMETERS == 1)
+
+		return OS_SoftwareTimerIsRunning(SoftwareTimer);
+	}
+#endif // end of #if (USING_SOFTWARE_TIMER_IS_RUNNING_FROM_ISR_METHOD == 1)

@@ -1,6 +1,6 @@
 /*
-    NexOS Kernel Version v1.00.00
-    Copyright (c) 2020 brodie
+    NexOS Kernel Version v1.01.00
+    Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
@@ -53,22 +53,22 @@
 // variable is decreased.  Once it gets back to zero, interrupts are enabled.
 extern volatile OS_WORD gCurrentCriticalCount;
 
-static volatile UINT32 gOSTickCount;
-static BOOL gCPUSchedulerRunning = FALSE;
-static TASK gIdleTask;						// This is the Idle TASK data structure
-static volatile DOUBLE_LINKED_LIST_NODE *gCurrentNode;// A pointer to the DOUBLE_LINKED_LIST_NODE of the currently executing Task.
-static BYTE gCurrentSystemPriority; 		// This is the priority of the currently executing Task, and is referenced to see
+volatile UINT32 gOSTickCount;
+BOOL gCPUSchedulerRunning;
+TASK gIdleTask;						// This is the Idle TASK data structure
+volatile DOUBLE_LINKED_LIST_NODE *gCurrentNode;// A pointer to the DOUBLE_LINKED_LIST_NODE of the currently executing Task.
+BYTE gCurrentSystemPriority; 		// This is the priority of the currently executing Task, and is referenced to see
 										 	// if there was a Task added to the Ready Queue that has a higher priority.
 TASK * volatile gCurrentTask;			// Points to the currently executing Task.
 DOUBLE_LINKED_LIST_HEAD gCPUScheduler[CPU_SCHEDULER_QUEUE_SIZE]; // The main guts of the Ready Queue.  This holds all the TASKs that are executing
 
 #if (USING_TASK_DELAY_TICKS_METHOD == 1)
-	static DOUBLE_LINKED_LIST_HEAD gDelayQueue;
+	DOUBLE_LINKED_LIST_HEAD gDelayQueue;
 #endif // end of #if (USING_TASK_DELAY_TICKS_METHOD == 1)
 
-#if (USING_TASK_HIBERNATION == 1 || USING_TASK_SIGNAL == 1)
+#if (USING_TASK_HIBERNATION == 1 || USING_TASK_SIGNAL == 1 || USING_IO_BUFFERS == 1)
 	DOUBLE_LINKED_LIST_HEAD gMiscellaneousBlockedQueueHead;
-#endif // end of #if (USING_TASK_HIBERNATION == 1 || USING_TASK_SIGNAL == 1)
+#endif // end of #if (USING_TASK_HIBERNATION == 1 || USING_TASK_SIGNAL == 1 || USING_IO_BUFFERS == 1)
 
 #if (USING_SUSPEND_ALL_TASKS_METHOD == 1 || USING_SUSPEND_TASK_METHOD == 1)
 	DOUBLE_LINKED_LIST_HEAD gSuspendedQueueHead; // This is the Head of the Suspended Queue.  It will only be used if any Suspended methods in Task.c are used.
@@ -88,6 +88,10 @@ DOUBLE_LINKED_LIST_HEAD gCPUScheduler[CPU_SCHEDULER_QUEUE_SIZE]; // The main gut
 
 #if ((USING_DELETE_TASK == 1 && IDLE_TASK_PERFORM_DELETE_TASK == 0) || USING_RESTART_TASK == 1)
 	static TASK gMaintenanceTask;
+#endif // end of USING_DELETE_TASK == 1 || USING_RESTART_TASK == 1)
+    
+#if (USING_IO_BUFFERS == 1)
+	static TASK gIOBufferTask;
 #endif // end of USING_DELETE_TASK == 1 || USING_RESTART_TASK == 1)
     
 //--------------------------------------------------------------------------------------------------//
@@ -111,6 +115,7 @@ OS_RESULT InitOS(void)
 	gOSTickCount = 0;
 	gCurrentTask = &gIdleTask;
 	gCurrentCriticalCount = 0;
+    gCPUSchedulerRunning = FALSE;
 
 	// initialize the delay queue
 	#if (USING_TASK_DELAY_TICKS_METHOD == 1)
@@ -137,9 +142,9 @@ OS_RESULT InitOS(void)
 		InitializeDoubleLinkedListHead(&gRestartTaskList);
 	#endif // end of USING_RESTART_TASK
 
-	#if (USING_TASK_HIBERNATION == 1 || USING_TASK_SIGNAL == 1)
+	#if (USING_TASK_HIBERNATION == 1 || USING_TASK_SIGNAL == 1 || USING_IO_BUFFERS == 1)
 		InitializeDoubleLinkedListHead(&gMiscellaneousBlockedQueueHead);
-	#endif // end of #if (USING_TASK_HIBERNATION == 1 || USING_TASK_SIGNAL == 1)
+	#endif // end of #if (USING_TASK_HIBERNATION == 1 || USING_TASK_SIGNAL == 1 || USING_IO_BUFFERS == 1)
 
 	// create the idle TASK
 	if (CreateTask(	IdleTaskCode, 
@@ -200,6 +205,36 @@ OS_RESULT InitOS(void)
 						&gMaintenanceTask) == (TASK*)NULL)
 			return OS_CREATE_MAINTENANCE_TASK_FAILED;
 	#endif // end of #if ((USING_DELETE_TASK == 1 && IDLE_TASK_PERFORM_DELETE_TASK == 0) || USING_RESTART_TASK == 1)
+
+    #if (USING_IO_BUFFERS == 1)
+		if (CreateTask(	IOBufferTaskCode,
+						IO_BUFFER_TASK_STACK_SIZE_IN_WORDS,
+						IO_BUFFER_TASK_PRIORITY,
+						IO_BUFFER_TASK_ARGS,
+
+						#if (USING_RESTART_TASK == 1)
+							FALSE,
+						#endif // end of #if (USING_RESTART_TASK == 1)
+
+						#if (USING_SUSPEND_TASK_METHOD == 1 || USING_SUSPEND_ALL_TASKS_METHOD == 1 || USING_TASK_HIBERNATION == 1)
+							READY,
+						#endif // end of #if (USING_SUSPEND_TASK_METHOD == 1 || USING_SUSPEND_ALL_TASKS_METHOD == 1 || USING_TASK_HIBERNATION == 1)
+						
+						#if (USING_SUSPEND_TASK_METHOD == 1 || USING_SUSPEND_ALL_TASKS_METHOD == 1)
+							FALSE,
+						#endif // end of #if (USING_SUSPEND_TASK_METHOD == 1 || USING_SUSPEND_ALL_TASKS_METHOD == 1)
+
+						#if(USING_TASK_NAMES == 1)
+							IO_BUFFER_TASK_TASK_NAME,
+						#endif // end of #if(USING_TASK_NAMES == 1)
+
+						#if (USING_TASK_EXIT_METHOD_CALLBACK == 1)
+							(TASK_EXIT_CALLBACK)NULL,
+						#endif // end of #if (USING_TASK_EXIT_METHOD_CALLBACK == 1)
+
+						&gIOBufferTask) == (TASK*)NULL)
+			return OS_CREATE_IO_BUFFER_TASK_FAILED;
+	#endif // end of #if (USING_IO_BUFFERS == 1)
 
 	#if (USING_SOFTWARE_TIMERS == 1)
 		if (OS_InitSoftwareTimerLib() == FALSE)
@@ -1004,7 +1039,7 @@ OS_WORD *OS_InitializeTaskStack(TASK *Task, TASK_ENTRY_POINT StartingAddress, vo
 
 /*
 	This method is only created to serve the purpose of place ONE Task into the Ready Queue.  This method CANNOT be called
-	multiple times in a row to add multile Tasks.
+	multiple times in a row to add multiple Tasks.
 */
 BOOL OS_AddTaskToReadyQueue(TASK *TaskToAddToReadyQueue)
 {	

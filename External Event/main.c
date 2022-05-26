@@ -1,6 +1,6 @@
 /*
-    NexOS Kernel Version v1.00.00
-    Copyright (c) 2020 brodie
+    NexOS Kernel Version v1.01.00
+    Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
@@ -54,12 +54,12 @@
 
 /*
  *  Example Code Goals:
- *      1. Show how to run a TASK when an EVENT occurs.
+ *      1. Show how to run a TASK when an EVENT occurs on pin RD6.
  * 
  *  Notes:  
  *      This demo code is designed to work with the Ethernet Starter Kit II, but can
  *      be run in the simulator.  When using MPLAB X IDE go to Window-->Simulator-->Stimulus
- *      to pull up the menu for triggering the change notification interrupt.  The task
+ *      to pull up the menu for triggering the change notification interrupt on RD6.  The task
  *      is waiting on the CHANGE_NOTIFICATION_INTERRUPT_EVENT to fire with the WaitOnEvent()
  *      method.  This is a blocking method and the task will stop executing once called.
  *      Once the CHANGE_NOTIFICATION_INTERRUPT_EVENT fires this TASK will toggle an LED.
@@ -96,6 +96,11 @@ UINT32 EventTaskCode(void *Args)
             
             // toggle the LED
             LATDINV = 0x0001;
+            
+            #ifdef SIMULATION		
+                // now print out a notification that we got triggered
+                printf("CHANGE NOTIFICATION EVENT TRIGGERED!\r\n");
+            #endif // end of #ifndef SIMULATION
 
             TaskDelayMilliseconds(30);
             

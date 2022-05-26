@@ -19,10 +19,15 @@
                 <sourceRootElem>../NexOS/Kernel</sourceRootElem>
                 <sourceRootElem>../NexOS/Ports/PIC32MX</sourceRootElem>
                 <sourceRootElem>../NexOS/Timer</sourceRootElem>
+                <sourceRootElem>../Callback Timer</sourceRootElem>
             </sourceRootList>
             <confList>
                 <confElem>
-                    <name>default</name>
+                    <name>SimulatorConfiguration</name>
+                    <type>2</type>
+                </confElem>
+                <confElem>
+                    <name>EthernetStarterKitII</name>
                     <type>2</type>
                 </confElem>
             </confList>

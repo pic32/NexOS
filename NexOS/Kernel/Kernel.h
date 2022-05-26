@@ -1,6 +1,6 @@
 /*
-    NexOS Kernel Version v1.00.00
-    Copyright (c) 2020 brodie
+    NexOS Kernel Version v1.01.00
+    Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
@@ -41,8 +41,8 @@
 
 #include "GenericTypeDefs.h"
 #include "RTOSConfig.h"
-#include "TaskObject.h"
 #include "Port.h"
+#include "TaskObject.h"
 #include "OS_Exception.h"
 
 /*
@@ -75,7 +75,7 @@
  * a field deployable project.
  */
 #define KERNEL_MAJOR_VERSION_NUMBER										0x01
-#define KERNEL_MINOR_VERSION_NUMBER										0x00
+#define KERNEL_MINOR_VERSION_NUMBER										0x01
 #define KERNEL_TEST_VERSION_NUMBER                                      0x00
 
 #define INVALID_TASK_PRIORITY											255
@@ -83,6 +83,7 @@
 typedef enum
 {
 	OS_SUCCESS = 0,
+    OS_FALSE,
 	OS_RESOURCE_GET_BLOCKED,
 	OS_RESOURCE_GET_FAILED,
 	OS_RESOURCE_GET_TIMEOUT,
@@ -103,21 +104,18 @@ typedef enum
 	OS_RESOURCE_INSUFFICIENT_DATA,
 	OS_INVALID_EVENT,
 	OS_RESOURCE_FULL,
-    OS_IO_BUFFER_INVALID_WRITE_STATE,
+    OS_IO_BUFFER_INVALID_STATE, // the requested operation cannot be completed due to the IO Buffer being in the wrong state
 
 	// These are all returned during InitOS()
 	OS_HEAP_INITIALIZATION_FAILED,
 	OS_CREATE_IDLE_TASK_FAILED,
 	OS_CREATE_MAINTENANCE_TASK_FAILED,
     OS_CREATE_IO_BUFFER_TASK_FAILED,
-	OS_CREATE_BUFFER_TASK_FAILED,
 	OS_INITIALIZE_TIMER_LIB_FAILED,
 	OS_INITIALIZE_CALLBACK_TIMER_LIB_FAILED,
 	OS_INITIALIZE_EVENTS_LIB_FAILED,
 	OS_INITIALIZE_EVENT_TIMERS_LIB_FAILED,
-	OS_INITIALIZE_UART_BUFFERS_FAILED,
-	OS_INITIALIZE_RESOURCE_LOCKS_FAILED,
-
+	
 	NUMBER_OF_OS_RESULTS
 }OS_RESULT;
 

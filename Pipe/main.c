@@ -1,6 +1,6 @@
 /*
-    NexOS Kernel Version v1.00.00
-    Copyright (c) 2020 brodie
+    NexOS Kernel Version v1.01.00
+    Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
@@ -102,8 +102,10 @@ UINT32 DataConsumerTask(void *Args)
         if(PipeRead(&gPipe, TempBuffer, sizeof(TempBuffer), 63, &BytesRead) != OS_SUCCESS)
             while(1);
             
-        // now print out the data we read from the buffer
-        printf("%s", TempBuffer);
+        #ifdef SIMULATION
+            // now print out the data we read from the buffer
+            printf("%s", TempBuffer);
+        #endif // end of #if SIMULATION
     }
 }
 

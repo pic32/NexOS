@@ -1,6 +1,6 @@
 /*
-    NexOS Kernel Version v1.00.00
-    Copyright (c) 2020 brodie
+    NexOS Kernel Version v1.01.00
+    Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
@@ -27,6 +27,10 @@
 #include "GenericTypeDefs.h"
 #include "TaskObject.h"
 #include "Kernel.h"
+
+#if (USING_IO_BUFFER_OVERFLOW_CALLBACK == 1)
+    #include "../IOBuffer/IOBuffer.h"
+#endif // end of #if (USING_IO_BUFFER_OVERFLOW_CALLBACK == 1)
 
 /*
  * Special Notes:
@@ -233,6 +237,35 @@ void ExitDeviceSleepModeUserCallback(void);
 		- RestartTask(), DeleteTask()
 */
 BOOL GeneralExceptionHandlerUserCallback(TASK *CurrentTask, OS_EXCEPTION_CODE ExceptionCode, UINT32 ExceptionAddress, BOOL UserCodeCurrentlyExecuting);
+
+/*
+	void IOBufferOverflowCallback(IO_BUFFER_ID IOBufferID)
+
+	Description: This method is called if an IO_BUFFER has an RX buffer
+    overflow condition.
+
+	Blocking: No
+
+	User Callable: No
+
+	Arguments:
+        IO_BUFFER_ID IOBufferID - The ID of the buffer which overflowed.
+
+	Returns:
+        None 
+
+	Notes:
+		- USING_IO_BUFFER_OVERFLOW_CALLBACK inside of RTOSConfig.h must 
+          be defined as a 1 to use this callback.
+
+	See Also:
+		- None
+*/
+#if (USING_IO_BUFFER_OVERFLOW_CALLBACK == 1)
+    
+
+    void IOBufferOverflowCallback(IO_BUFFER_ID IOBufferID);
+#endif // end of #if (USING_IO_BUFFER_OVERFLOW_CALLBACK == 1)
 //----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -347,6 +380,34 @@ void IdleTaskUserCallback(void *Args);
 		- None
 */
 void MaintenanceTaskUserCallback(void *Args);
+
+/*
+	void IOBufferTaskUserCallback(void *Args)
+
+	Description: This method is called each time the IO Buffer TASK executes.
+    The IO Buffer TASK only executes if USING_IO_BUFFERS is defined as 1 in
+    RTOSConfig.h.
+
+	Blocking: No
+
+	User Callable: No
+
+	Arguments:
+        void *Args - The arguments passed with the macro IO_BUFFER_TASK_ARGS.
+
+	Returns:
+        None 
+
+	Notes:
+        - USING_IO_BUFFERS inside of RTOSConfig.h must be defined
+          as a 1 to use this callback.
+		- USING_IO_BUFFER_TASK_USER_CALLBACK inside of RTOSConfig.h must be defined
+          as a 1 to use this callback.
+
+	See Also:
+		- None
+*/
+void IOBufferTaskUserCallback(void *Args);
 //----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 #endif // end of #ifndef OS_CALLBACKS_H

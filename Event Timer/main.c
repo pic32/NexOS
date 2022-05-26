@@ -1,6 +1,6 @@
 /*
-    NexOS Kernel Version v1.00.00
-    Copyright (c) 2020 brodie
+    NexOS Kernel Version v1.01.00
+    Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
@@ -59,7 +59,7 @@
  *  Notes:  
  *      This demo code is designed to work with the Ethernet Starter Kit II, but can
  *      be run in the simulator.  When using MPLAB X IDE go to Window-->Simulator-->Stimulus
- *      to pull up the menu for triggering the change notification interrupt.  The EVENT_TIMER 
+ *      to pull up the menu for triggering the change notification interrupt on RD6.  The EVENT_TIMER 
  *      is configured to measure the time between the CHANGE_NOTIFICATION_INTERRUPT_EVENT and 
  *      the USER_1_EVENT.  You need to use the stimulus (or RD6 button) to trigger the
  *      CHANGE_NOTIFICATION_INTERRUPT_EVENT.  At which point the EVENT_TIMER will start

@@ -4,10 +4,17 @@
 # NOCDDL
 #
 CND_BASEDIR=`pwd`
-# default configuration
-CND_ARTIFACT_DIR_default=dist/default/production
-CND_ARTIFACT_NAME_default=Event_Timer.production.hex
-CND_ARTIFACT_PATH_default=dist/default/production/Event_Timer.production.hex
-CND_PACKAGE_DIR_default=${CND_DISTDIR}/default/package
-CND_PACKAGE_NAME_default=eventtimer.tar
-CND_PACKAGE_PATH_default=${CND_DISTDIR}/default/package/eventtimer.tar
+# SimulatorConfiguration configuration
+CND_ARTIFACT_DIR_SimulatorConfiguration=dist/SimulatorConfiguration/production
+CND_ARTIFACT_NAME_SimulatorConfiguration=Event_Timer.production.hex
+CND_ARTIFACT_PATH_SimulatorConfiguration=dist/SimulatorConfiguration/production/Event_Timer.production.hex
+CND_PACKAGE_DIR_SimulatorConfiguration=${CND_DISTDIR}/SimulatorConfiguration/package
+CND_PACKAGE_NAME_SimulatorConfiguration=eventtimer.tar
+CND_PACKAGE_PATH_SimulatorConfiguration=${CND_DISTDIR}/SimulatorConfiguration/package/eventtimer.tar
+# EthernetStarterKitII configuration
+CND_ARTIFACT_DIR_EthernetStarterKitII=dist/EthernetStarterKitII/production
+CND_ARTIFACT_NAME_EthernetStarterKitII=Event_Timer.production.hex
+CND_ARTIFACT_PATH_EthernetStarterKitII=dist/EthernetStarterKitII/production/Event_Timer.production.hex
+CND_PACKAGE_DIR_EthernetStarterKitII=${CND_DISTDIR}/EthernetStarterKitII/package
+CND_PACKAGE_NAME_EthernetStarterKitII=eventtimer.tar
+CND_PACKAGE_PATH_EthernetStarterKitII=${CND_DISTDIR}/EthernetStarterKitII/package/eventtimer.tar

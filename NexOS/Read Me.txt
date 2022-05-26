@@ -1,0 +1,5 @@
+5/25/2022
+The files OS_Callback.c, OS_EventCallback.c and RTOSConfig.h are in this directory to copy
+into your project as a starting point.  RTOSConfig.h is required for each project, the other
+two mentioned files are not required, but do serve as a good resource to see what the 
+callback and event prototype functions should be.

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<project>                                  
+  <executable name="dist/SimulatorConfiguration/production/Simple_Task_Creation.production.elf">                 
+    <memory name="program">                 
+      <units>bytes</units>                 
+      <length>531968</length>                 
+      <used>20540</used>                     
+      <free>511428</free>                     
+    </memory>                              
+    <memory name="data">              
+      <units>bytes</units>                 
+      <length>131072</length>                 
+      <used>50368</used>                     
+      <free>80704</free>                     
+    </memory>                              
+  </executable>                            
+</project>                                 

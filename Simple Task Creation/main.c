@@ -1,6 +1,6 @@
 /*
-    NexOS Kernel Version v1.00.00
-    Copyright (c) 2020 brodie
+    NexOS Kernel Version v1.01.00
+    Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
@@ -70,6 +70,10 @@ UINT32 Task1Code(void *Args)
     {
         LATDINV = 0x0001;
         
+        #ifdef SIMULATION
+            printf("TASK 1 RD0 TOGGLE\r\n");
+        #endif // end of #if SIMULATION
+        
         TaskDelayMilliseconds(100);
     }
 }
@@ -86,6 +90,10 @@ UINT32 Task2Code(void *Args)
     {
         LATDINV = 0x0002;
         
+        #ifdef SIMULATION
+            printf("TASK 2 RD1 TOGGLE\r\n");
+        #endif // end of #if SIMULATION
+        
         TaskDelayMilliseconds(200);
     }
 }
@@ -101,6 +109,10 @@ UINT32 Task3Code(void *Args)
     while(1)
     {
         LATDINV = 0x0004;
+        
+        #ifdef SIMULATION
+            printf("TASK 3 RD2 TOGGLE\r\n");
+        #endif // end of #if SIMULATION
         
         TaskDelayMilliseconds(300);
     }

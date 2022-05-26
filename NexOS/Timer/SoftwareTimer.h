@@ -1,6 +1,6 @@
 /*
-    NexOS Kernel Version v1.00.00
-    Copyright (c) 2020 brodie
+    NexOS Kernel Version v1.01.00
+    Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
@@ -288,9 +288,11 @@ OS_RESULT SoftwareTimerEnable(SOFTWARE_TIMER *Timer, BOOL Enable);
 	Notes:
 		- USING_SOFTWARE_TIMER_RESET_METHOD inside of RTOSConfig.h must be defined as a 1
 		  to use this method.
+        - USING_SOFTWARE_TIMER_RESET_FROM_ISR_METHOD inside of RTOSConfig.h must be 
+          defined as a 1 to use this method.
 
 	See Also:
-		- CreateSoftwareTimer(), SoftwareTimerEnable().
+		- CreateSoftwareTimer(), SoftwareTimerEnable(), SoftwareTimerResetFromISR()
 */
 OS_RESULT SoftwareTimerReset(SOFTWARE_TIMER *Timer);
 
@@ -314,9 +316,11 @@ OS_RESULT SoftwareTimerReset(SOFTWARE_TIMER *Timer);
 	Notes:
 		- USING_SOFTWARE_TIMER_RESTART_METHOD inside of RTOSConfig.h must be defined as a 1
 		  to use this method.
+        - USING_SOFTWARE_TIMER_RESTART_FROM_ISR_METHOD inside of RTOSConfig.h must be 
+          defined as a 1 to use this method.
 
 	See Also:
-		- CreateSoftwareTimer()
+		- CreateSoftwareTimer(), SoftwareTimerRestartFromISR()
 */
 OS_RESULT SoftwareTimerRestart(SOFTWARE_TIMER *Timer);
 
@@ -341,9 +345,11 @@ OS_RESULT SoftwareTimerRestart(SOFTWARE_TIMER *Timer);
 	Notes:
 		- USING_SOFTWARE_TIMER_CLEAR_METHOD inside of RTOSConfig.h must be defined as a 1
 		  to use this method.
+   		- USING_SOFTWARE_TIMER_CLEAR_FROM_ISR_METHOD inside of RTOSConfig.h must be defined 
+          as a 1 to use this method.
 
 	See Also:
-		- CreateSoftwareTimer(), SoftwareTimerEnable().
+		- CreateSoftwareTimer(), SoftwareTimerEnable(), SoftwareTimerClearFromISR()
 */
 OS_RESULT SoftwareTimerClear(SOFTWARE_TIMER *SoftwareTimer);
 
@@ -369,14 +375,16 @@ OS_RESULT SoftwareTimerClear(SOFTWARE_TIMER *SoftwareTimer);
 	Notes:
 		- USING_SOFTWARE_TIMER_GET_TICKS_METHOD inside of RTOSConfig.h must be defined as a 1
 		  to use this method.
+   		- USING_SOFTWARE_TIMER_GET_TICKS_FROM_ISR_METHOD inside of RTOSConfig.h must be defined 
+          as a 1 to use this method.
 
 	See Also:
-		- CreateSoftwareTimer(), SoftwareTimerGetMilliseconds().
+		- CreateSoftwareTimer(), SoftwareTimerGetMilliseconds(), SoftwareTimerGetTicksFromISR()
 */
 UINT32 SoftwareTimerGetTicks(SOFTWARE_TIMER *SoftwareTimer);
 
 /*
-	OS_RESULT SoftwareTimerGetMilliseconds(SOFTWARE_TIMER *SoftwareTimer, UINT32 *Milliseconds)
+	UINT32 SoftwareTimerGetMilliseconds(SOFTWARE_TIMER *SoftwareTimer)
 
 	Description:
 		This method gets the current tick count of the SOFTWARE_TIMER and converts
@@ -403,7 +411,7 @@ UINT32 SoftwareTimerGetTicks(SOFTWARE_TIMER *SoftwareTimer);
 UINT32 SoftwareTimerGetMilliseconds(SOFTWARE_TIMER *SoftwareTimer);
 
 /*
-	OS_RESULT SoftwareTimerIsRunning(SOFTWARE_TIMER *SoftwareTimer, BOOL *Running)
+	BOOL SoftwareTimerIsRunning(SOFTWARE_TIMER *SoftwareTimer)
 
 	Description:
 		This method gets the enabled state of the SOFTWARE_TIMER.
@@ -422,9 +430,11 @@ UINT32 SoftwareTimerGetMilliseconds(SOFTWARE_TIMER *SoftwareTimer);
 	Notes:
 		- USING_SOFTWARE_TIMER_IS_RUNNING_METHOD inside of RTOSConfig.h must be defined
 		  as a 1 to use this method.
+        - USING_SOFTWARE_TIMER_IS_RUNNING_FROM_ISR_METHOD inside of RTOSConfig.h must 
+          be defined as a 1 to use this method.
 
 	See Also:
-		- CreateSoftwareTimer()
+		- CreateSoftwareTimer(), SoftwareTimerIsRunningFromISR()
 */
 BOOL SoftwareTimerIsRunning(SOFTWARE_TIMER *SoftwareTimer);
 
@@ -455,5 +465,205 @@ BOOL SoftwareTimerIsRunning(SOFTWARE_TIMER *SoftwareTimer);
 		- CreateSoftwareTimer()
 */
 OS_RESULT SoftwareTimerDelete(SOFTWARE_TIMER *SoftwareTimer);
+
+/*
+	BOOL SoftwareTimerEnableFromISR(SOFTWARE_TIMER *Timer, BOOL Enable)
+
+	Description:
+		This method enables or disables the incrementing of the SOFTWARE_TIMER.  A timer 
+		which is enabled will have it tick counter incremented with the OS tick rate.
+        This method can be called from an ISR.
+
+	Blocking: No
+
+	User Callable: Yes
+
+	Arguments:
+		SOFTWARE_TIMER *Timer - A pointer to a valid SOFTWARE_TIMER that was initialized
+		by a call to CreateSoftwareTimer().
+
+		BOOL Enable - If TRUE the specified SOFTWARE_TIMER will be enabled and the timer
+		will increment with the OS tick rate.  If FALSE the specified SOFTWARE_TIMER will
+		stop being incremented with the OS tick rate.
+
+	Returns:
+		OS_RESULT - OS_SUCCESS if the operation passed, otherwise the operation failed.
+
+	Notes:
+		- USING_SOFTWARE_TIMER_ENABLE_FROM_ISR_METHOD inside of RTOSConfig.h must be defined 
+          as a 1 to use this method.
+		- This method will not alter the SOFTWARE_TIMER tick counter when called.
+
+	See Also:
+		- CreateSoftwareTimer(), SoftwareTimerGetTicksFromISR().
+*/
+OS_RESULT SoftwareTimerEnableFromISR(SOFTWARE_TIMER *SoftwareTimer, BOOL Enable);
+
+/*
+	BOOL SoftwareTimerResetFromISR(SOFTWARE_TIMER *Timer)
+
+	Description:
+		This method disables the specified SOFTWARE_TIMER and sets the internal tick count 
+		to zero.  This method can be called from an ISR.
+
+	Blocking: No
+
+	User Callable: Yes
+
+	Arguments:
+		SOFTWARE_TIMER *Timer - A pointer to a valid SOFTWARE_TIMER that was initialized
+		by a call to CreateSoftwareTimer().
+
+	Returns:
+		OS_RESULT - OS_SUCCESS if the operation passed, otherwise the operation failed.
+
+	Notes:
+        - USING_SOFTWARE_TIMER_RESET_FROM_ISR_METHOD inside of RTOSConfig.h must be 
+          defined as a 1 to use this method.
+
+	See Also:
+		- CreateSoftwareTimer(), SoftwareTimerEnable(), SoftwareTimerReset()
+*/
+OS_RESULT SoftwareTimerResetFromISR(SOFTWARE_TIMER *Timer);
+
+/*
+	BOOL SoftwareTimerRestartFromISR(SOFTWARE_TIMER *Timer)
+
+	Description:
+		This method clears the internal tick count to zero and enables the SOFTWARE_TIMER.
+        This method can be called from an ISR.
+
+	Blocking: No
+
+	User Callable: Yes
+
+	Arguments:
+		SOFTWARE_TIMER *Timer - A pointer to a valid SOFTWARE_TIMER that was initialized
+		by a call to CreateSoftwareTimer().
+
+	Returns:
+		OS_RESULT - OS_SUCCESS if the operation passed, otherwise the operation failed.
+
+	Notes:
+        - USING_SOFTWARE_TIMER_RESTART_FROM_ISR_METHOD inside of RTOSConfig.h must be 
+          defined as a 1 to use this method.
+
+	See Also:
+		- CreateSoftwareTimer(), SoftwareTimerRestart()
+*/
+OS_RESULT SoftwareTimerRestartFromISR(SOFTWARE_TIMER *Timer);
+
+/*
+	BOOL SoftwareTimerClearFromISR(SOFTWARE_TIMER *SoftwareTimer)
+
+	Description:
+		This method clears the internal tick count to zero of the SOFTWARE_TIMER.  It does not
+		matter if the SOFTWARE_TIMER is enabled or not.  The enabled state also stays the same.
+        This method can be called from an ISR.
+
+	Blocking: No
+
+	User Callable: Yes
+
+	Arguments:
+		SOFTWARE_TIMER *Timer - A pointer to a valid SOFTWARE_TIMER that was initialized
+		by a call to CreateSoftwareTimer().
+
+	Returns:
+		OS_RESULT - OS_SUCCESS if the operation passed, otherwise the operation failed.
+
+	Notes:
+   		- USING_SOFTWARE_TIMER_CLEAR_FROM_ISR_METHOD inside of RTOSConfig.h must be defined 
+          as a 1 to use this method.
+
+	See Also:
+		- CreateSoftwareTimer(), SoftwareTimerEnableFromISR(), SoftwareTimerClear()
+*/
+OS_RESULT SoftwareTimerClearFromISR(SOFTWARE_TIMER *SoftwareTimer);
+
+/*
+	UINT32 SoftwareTimerGetTicksFromISR(SOFTWARE_TIMER *SoftwareTimer)
+
+	Description:
+		This method returns the current tick count of the specified SOFTWARE_TIMER.  Each
+		count in this value represents a single OS tick.  This method can be called from
+        an ISR.
+
+	Blocking: No
+
+	User Callable: Yes
+
+	Arguments:
+		SOFTWARE_TIMER *Timer - A pointer to a valid SOFTWARE_TIMER that was initialized
+		by a call to CreateSoftwareTimer().
+
+	Returns:
+		UINT32 - The current tick count of the SOFTWARE_TIMER upon success.  Otherwise the
+		value INVALID_TIMER_TICKS_VALUE is returned.
+
+	Notes:
+   		- USING_SOFTWARE_TIMER_GET_TICKS_FROM_ISR_METHOD inside of RTOSConfig.h must be defined 
+          as a 1 to use this method.
+
+	See Also:
+		- CreateSoftwareTimer(), SoftwareTimerGetMilliseconds(), SoftwareTimerGetTicks()
+*/
+UINT32 SoftwareTimerGetTicksFromISR(SOFTWARE_TIMER *SoftwareTimer);
+
+/*
+	UINT32 SoftwareTimerGetMillisecondsFromISR(SOFTWARE_TIMER *SoftwareTimer)
+
+	Description:
+		This method gets the current tick count of the SOFTWARE_TIMER and converts
+		that to milliseconds.  This method can be called from an ISR.
+
+	Blocking: No
+
+	User Callable: Yes
+
+	Arguments:
+		SOFTWARE_TIMER *Timer - A pointer to a valid SOFTWARE_TIMER that was initialized
+		by a call to CreateSoftwareTimer().
+
+	Returns:
+        UINT32 - The number of milliseconds the SOFTWARE_TIMER has been running.
+
+	Notes:
+		- USING_SOFTWARE_TIMER_GET_MILLISECONDS_FROM_ISR_METHOD inside of RTOSConfig.h 
+          must be defined as a 1 to use this method.
+        - USING_SOFTWARE_TIMER_GET_TICKS_FROM_ISR_METHOD inside of RTOSConfig.h 
+          must be defined as a 1 to use this method.
+
+	See Also:
+		- CreateSoftwareTimer(), SoftwareTimerGetTicksFromISR().
+*/
+UINT32 SoftwareTimerGetMillisecondsFromISR(SOFTWARE_TIMER *SoftwareTimer);
+
+/*
+	BOOL SoftwareTimerIsRunningFromISR(SOFTWARE_TIMER *SoftwareTimer)
+
+	Description:
+		This method gets the enabled state of the SOFTWARE_TIMER.  This
+        method can be called from an ISR.
+
+	Blocking: No
+
+	User Callable: Yes
+
+	Arguments:
+		SOFTWARE_TIMER *Timer - A pointer to a valid SOFTWARE_TIMER that was initialized
+		by a call to CreateSoftwareTimer().
+
+	Returns:
+		BOOL - TRUE if the SOFTWARE_TIMER is running, FALSE otherwise.
+		
+	Notes:
+        - USING_SOFTWARE_TIMER_IS_RUNNING_FROM_ISR_METHOD inside of RTOSConfig.h must 
+          be defined as a 1 to use this method.
+
+	See Also:
+		- CreateSoftwareTimer(), SoftwareTimerIsRunning()
+*/
+BOOL SoftwareTimerIsRunningFromISR(SOFTWARE_TIMER *SoftwareTimer);
 
 #endif // end of SOFTWARE_TIMERS_H

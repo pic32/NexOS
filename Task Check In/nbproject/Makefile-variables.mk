@@ -4,10 +4,17 @@
 # NOCDDL
 #
 CND_BASEDIR=`pwd`
-# default configuration
-CND_ARTIFACT_DIR_default=dist/default/production
-CND_ARTIFACT_NAME_default=Task_Check_In.production.hex
-CND_ARTIFACT_PATH_default=dist/default/production/Task_Check_In.production.hex
-CND_PACKAGE_DIR_default=${CND_DISTDIR}/default/package
-CND_PACKAGE_NAME_default=taskcheckin.tar
-CND_PACKAGE_PATH_default=${CND_DISTDIR}/default/package/taskcheckin.tar
+# SimulatorConfiguration configuration
+CND_ARTIFACT_DIR_SimulatorConfiguration=dist/SimulatorConfiguration/production
+CND_ARTIFACT_NAME_SimulatorConfiguration=Task_Check_In.production.hex
+CND_ARTIFACT_PATH_SimulatorConfiguration=dist/SimulatorConfiguration/production/Task_Check_In.production.hex
+CND_PACKAGE_DIR_SimulatorConfiguration=${CND_DISTDIR}/SimulatorConfiguration/package
+CND_PACKAGE_NAME_SimulatorConfiguration=taskcheckin.tar
+CND_PACKAGE_PATH_SimulatorConfiguration=${CND_DISTDIR}/SimulatorConfiguration/package/taskcheckin.tar
+# EthernetStarterKitII configuration
+CND_ARTIFACT_DIR_EthernetStarterKitII=dist/EthernetStarterKitII/production
+CND_ARTIFACT_NAME_EthernetStarterKitII=Task_Check_In.production.hex
+CND_ARTIFACT_PATH_EthernetStarterKitII=dist/EthernetStarterKitII/production/Task_Check_In.production.hex
+CND_PACKAGE_DIR_EthernetStarterKitII=${CND_DISTDIR}/EthernetStarterKitII/package
+CND_PACKAGE_NAME_EthernetStarterKitII=taskcheckin.tar
+CND_PACKAGE_PATH_EthernetStarterKitII=${CND_DISTDIR}/EthernetStarterKitII/package/taskcheckin.tar

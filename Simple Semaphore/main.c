@@ -1,6 +1,6 @@
 /*
-    NexOS Kernel Version v1.00.00
-    Copyright (c) 2020 brodie
+    NexOS Kernel Version v1.01.00
+    Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
@@ -58,11 +58,12 @@
  *  Notes:  
  *      This demo code is designed to work with the Ethernet Starter Kit II, but can
  *      be run in the simulator.  When using MPLAB X IDE go to Window-->Simulator-->Stimulus
- *      to pull up the menu for triggering the inputs.  There is a common semaphore that
- *      each task will try and get.  Each task is looking for a certain button to be pushed.  
- *      Once pushed the task will try and get the semaphore.  Once a task owns the semaphore
- *      it will turn on an LED.  At this time the task will look at the same button to
- *      see if it is pushed, and if so it will release the semaphore and turn off the LED.
+ *      to pull up the menu for triggering the inputs (pins RD6, RD7, RD13).  There is a 
+ *      common semaphore that each task will try and get.  Each task is looking for a certain 
+ *      button to be pushed.  Once pushed the task will try and get the semaphore.  Once 
+ *      a task owns the semaphore it will turn on an LED.  At this time the task will look 
+ *      at the same button to see if it is pushed, and if so it will release the semaphore 
+ *      and turn off the LED.
  */
 
 BINARY_SEMAPHORE *BinarySemaphore;
@@ -100,6 +101,10 @@ UINT32 Task1Code(void *Args)
             // we got it, turn our light on and wait for the button push again
             LATDSET = 0x00000001;
             
+            #ifdef SIMULATION
+                printf("TASK 1 HAS THE SEMAPHORE!\r\n");
+            #endif // end of #if SIMULATION
+            
             // now wait for a debounce
             TaskDelayMilliseconds(30);
             
@@ -120,6 +125,10 @@ UINT32 Task1Code(void *Args)
                 
             // turn our LED off    
             LATDCLR = 0x00000001;
+            
+            #ifdef SIMULATION
+                printf("TASK 1 RELEASED THE SEMAPHORE!\r\n");
+            #endif // end of #if SIMULATION
                 
             // now wait for a debounce
             TaskDelayMilliseconds(30);
@@ -161,6 +170,10 @@ UINT32 Task2Code(void *Args)
             {
                 // we got it, turn our light on and wait for the button push again
                 LATDSET = 0x00000002;
+                
+                #ifdef SIMULATION
+                    printf("TASK 2 HAS THE SEMAPHORE!\r\n");
+                #endif // end of #if SIMULATION
 
                 // now wait for a debounce
                 TaskDelayMilliseconds(30);
@@ -182,6 +195,10 @@ UINT32 Task2Code(void *Args)
 
                 // turn our LED off    
                 LATDCLR = 0x00000002;
+                
+                #ifdef SIMULATION
+                    printf("TASK 2 RELEASED THE SEMAPHORE!\r\n");
+                #endif // end of #if SIMULATION
 
                 // now wait for a debounce
                 TaskDelayMilliseconds(30);
@@ -224,6 +241,10 @@ UINT32 Task3Code(void *Args)
             {
                 // we got it, turn our light on and wait for the button push again
                 LATDSET = 0x00000004;
+                
+                #ifdef SIMULATION
+                    printf("TASK 3 HAS THE SEMAPHORE!\r\n");
+                #endif // end of #if SIMULATION
 
                 // now wait for a debounce
                 TaskDelayMilliseconds(30);
@@ -245,6 +266,10 @@ UINT32 Task3Code(void *Args)
 
                 // turn our LED off    
                 LATDCLR = 0x00000004;
+                
+                #ifdef SIMULATION
+                    printf("TASK 3 RELEASED THE SEMAPHORE!\r\n");
+                #endif // end of #if SIMULATION
 
                 // now wait for a debounce
                 TaskDelayMilliseconds(30);

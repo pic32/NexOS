@@ -1,6 +1,6 @@
 /*
-    NexOS Kernel Version v1.00.00
-    Copyright (c) 2020 brodie
+    NexOS Kernel Version v1.01.00
+    Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
@@ -71,5 +71,29 @@ UINT32 IdleTaskCode(void *Args);
 		- MAINTENANCE_TASK_ARGS, USING_MAINTENANCE_TASK_USER_CALLBACK inside of RTOSConfig.h
 */
 UINT32 MaintenanceTaskCode(void *Args);
+
+/*
+	UINT32 IOBufferTaskCode(void *Args)
+
+	Description: This is the code that the IO Buffer TASK executes.  It never returns
+    from this method.
+
+	Blocking: No
+
+	User Callable: No
+
+	Arguments:
+		void *Args - The arguments passed with the macro MAINTENANCE_TASK_ARGS.
+
+	Returns:
+        UINT32 - This method should never return.
+
+	Notes:
+        - None
+
+	See Also:
+		- MAINTENANCE_TASK_ARGS, USING_MAINTENANCE_TASK_USER_CALLBACK inside of RTOSConfig.h
+*/
+UINT32 IOBufferTaskCode(void *Args);
 
 #endif // end of KERNEL_TASKS_H
