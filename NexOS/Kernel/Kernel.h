@@ -76,7 +76,7 @@
  */
 #define KERNEL_MAJOR_VERSION_NUMBER										0x01
 #define KERNEL_MINOR_VERSION_NUMBER										0x01
-#define KERNEL_TEST_VERSION_NUMBER                                      0x00
+#define KERNEL_TEST_VERSION_NUMBER                                      0x01
 
 #define INVALID_TASK_PRIORITY											255
 

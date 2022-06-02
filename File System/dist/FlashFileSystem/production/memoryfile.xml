@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<project>                                  
+  <executable name="dist/FlashFileSystem/production/File_System.production.elf">                 
+    <memory name="program">                 
+      <units>bytes</units>                 
+      <length>269824</length>                 
+      <used>119200</used>                     
+      <free>150624</free>                     
+    </memory>                              
+    <memory name="data">              
+      <units>bytes</units>                 
+      <length>65536</length>                 
+      <used>54824</used>                     
+      <free>10712</free>                     
+    </memory>                              
+  </executable>                            
+</project>                                 
