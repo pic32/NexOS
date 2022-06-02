@@ -31,6 +31,7 @@ The repository has the main source code for the NexOS and a bunch of demonstatio
  - Pipe: A demonstration project showing two tasks communicating through a pipe.
  - Simple Semaphore: A demonstration project showing how to use a semaphore.
  - Task Check In: A demonstration project showing the software watch dog timer feature.
+ - IO Buffer: A demonstration project showing how to use a UART, CAN, and ADC IO_BUFFER.
 
 The main goal of offering the source for this project is for other people to use it and provide feedback. I cannot possibly test all the scenarios the RTOS should be put through as this is essentially an infinite list. That is the goal I hope people playing with it would fill. I will try to fix any and every bug that is reported.  This project also serves as a good learning tool for anyone else interested in learning about Real Time Operating Systems.  There is also a list of items in the Git Projects tab.  The list contains all the items that will be added to the RTOS and any items that are currently being worked on.
 
