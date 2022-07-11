@@ -1,0 +1,16 @@
+v1.01.01 6/2/2022
+- The File System Project is now incorporated.  This project shows
+  integration of the NexOS with the FatFs.  There is one example
+  project which has 2 tasks writing data to their own files.  There
+  are 2 configurations for the project.  Configuration 1 has the
+  default media as a SD card, and configuration 2 has the default
+  media as a flash IC (SST26VF064B).
+
+v1.01.00 5/25/2022
+- This version has support for the UART, CAN, and ADC IO_BUFFERS.
+- Updated the interrupt handlers for some new EVENTS.
+- Fixed a bunch of bugs.  After this release we will be tracking 
+  them to have a log.
+
+v1.00.00 10/14/2020
+- This is the original release of the NexOS.

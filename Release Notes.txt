@@ -1,3 +1,8 @@
+v1.01.02 7/11/2022
+- Updated the CallocMemory() to have the additional parameter NumberOfItems.
+- Added the USING_GET_HEAP_USED_IN_BYTES_METHOD and 
+  USING_GET_HEAP_REMAINING_IN_BYTES_METHOD into RTOSConfig.h.
+
 v1.01.01 6/2/2022
 - The File System Project is now incorporated.  This project shows
   integration of the NexOS with the FatFs.  There is one example

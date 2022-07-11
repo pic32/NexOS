@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.00
+    NexOS Kernel Version v1.01.02
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -52,11 +52,14 @@
 #endif // end of #if (USING_MEMORY_WARNING_EVENT == 1 || USING_MEMORY_WARNING_USER_CALLBACK == 1)
 
 #if (USING_MEMORY_WARNING_EVENT == 1 || USING_MEMORY_WARNING_USER_CALLBACK == 1)
-	BOOL gMemoryWarning = FALSE;
+	BOOL gMemoryWarning;
 #endif // end of USING_MEMORY_WARNING_EVENT == 1 || USING_MEMORY_WARNING_USER_CALLBACK == 1
 
+#if (USING_MEMORY_WARNING_EVENT == 1 || USING_MEMORY_WARNING_USER_CALLBACK == 1 || USING_GET_HEAP_USED_IN_BYTES_METHOD == 1 || USING_GET_HEAP_REMAINING_IN_BYTES_METHOD == 1)
+    static UINT32 gHeapUsedInBytes;
+#endif // end of #if (USING_MEMORY_WARNING_EVENT == 1 || USING_MEMORY_WARNING_USER_CALLBACK == 1 || USING_GET_HEAP_USED_IN_BYTES_METHOD == 1 || USING_GET_HEAP_REMAINING_IN_BYTES_METHOD == 1)
+    
 OS_WORD gKernelManagedMemory[((OS_HEAP_SIZE_IN_BYTES + OS_MEMORY_BLOCK_HEADER_SIZE_IN_BYTES) / OS_WORD_SIZE_IN_BYTES)];
-static UINT32 gHeapUsedInBytes = 0;
 
 #if (MEMORY_TEST == 1)
     #include <stdio.h>
@@ -136,6 +139,14 @@ BOOL OS_InitializeHeap(void)
 		memset(&gKernelManagedMemory[1], HEAP_INITIALIZATION_VALUE, (OS_HEAP_SIZE_IN_BYTES / OS_WORD_SIZE_IN_BYTES));
 	#endif // end of #if(CLEAR_HEAP_AT_START_UP == 1)
 
+    #if (USING_MEMORY_WARNING_EVENT == 1 || USING_MEMORY_WARNING_USER_CALLBACK == 1)
+        gMemoryWarning = FALSE;
+    #endif // end of USING_MEMORY_WARNING_EVENT == 1 || USING_MEMORY_WARNING_USER_CALLBACK == 1
+
+    #if (USING_MEMORY_WARNING_EVENT == 1 || USING_MEMORY_WARNING_USER_CALLBACK == 1 || USING_GET_HEAP_USED_IN_BYTES_METHOD == 1 || USING_GET_HEAP_REMAINING_IN_BYTES_METHOD == 1)
+        gHeapUsedInBytes = 0;
+    #endif // end of #if (USING_MEMORY_WARNING_EVENT == 1 || USING_MEMORY_WARNING_USER_CALLBACK == 1 || USING_GET_HEAP_USED_IN_BYTES_METHOD == 1 || USING_GET_HEAP_REMAINING_IN_BYTES_METHOD == 1)
+
 	return TRUE;
 }
 
@@ -213,8 +224,10 @@ void *OS_AllocateMemory(UINT32 SizeInBytes)
 		StartingMemoryAddress = (void*)(MemoryBlockIterator);
 	}
 
-	gHeapUsedInBytes += SizeInBytes + sizeof(OS_MEMORY_BLOCK_HEADER);
-
+    #if (USING_MEMORY_WARNING_EVENT == 1 || USING_MEMORY_WARNING_USER_CALLBACK == 1 || USING_GET_HEAP_USED_IN_BYTES_METHOD == 1 || USING_GET_HEAP_REMAINING_IN_BYTES_METHOD == 1)
+        gHeapUsedInBytes += SizeInBytes + sizeof(OS_MEMORY_BLOCK_HEADER);
+    #endif // end of #if (USING_MEMORY_WARNING_EVENT == 1 || USING_MEMORY_WARNING_USER_CALLBACK == 1 || USING_GET_HEAP_USED_IN_BYTES_METHOD == 1 || USING_GET_HEAP_REMAINING_IN_BYTES_METHOD == 1)
+    
 	#if (USING_MEMORY_WARNING_EVENT == 1 || USING_MEMORY_WARNING_USER_CALLBACK == 1)
 		if (gMemoryWarning == FALSE)
 		{
@@ -252,8 +265,10 @@ BOOL OS_ReleaseMemory(void *Ptr)
 
 	MemoryBlockIterator2 = MemoryBlockIterator;
 
-	// Record the amount of bytes that were in block and subtract them, we may be able to get rid of the header later on
-	gHeapUsedInBytes -= (MemoryBlockIterator->SizeInWords * 4);
+    #if (USING_MEMORY_WARNING_EVENT == 1 || USING_MEMORY_WARNING_USER_CALLBACK == 1 || USING_GET_HEAP_USED_IN_BYTES_METHOD == 1 || USING_GET_HEAP_REMAINING_IN_BYTES_METHOD == 1)
+        // Record the amount of bytes that were in block and subtract them, we may be able to get rid of the header later on
+        gHeapUsedInBytes -= (MemoryBlockIterator->SizeInWords * 4);
+    #endif // end of #if (USING_MEMORY_WARNING_EVENT == 1 || USING_MEMORY_WARNING_USER_CALLBACK == 1 || USING_GET_HEAP_USED_IN_BYTES_METHOD == 1 || USING_GET_HEAP_REMAINING_IN_BYTES_METHOD == 1)
 
 	// Unallocate the memory block
 	MemoryBlockIterator->Allocated = FALSE;
@@ -268,8 +283,10 @@ BOOL OS_ReleaseMemory(void *Ptr)
 		// if so then we're going to merge it.
 		if (!MemoryBlockIterator->Allocated)
 		{
-			// subtract the size of one header from the heap used since we're merging 2 blocks
-			gHeapUsedInBytes -= sizeof(OS_MEMORY_BLOCK_HEADER);
+            #if (USING_MEMORY_WARNING_EVENT == 1 || USING_MEMORY_WARNING_USER_CALLBACK == 1 || USING_GET_HEAP_USED_IN_BYTES_METHOD == 1 || USING_GET_HEAP_REMAINING_IN_BYTES_METHOD == 1)
+                // subtract the size of one header from the heap used since we're merging 2 blocks
+                gHeapUsedInBytes -= sizeof(OS_MEMORY_BLOCK_HEADER);
+            #endif // end of #if (USING_MEMORY_WARNING_EVENT == 1 || USING_MEMORY_WARNING_USER_CALLBACK == 1 || USING_GET_HEAP_USED_IN_BYTES_METHOD == 1 || USING_GET_HEAP_REMAINING_IN_BYTES_METHOD == 1)
 
 			// We can merge the 2, this ones unallocated
 			MemoryBlockIterator2->SizeInWords += MemoryBlockIterator->SizeInWords + (OS_MEMORY_BLOCK_HEADER_SIZE_IN_BYTES / OS_WORD_SIZE_IN_BYTES);
@@ -297,8 +314,10 @@ BOOL OS_ReleaseMemory(void *Ptr)
 
 		if (!MemoryBlockIterator->Allocated)
 		{
-			// subtract the size of one header from the heap used since we're merging 2 blocks
-			gHeapUsedInBytes -= sizeof(OS_MEMORY_BLOCK_HEADER);
+            #if (USING_MEMORY_WARNING_EVENT == 1 || USING_MEMORY_WARNING_USER_CALLBACK == 1 || USING_GET_HEAP_USED_IN_BYTES_METHOD == 1 || USING_GET_HEAP_REMAINING_IN_BYTES_METHOD == 1)
+                // subtract the size of one header from the heap used since we're merging 2 blocks
+                gHeapUsedInBytes -= sizeof(OS_MEMORY_BLOCK_HEADER);
+            #endif // end of #if (USING_MEMORY_WARNING_EVENT == 1 || USING_MEMORY_WARNING_USER_CALLBACK == 1 || USING_GET_HEAP_USED_IN_BYTES_METHOD == 1 || USING_GET_HEAP_REMAINING_IN_BYTES_METHOD == 1)
 
 			// This memory block isn't allocated, lets merge them
 			MemoryBlockIterator->SizeInWords += (MemoryBlockIterator2->SizeInWords + OS_MEMORY_BLOCK_HEADER_SIZE_IN_BYTES / OS_WORD_SIZE_IN_BYTES);
@@ -324,32 +343,6 @@ BOOL OS_ReleaseMemory(void *Ptr)
 	#endif // end of USING_MEMORY_WARNING_EVENT == 1 || USING_MEMORY_WARNING_USER_CALLBACK == 1
 
 	return TRUE;
-}
-
-UINT32 GetHeapUsedInBytes(void)
-{
-	UINT32 TempHeapUsed;
-
-	EnterCritical();
-
-	TempHeapUsed = gHeapUsedInBytes;
-
-	ExitCritical();
-
-	return TempHeapUsed;
-}
-
-UINT32 GetHeapRemainingBytes(void)
-{
-	UINT32 TempHeapRemaining;
-
-	EnterCritical();
-
-	TempHeapRemaining = OS_HEAP_SIZE_IN_BYTES - gHeapUsedInBytes;
-
-	ExitCritical();
-
-	return TempHeapRemaining;
 }
 
 void *AllocateMemory(UINT32 SizeInBytes)
@@ -378,17 +371,50 @@ BOOL ReleaseMemory(void *Ptr)
 	return ReleaseSuccessful;
 }
 
+#if (USING_GET_HEAP_USED_IN_BYTES_METHOD == 1)
+    UINT32 GetHeapUsedInBytes(void)
+    {
+        UINT32 TempHeapUsed;
+
+        EnterCritical();
+
+        TempHeapUsed = gHeapUsedInBytes;
+
+        ExitCritical();
+
+        return TempHeapUsed;
+    }
+#endif // end of #if (USING_GET_HEAP_USED_IN_BYTES_METHOD == 1)
+
+#if (USING_GET_HEAP_REMAINING_IN_BYTES_METHOD == 1)
+    UINT32 GetHeapRemainingInBytes(void)
+    {
+        UINT32 TempHeapRemaining;
+
+        EnterCritical();
+
+        TempHeapRemaining = OS_HEAP_SIZE_IN_BYTES - gHeapUsedInBytes;
+
+        ExitCritical();
+
+        return TempHeapRemaining;
+    }
+#endif // end of #if (USING_GET_HEAP_REMAINING_IN_BYTES_METHOD == 1)
+    
+
 #if (USING_CALLOC_MEMORY_METHOD == 1)
 	/*
 		This will clear all the memory that the user requests
 	*/
-	void *CallocMemory(UINT32 SizeInBytes)
+	void *CallocMemory(UINT32 NumberOfItems, UINT32 SizeInBytes)
 	{
 		UINT32 RequestedSizeInWords;
 		void *Data;
 
-		if(SizeInBytes == 0)
+		if(SizeInBytes == 0 || NumberOfItems == 0)
 			return (void*)NULL;
+        
+        SizeInBytes *= NumberOfItems;
 
 		if (SizeInBytes < OS_WORD_SIZE_IN_BYTES)
 			SizeInBytes = OS_WORD_SIZE_IN_BYTES;

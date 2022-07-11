@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.00
+    NexOS Kernel Version v1.01.02
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -142,7 +142,8 @@ BOOL OS_ReleaseMemory(void *Ptr);
 		of the space needed to manage the heap.
 
 	Notes:
-		- None
+		- USING_GET_HEAP_USED_IN_BYTES_METHOD inside of RTOSConfig.h must
+          be defined as a 1 to use this method.
 
 	See Also:
 		- ReleaseMemory()
@@ -150,7 +151,7 @@ BOOL OS_ReleaseMemory(void *Ptr);
 UINT32 GetHeapUsedInBytes(void);
 
 /*
-	UINT32 GetHeapRemainingBytes(void)
+	UINT32 GetHeapRemainingInBytes(void)
 
 	Description: This method returns the number of bytes currently free in the heap.
 
@@ -165,12 +166,13 @@ UINT32 GetHeapUsedInBytes(void);
 		UINT32 - The number of bytes currently free in the heap.
 
 	Notes:
-		- None
+		- USING_GET_HEAP_REMAINING_IN_BYTES_METHOD inside of RTOSConfig.h must
+          be defined as a 1 to use this method.
 
 	See Also:
 		- ReleaseMemory()
 */
-UINT32 GetHeapRemainingBytes(void);
+UINT32 GetHeapRemainingInBytes(void);
 
 /*
 	void *AllocateMemory(UINT32 SizeInBytes)
@@ -237,6 +239,9 @@ BOOL ReleaseMemory(void *Ptr);
 	User Callable: Yes
 
 	Arguments:
+        UINT32 NumberOfItems - The number of items that are of SizeInBytes size to 
+        allocate space for in the heap.
+ 
 		UINT32 SizeInBytes - The number of bytes to allocate in the heap.  This number
 		will be rounded up to be evenly divisible by sizeof(OS_WORD).
 
@@ -251,7 +256,7 @@ BOOL ReleaseMemory(void *Ptr);
 	See Also:
 		- None
 */
-void *CallocMemory(UINT32 SizeInBytes);
+void *CallocMemory(UINT32 NumberOfItems, UINT32 SizeInBytes);
 
 /*
 	void *ReallocMemory(void *Ptr, UINT32 SizeInBytes)

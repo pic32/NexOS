@@ -31,8 +31,8 @@
 // OS Configurations
 //----------------------------------------------------------------------------------------------------
 
-// This is version v1.01.00 release of the RTOSConfig.h file.
-#define RTOS_CONFIG_H_VERSION                                   0x00000002
+// This is version v1.01.02 release of the RTOSConfig.h file.
+#define RTOS_CONFIG_H_VERSION                                   0x00000003
 
 // OS_PRIORITY is the priority of the OS compared to interrupts.  When an OS call is made the
 // interrupt priority will be set to OS_PRIORITY so that interrupts of OS_PRIORITY level or lower
@@ -112,6 +112,12 @@
 
 // USING_REALLOC_MEMORY_METHOD must be defined as a 1 to use the ReallocMemory() method.
 #define USING_REALLOC_MEMORY_METHOD								0
+
+// USING_GET_HEAP_USED_IN_BYTES_METHOD must be defined as a 1 to use the GetHeapUsedInBytes() method.
+#define USING_GET_HEAP_USED_IN_BYTES_METHOD                     0
+
+// USING_GET_HEAP_REMAINING_IN_BYTES_METHOD must be defined as a 1 to use the GetHeapRemainingInBytes() method.
+#define USING_GET_HEAP_REMAINING_IN_BYTES_METHOD                0
 
 // MEMORY_WARNING_LEVEL_IN_BYTES when MEMORY_WARNING_LEVEL_IN_BYTES are used the
 // USING_MEMORY_WARNING_EVENT is raised if enabled and the USING_MEMORY_WARNING_USER_CALLBACK
