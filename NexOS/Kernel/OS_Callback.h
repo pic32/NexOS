@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.02
+    NexOS Kernel Version v1.01.03
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -119,11 +119,38 @@ void ContextSwitchUserCallback(void);
 	Notes:
 		- USING_OS_TICK_UPDATE_USER_CALLBACK inside of RTOSConfig.h must be 
           defined as a 1 to use this callback.
+        - PortIsStackOverflowed() inside of Port.c must also be implemented to 
+          use the function OSTickUpdateUserCallback().
+
+	See Also:
+		- PortIsStackOverflowed()
+*/
+void OSTickUpdateUserCallback(UINT32 CurrentTickCount);
+
+/*
+	void TaskStackOverflowUserCallback(TASK *Task)
+
+	Description: This method is called each time a TASK stack was detected to
+    have been overflowed during a context switch.
+
+	Blocking: No
+
+	User Callable: No
+
+	Arguments:
+        TASK *Task - The TASK which has an overflowed stack.
+
+	Returns:
+        None 
+
+	Notes:
+		- USING_CHECK_TASK_STACK_FOR_OVERFLOW inside of RTOSConfig.h must be 
+          defined as a 1 to use this callback.
 
 	See Also:
 		- None
 */
-void OSTickUpdateUserCallback(UINT32 CurrentTickCount);
+void TaskStackOverflowUserCallback(TASK *Task);
 
 /*
 	void EnterDeviceSleepModeUserCallback(void)

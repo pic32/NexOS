@@ -1,3 +1,17 @@
+v1.01.03 7/20/2022
+ - Updated the path in OS_Callback.c for a relative location for the *.h file.
+ - Added in the method IOBufferGetState().
+ - Fixed a bug in IOBufferReadLine() where the existing data in the IO_BUFFER
+   was not read into the user buffer.
+ - Added the ability to analyze a TASK stack with the method AnalyzeTaskStack().
+   This method returns how many words are left in the stack untouched.
+ - Added the ability to catch a TASK stack pointer that overflowed during a
+   context switch by the OS.  The method TaskStackOverflowUserCallback() is 
+   called when this happens.
+ - The system stack is now introduced for interrupt handling.  Its size can
+   be configured up in RTOSConfig.h.
+ - Fixed up some of the headers in OS_EventCallback.h that were missing.
+
 v1.01.02 7/11/2022
 - Updated the CallocMemory() to have the additional parameter NumberOfItems.
 - Added the USING_GET_HEAP_USED_IN_BYTES_METHOD and 

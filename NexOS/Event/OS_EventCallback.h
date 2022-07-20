@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.02
+    NexOS Kernel Version v1.01.03
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,7 +20,7 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
  */
-#if(0)
+
 /*
 	OS_EventCallbacks Description:
         This file contains all the callback functions an EVENT can call.  These are left to 
@@ -31,6 +31,12 @@
 
 #ifndef OS_EVENT_CALLBACKS_H
     #define OS_EVENT_CALLBACKS_H
+
+#if (USING_UART_1_ERROR_CALLBACK == 1) || (USING_UART_2_ERROR_CALLBACK == 1) || (USING_UART_3_ERROR_CALLBACK == 1) || (USING_UART_4_ERROR_CALLBACK == 1) || (USING_UART_5_ERROR_CALLBACK == 1) || (USING_UART_6_ERROR_CALLBACK == 1)
+    #if (USING_UART_1_IO_BUFFER == 1) || (USING_UART_2_IO_BUFFER == 1) || (USING_UART_3_IO_BUFFER == 1) || (USING_UART_4_IO_BUFFER == 1) || (USING_UART_5_IO_BUFFER == 1) || (USING_UART_6_IO_BUFFER == 1)
+        #include "../NexOS/IOBuffer/IOBuffer.h"
+    #endif // end of #if (USING_UART_1_IO_BUFFER == 1) || (USING_UART_2_IO_BUFFER == 1) || (USING_UART_3_IO_BUFFER == 1) || (USING_UART_4_IO_BUFFER == 1) || (USING_UART_5_IO_BUFFER == 1) || (USING_UART_6_IO_BUFFER == 1)
+#endif // end of #if (USING_UART_1_ERROR_CALLBACK == 1) || (USING_UART_2_ERROR_CALLBACK == 1) || (USING_UART_3_ERROR_CALLBACK == 1) || (USING_UART_4_ERROR_CALLBACK == 1) || (USING_UART_5_ERROR_CALLBACK == 1) || (USING_UART_6_ERROR_CALLBACK == 1)
 
 /*
 	void ExternalInterrupt0Callback(void)
@@ -318,7 +324,7 @@ void Timer4InterruptCallback(void);
 void Timer5InterruptCallback(void);
 
 /*
-	void ADC1InterruptCallback(void)
+	void ADC1InterruptCallback(BYTE ADCValue)
 
 	Description: This method is called when the ADC 1 interrupt handler
     is triggered.  It is a means to allow the user a callback when this interrupt occurs.
@@ -328,7 +334,7 @@ void Timer5InterruptCallback(void);
 	User Callable: No
 
 	Arguments:
-		None
+		BYTE ADCValue - The value read from the ADC port.
 
 	Returns: 
         None
@@ -340,107 +346,11 @@ void Timer5InterruptCallback(void);
 	See Also:
 		- None
 */
-void ADC1InterruptCallback(void);
-
-/*
-	void ADC2InterruptCallback(void)
-
-	Description: This method is called when the ADC 2 interrupt handler
-    is triggered.  It is a means to allow the user a callback when this interrupt occurs.
-
-	Blocking: No
-
-	User Callable: No
-
-	Arguments:
-		None
-
-	Returns: 
-        None
-
-	Notes:
-		- USING_ADC_2_CALLBACK inside of RTOSConfig.h must be defined as a 1 to
-          use this callback feature.
-
-	See Also:
-		- None
-*/
-void ADC2InterruptCallback(void);
-
-/*
-	void ADC3InterruptCallback(void)
-
-	Description: This method is called when the ADC 3 interrupt handler
-    is triggered.  It is a means to allow the user a callback when this interrupt occurs.
-
-	Blocking: No
-
-	User Callable: No
-
-	Arguments:
-		None
-
-	Returns: 
-        None
-
-	Notes:
-		- USING_ADC_3_CALLBACK inside of RTOSConfig.h must be defined as a 1 to
-          use this callback feature.
-
-	See Also:
-		- None
-*/
-void ADC3InterruptCallback(void);
-
-/*
-	void ADC4InterruptCallback(void)
-
-	Description: This method is called when the ADC 4 interrupt handler
-    is triggered.  It is a means to allow the user a callback when this interrupt occurs.
-
-	Blocking: No
-
-	User Callable: No
-
-	Arguments:
-		None
-
-	Returns: 
-        None
-
-	Notes:
-		- USING_ADC_4_CALLBACK inside of RTOSConfig.h must be defined as a 1 to
-          use this callback feature.
-
-	See Also:
-		- None
-*/
-void ADC4InterruptCallback(void);
-
-/*
-	void ADC5InterruptCallback(void)
-
-	Description: This method is called when the ADC 5 interrupt handler
-    is triggered.  It is a means to allow the user a callback when this interrupt occurs.
-
-	Blocking: No
-
-	User Callable: No
-
-	Arguments:
-		None
-
-	Returns: 
-        None
-
-	Notes:
-		- USING_ADC_5_CALLBACK inside of RTOSConfig.h must be defined as a 1 to
-          use this callback feature.
-
-	See Also:
-		- None
-*/
-void ADC5InterruptCallback(void);
+#if(USING_ADC_1_IO_BUFFER == 1)
+    void ADC1InterruptCallback(BYTE ADCValue);
+#else
+    void ADC1InterruptCallback(void);
+#endif // end of #if(USING_ADC_1_IO_BUFFER == 1)
 
 /*
 	void RTCCInterruptCallback(void)
@@ -618,7 +528,7 @@ void UART5InterruptTXCallback(void);
 void UART6InterruptTXCallback(void);
 
 /*
-	void UART1InterruptRXCallback(void)
+	void UART1InterruptRXCallback(BYTE Data)
 
 	Description: This method is called when the UART 1 RX interrupt handler
     is triggered.  It is a means to allow the user a callback when this interrupt occurs.
@@ -628,7 +538,7 @@ void UART6InterruptTXCallback(void);
 	User Callable: No
 
 	Arguments:
-		None
+        BYTE Data - The value read from the UART port.
 
 	Returns: 
         None
@@ -640,10 +550,14 @@ void UART6InterruptTXCallback(void);
 	See Also:
 		- None
 */
-void UART1InterruptRXCallback(void);
+#if (USING_UART_1_IO_BUFFER == 1)
+    void UART1InterruptRXCallback(BYTE Data);
+#else
+    void UART1InterruptRXCallback(void);
+#endif // end of #if (USING_UART_1_IO_BUFFER == 1)
 
 /*
-	void UART2InterruptRXCallback(void)
+	void UART2InterruptRXCallback(BYTE Data)
 
 	Description: This method is called when the UART 2 RX interrupt handler
     is triggered.  It is a means to allow the user a callback when this interrupt occurs.
@@ -653,7 +567,7 @@ void UART1InterruptRXCallback(void);
 	User Callable: No
 
 	Arguments:
-		None
+		BYTE Data - The value read from the UART port.
 
 	Returns: 
         None
@@ -665,10 +579,14 @@ void UART1InterruptRXCallback(void);
 	See Also:
 		- None
 */
-void UART2InterruptRXCallback(void);
+#if (USING_UART_2_IO_BUFFER == 1)
+    void UART2InterruptRXCallback(BYTE Data);
+#else
+    void UART2InterruptRXCallback(void);
+#endif // end of #if (USING_UART_2_IO_BUFFER == 1)
 
 /*
-	void UART3InterruptRXCallback(void)
+	void UART3InterruptRXCallback(BYTE Data)
 
 	Description: This method is called when the UART 3 RX interrupt handler
     is triggered.  It is a means to allow the user a callback when this interrupt occurs.
@@ -678,7 +596,7 @@ void UART2InterruptRXCallback(void);
 	User Callable: No
 
 	Arguments:
-		None
+		BYTE Data - The value read from the UART port.
 
 	Returns: 
         None
@@ -690,10 +608,14 @@ void UART2InterruptRXCallback(void);
 	See Also:
 		- None
 */
-void UART3InterruptRXCallback(void);
+#if (USING_UART_3_IO_BUFFER == 1)
+    void UART3InterruptRXCallback(BYTE Data);
+#else
+    void UART3InterruptRXCallback(void);
+#endif // end of #if (USING_UART_3_IO_BUFFER == 1)
 
 /*
-	void UART4InterruptRXCallback(void)
+	void UART4InterruptRXCallback(BYTE Data)
 
 	Description: This method is called when the UART 4 RX interrupt handler
     is triggered.  It is a means to allow the user a callback when this interrupt occurs.
@@ -703,7 +625,7 @@ void UART3InterruptRXCallback(void);
 	User Callable: No
 
 	Arguments:
-		None
+		BYTE Data - The value read from the UART port.
 
 	Returns: 
         None
@@ -715,10 +637,14 @@ void UART3InterruptRXCallback(void);
 	See Also:
 		- None
 */
-void UART4InterruptRXCallback(void);
+#if (USING_UART_4_IO_BUFFER == 1)
+    void UART4InterruptRXCallback(BYTE Data);
+#else
+    void UART4InterruptRXCallback(void);
+#endif // end of #if (USING_UART_4_IO_BUFFER == 1)
 
 /*
-	void UART5InterruptRXCallback(void)
+	void UART5InterruptRXCallback(BYTE Data)
 
 	Description: This method is called when the UART 5 RX interrupt handler
     is triggered.  It is a means to allow the user a callback when this interrupt occurs.
@@ -728,7 +654,7 @@ void UART4InterruptRXCallback(void);
 	User Callable: No
 
 	Arguments:
-		None
+		BYTE Data - The value read from the UART port.
 
 	Returns: 
         None
@@ -740,10 +666,14 @@ void UART4InterruptRXCallback(void);
 	See Also:
 		- None
 */
-void UART5InterruptRXCallback(void);
+#if (USING_UART_5_IO_BUFFER == 1)
+    void UART5InterruptRXCallback(BYTE Data);
+#else
+    void UART5InterruptRXCallback(void);
+#endif // end of #if (USING_UART_5_IO_BUFFER == 1)
 
 /*
-	void UART6InterruptRXCallback(void)
+	void UART6InterruptRXCallback(BYTE Data)
 
 	Description: This method is called when the UART 6 RX interrupt handler
     is triggered.  It is a means to allow the user a callback when this interrupt occurs.
@@ -753,7 +683,7 @@ void UART5InterruptRXCallback(void);
 	User Callable: No
 
 	Arguments:
-		None
+		BYTE Data - The value read from the UART port.
 
 	Returns: 
         None
@@ -765,10 +695,14 @@ void UART5InterruptRXCallback(void);
 	See Also:
 		- None
 */
-void UART6InterruptRXCallback(void);
+#if (USING_UART_6_IO_BUFFER == 1)
+    void UART6InterruptRXCallback(BYTE Data);
+#else
+    void UART6InterruptRXCallback(void);
+#endif // end of #if (USING_UART_6_IO_BUFFER == 1)
 
 /*
-	void UART1InterruptErrorCallback(void)
+	void UART1InterruptErrorCallback(UART_ERROR Error)
 
 	Description: This method is called when the UART 1 error interrupt handler
     is triggered.  It is a means to allow the user a callback when this interrupt occurs.
@@ -778,7 +712,7 @@ void UART6InterruptRXCallback(void);
 	User Callable: No
 
 	Arguments:
-		None
+		UART_ERROR Error - The error type the UART experienced.
 
 	Returns: 
         None
@@ -790,10 +724,16 @@ void UART6InterruptRXCallback(void);
 	See Also:
 		- None
 */
-void UART1InterruptErrorCallback(void);
+#if (USING_UART_1_ERROR_CALLBACK == 1)
+    #if (USING_UART_1_IO_BUFFER == 1)
+        void UART1InterruptErrorCallback(UART_ERROR Error);
+    #else
+        void UART1InterruptErrorCallback(void);
+    #endif // end of #if (USING_UART_1_IO_BUFFER == 1)
+#endif // end of #if (USING_UART_1_ERROR_CALLBACK == 1)
 
 /*
-	void UART2InterruptErrorCallback(void)
+	void UART2InterruptErrorCallback(UART_ERROR Error)
 
 	Description: This method is called when the UART 2 error interrupt handler
     is triggered.  It is a means to allow the user a callback when this interrupt occurs.
@@ -803,7 +743,7 @@ void UART1InterruptErrorCallback(void);
 	User Callable: No
 
 	Arguments:
-		None
+		UART_ERROR Error - The error type the UART experienced.
 
 	Returns: 
         None
@@ -815,10 +755,16 @@ void UART1InterruptErrorCallback(void);
 	See Also:
 		- None
 */
-void UART2InterruptErrorCallback(void);
+#if (USING_UART_2_ERROR_CALLBACK == 1)
+    #if (USING_UART_2_IO_BUFFER == 1)
+        void UART2InterruptErrorCallback(UART_ERROR Error);
+    #else
+        void UART2InterruptErrorCallback(void);
+    #endif // end of #if (USING_UART_2_IO_BUFFER == 1)
+#endif // end of #if (USING_UART_2_ERROR_CALLBACK == 1)
 
 /*
-	void UART3InterruptErrorCallback(void)
+	void UART3InterruptErrorCallback(UART_ERROR Error)
 
 	Description: This method is called when the UART 3 error interrupt handler
     is triggered.  It is a means to allow the user a callback when this interrupt occurs.
@@ -828,7 +774,7 @@ void UART2InterruptErrorCallback(void);
 	User Callable: No
 
 	Arguments:
-		None
+		UART_ERROR Error - The error type the UART experienced.
 
 	Returns: 
         None
@@ -840,10 +786,16 @@ void UART2InterruptErrorCallback(void);
 	See Also:
 		- None
 */
-void UART3InterruptErrorCallback(void);
+#if (USING_UART_3_ERROR_CALLBACK == 1)
+    #if (USING_UART_3_IO_BUFFER == 1)
+        void UART3InterruptErrorCallback(UART_ERROR Error);
+    #else
+        void UART3InterruptErrorCallback(void);
+    #endif // end of #if (USING_UART_3_IO_BUFFER == 1)
+#endif // end of #if (USING_UART_3_ERROR_CALLBACK == 1)
 
 /*
-	void UART4InterruptErrorCallback(void)
+	void UART4InterruptErrorCallback(UART_ERROR Error)
 
 	Description: This method is called when the UART 4 error interrupt handler
     is triggered.  It is a means to allow the user a callback when this interrupt occurs.
@@ -853,7 +805,7 @@ void UART3InterruptErrorCallback(void);
 	User Callable: No
 
 	Arguments:
-		None
+		UART_ERROR Error - The error type the UART experienced.
 
 	Returns: 
         None
@@ -865,10 +817,16 @@ void UART3InterruptErrorCallback(void);
 	See Also:
 		- None
 */
-void UART4InterruptErrorCallback(void);
+#if (USING_UART_4_ERROR_CALLBACK == 1)
+    #if (USING_UART_4_IO_BUFFER == 1)
+        void UART4InterruptErrorCallback(UART_ERROR Error);
+    #else
+        void UART4InterruptErrorCallback(void);
+    #endif // end of #if (USING_UART_4_IO_BUFFER == 1)
+#endif // end of #if (USING_UART_4_ERROR_CALLBACK == 1)
 
 /*
-	void UART5InterruptErrorCallback(void)
+	void UART5InterruptErrorCallback(UART_ERROR Error)
 
 	Description: This method is called when the UART 5 error interrupt handler
     is triggered.  It is a means to allow the user a callback when this interrupt occurs.
@@ -878,7 +836,7 @@ void UART4InterruptErrorCallback(void);
 	User Callable: No
 
 	Arguments:
-		None
+		UART_ERROR Error - The error type the UART experienced.
 
 	Returns: 
         None
@@ -890,10 +848,16 @@ void UART4InterruptErrorCallback(void);
 	See Also:
 		- None
 */
-void UART5InterruptErrorCallback(void);
+#if (USING_UART_5_ERROR_CALLBACK == 1)
+    #if (USING_UART_5_IO_BUFFER == 1)
+        void UART5InterruptErrorCallback(UART_ERROR Error);
+    #else
+        void UART5InterruptErrorCallback(void);
+    #endif // end of #if (USING_UART_5_IO_BUFFER == 1)
+#endif // end of #if (USING_UART_5_ERROR_CALLBACK == 1)
 
 /*
-	void UART6InterruptErrorCallback(void)
+	void UART6InterruptErrorCallback(UART_ERROR Error)
 
 	Description: This method is called when the UART 6 error interrupt handler
     is triggered.  It is a means to allow the user a callback when this interrupt occurs.
@@ -903,7 +867,7 @@ void UART5InterruptErrorCallback(void);
 	User Callable: No
 
 	Arguments:
-		None
+		UART_ERROR Error - The error type the UART experienced.
 
 	Returns: 
         None
@@ -915,32 +879,13 @@ void UART5InterruptErrorCallback(void);
 	See Also:
 		- None
 */
-void UART6InterruptErrorCallback(void);
-
-/*
-	void UART6InterruptRXCallback(void)
-
-	Description: This method is called when the UART 6 RX interrupt handler
-    is triggered.  It is a means to allow the user a callback when this interrupt occurs.
-
-	Blocking: No
-
-	User Callable: No
-
-	Arguments:
-		None
-
-	Returns: 
-        None
-
-	Notes:
-		- USING_UART_6_RX_CALLBACK inside of RTOSConfig.h must be defined as a 1 to
-          use this callback feature.
-
-	See Also:
-		- None
-*/
-void CAN1InterruptTXCallback(void);
+#if (USING_UART_6_ERROR_CALLBACK == 1)
+    #if (USING_UART_6_IO_BUFFER == 1)
+        void UART6InterruptErrorCallback(UART_ERROR Error);
+    #else
+        void UART6InterruptErrorCallback(void);
+    #endif // end of #if (USING_UART_6_IO_BUFFER == 1)
+#endif // end of #if (USING_UART_6_ERROR_CALLBACK == 1)
 
 /*
 	void ExternalOscillatorFailedInterruptCallback(void)
@@ -968,4 +913,3 @@ void CAN1InterruptTXCallback(void);
 void ExternalOscillatorFailedInterruptCallback(void);
 
 #endif // end of #ifndef OS_EVENT_CALLBACKS_H
-#endif

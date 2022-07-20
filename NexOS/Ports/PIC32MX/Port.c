@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.02
+    NexOS Kernel Version v1.01.03
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,6 +20,10 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
  */
+
+#if(ANALYZE_TASK_STACK_USAGE == 1)
+    #include <string.h>
+#endif // end of // #if(ANALYZE_TASK_STACK_USAGE == 1)
 
 #include "Port.h"
 #include "HardwareProfile.h"
@@ -77,10 +81,20 @@ void PortStartOSScheduler(void)
 
 OS_WORD *PortInitializeTaskStack(OS_WORD *Stack, UINT32 StackSizeInWords, TASK_ENTRY_POINT StartingAddress, void *Args)
 {
-    int i;
+    INT32 i;
 
-    //The below code is untested, but allegedly you need the stack aligned to the nearest 8 byte boundary...
+    // The below code is untested, but allegedly you need the stack aligned to the nearest 8 byte boundary...
 
+    // now lets fill the stack with the user assigned value for stack usage
+    #if(ANALYZE_TASK_STACK_USAGE == 1)
+    {
+        OS_WORD *Value = Stack;
+        
+        for(i = 0; i < StackSizeInWords; i++)
+            *Value++ = TASK_STACK_FILL_VALUE;
+    }
+    #endif // end of // #if(ANALYZE_TASK_STACK_USAGE == 1)
+    
     // point to the end of the stack
     Stack += StackSizeInWords;
 
@@ -119,6 +133,48 @@ OS_WORD *PortInitializeTaskStack(OS_WORD *Stack, UINT32 StackSizeInWords, TASK_E
 
     return Stack;
 }
+
+OS_WORD *PortInitializeSystemStack(OS_WORD *Stack, UINT32 StackSizeInWords)
+{
+    OS_WORD *SystemStackPointer;
+
+    #if(ANALYZE_TASK_STACK_USAGE == 1)
+    {
+        UINT32 i;
+        OS_WORD *Value = Stack;
+
+        for(i = 0; i < StackSizeInWords; i++)
+            *Value++ = TASK_STACK_FILL_VALUE;
+    }
+    #endif // end of // #if(ANALYZE_TASK_STACK_USAGE == 1)
+
+    SystemStackPointer = &Stack[StackSizeInWords - 1];
+
+    return SystemStackPointer;
+}
+
+#if(ANALYZE_TASK_STACK_USAGE == 1)
+    UINT32 PortAnaylzeTaskStackUsage(OS_WORD *StartOfStack, UINT32 StackSizeInWords)
+    {
+        UINT32 WordsUnused = 0;
+        
+        while(*StartOfStack == TASK_STACK_FILL_VALUE)
+        {
+            StartOfStack++;
+            
+            WordsUnused++;
+        }
+        
+        return WordsUnused;
+    }
+#endif // end of #if(ANALYZE_TASK_STACK_USAGE == 1)
+
+#if (USING_CHECK_TASK_STACK_FOR_OVERFLOW == 1)
+    BOOL PortIsStackOverflowed(OS_WORD *CurrentStackPointer, OS_WORD *StartOfStack, UINT32 StackSizeInWords)
+    {
+        return (BOOL)(CurrentStackPointer < StartOfStack);
+    }
+#endif // end of #if (USING_CHECK_TASK_STACK_FOR_OVERFLOW == 1)
 
 void PortSetInterruptPriority(BYTE NewInterruptPriority)
 {

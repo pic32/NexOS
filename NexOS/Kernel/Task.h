@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.02
+    NexOS Kernel Version v1.01.03
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -869,5 +869,32 @@ OS_RESULT TaskSetLocalStoragePointer(TASK *Task, UINT32 Index, void *Value);
         - None
 */
 UINT32 GetNumberOfTasks(void);
+
+/*
+	UINT32 AnalyzeTaskStack(TASK *Task)
+
+	Description: This method returns the number of unused words in a TASK stack.  This denotes
+    the high water mark inside the TASK stack.
+
+	Blocking: No
+
+	User Callable: Yes
+
+	Arguments:
+        TASK *Task - A valid TASK returned from CreateTask(), or (TASK*)NULL for the current TASK.
+
+	Returns:
+        UINT32 - The number of words unused in the TASK stack.
+
+	Notes:
+		- ANALYZE_TASK_STACK_USAGE in RTOSConfig.h must be defined as a 1 to use this method.
+        - A unique value for TASK_STACK_FILL_VALUE inside of RTOSConfig.h should be chosen.
+        - PortAnaylzeTaskStackUsage() inside of Port.c must also be implemented for
+          use of this function.
+
+	See Also:
+        - PortAnaylzeSystemStackUsage()
+*/
+UINT32 AnalyzeTaskStack(TASK *Task);
 
 #endif // end of TASK_H

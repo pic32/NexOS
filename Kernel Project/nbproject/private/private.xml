@@ -5,12 +5,17 @@
             <url>RTOSConfig.h</url>
             <bookmark id="1">
                 <name/>
-                <line>1160</line>
+                <line>1170</line>
                 <key/>
             </bookmark>
         </file>
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/C:/Source%20Checkouts/NexOS-Test/Release%20Notes.txt</file>
+            <file>file:/C:/Source%20Checkouts/NexOS-Test/NexOS/IOBuffer/IOBuffer.h</file>
+            <file>file:/C:/Source%20Checkouts/NexOS-Test/NexOS/IOBuffer/IOBuffer.c</file>
+            <file>file:/C:/Source%20Checkouts/NexOS-Test/Kernel%20Project/RTOSConfig.h</file>
+        </group>
     </open-files>
 </project-private>

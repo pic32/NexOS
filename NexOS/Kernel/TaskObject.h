@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.02
+    NexOS Kernel Version v1.01.03
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -190,9 +190,13 @@ typedef struct
         BYTE TaskName[TASK_NAME_LENGTH_IN_BYTES + 1];
     #endif // end of USING_TASK_NAMES
 
-    #if (USING_DELETE_TASK == 1) || (USING_RESTART_TASK == 1)
+    #if (USING_DELETE_TASK == 1) || (USING_RESTART_TASK == 1) || (ANALYZE_TASK_STACK_USAGE == 1) || (USING_CHECK_TASK_STACK_FOR_OVERFLOW == 1)
         OS_WORD *StartOfTaskStackPointer;
     #endif // end of using task restart or delete task
+
+    #if (ANALYZE_TASK_STACK_USAGE == 1) || (USING_CHECK_TASK_STACK_FOR_OVERFLOW == 1)
+        UINT32 StartingTaskStackSizeInWords;
+    #endif // end of #if (ANALYZE_TASK_STACK_USAGE == 1) || (USING_CHECK_TASK_STACK_FOR_OVERFLOW == 1)
 
     #if (USING_RESTART_TASK == 1)
         TASK_RESTART_INFO *RestartInfo;

@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.02
+    NexOS Kernel Version v1.01.03
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -76,7 +76,7 @@
  */
 #define KERNEL_MAJOR_VERSION_NUMBER										0x01
 #define KERNEL_MINOR_VERSION_NUMBER										0x01
-#define KERNEL_TEST_VERSION_NUMBER                                      0x02
+#define KERNEL_TEST_VERSION_NUMBER                                      0x03
 
 #define INVALID_TASK_PRIORITY											255
 
@@ -215,13 +215,41 @@ UINT32 GetOSTickCount(void);
 		the OS timer interrupt triggers.
 
 	Notes:
-        - USING_GET_OS_TICK_COUNT_METHOD inside of RTOSConfig.h must be defined as 1 to use this method.
+        - USING_GET_OS_TICK_COUNT_FROM_ISR_METHOD inside of RTOSConfig.h must be 
+          defined as 1 to use this method.
 		- The OS tick value can roll over from 0xFFFFFFFF to 0x00000000.
 
 	See Also:
 		- StartOSScheduler(), GetOSTickCount()
 */
 UINT32 GetOSTickCountFromISR(void);
+
+/*
+	UINT32 PortAnaylzeSystemStackUsage(void)
+
+	Description: This method returns how many words have been unused by the system
+    stack.  This denotes the high water mark inside the system stack.
+	
+	Blocking: No
+
+	User Callable: Yes
+
+	Arguments:
+		None
+
+	Returns:
+		UINT32 - The number of words unused in the system stack.
+
+	Notes:
+        - USING_ANALYZE_SYSTEM_STACK_METHOD inside of RTOSConfig.h must be 
+          defined as 1 to use this method.
+		- PortAnaylzeTaskStackUsage() inside of Port.c must also be implemented for
+          use of this function.
+
+	See Also:
+		- PortAnaylzeTaskStackUsage()
+*/
+UINT32 PortAnaylzeSystemStackUsage(void);
 
 /*
 	void DeviceEnterSleepMode(void)

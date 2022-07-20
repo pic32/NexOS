@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.00
+    NexOS Kernel Version v1.01.03
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -31,8 +31,8 @@
 // OS Configurations
 //----------------------------------------------------------------------------------------------------
 
-// This is version v1.01.02 release of the RTOSConfig.h file.
-#define RTOS_CONFIG_H_VERSION                                   0x00000003
+// This is version v1.01.03 release of the RTOSConfig.h file.
+#define RTOS_CONFIG_H_VERSION                                   0x00000005
 
 // OS_PRIORITY is the priority of the OS compared to interrupts.  When an OS call is made the
 // interrupt priority will be set to OS_PRIORITY so that interrupts of OS_PRIORITY level or lower
@@ -65,6 +65,11 @@
 // can exist for the CPU.  This is used for error checking data.
 #define USER_RAM_STARTING_ADDRESS								0xA0000000
 
+// SYSTEM_STACK_SIZE_IN_WORDS is the size in words of the system stack.
+// The system stack is used to process interrupts so that the stack size
+// burden can be taken off of each TASK.
+#define SYSTEM_STACK_SIZE_IN_WORDS                              256
+
 // USING_TICKS_TO_MILLISECONDS_METHOD must be defined as a 1 to enable the ticks
 // to milliseconds conversion method.  A 1 enables this feature, and a 0 disables it.
 #define USING_TICKS_TO_MILLISECONDS_METHOD                      0
@@ -86,6 +91,10 @@
 // 32-bit wide number that will rollover from 0xFFFFFFFF to 0x00000000.
 #define USING_GET_OS_TICK_COUNT_METHOD                          0
 
+// USING_GET_OS_TICK_COUNT_FROM_ISR_METHOD must be defined as a 1 to get the OS
+// Tick count from an ISR method.
+#define USING_GET_OS_TICK_COUNT_FROM_ISR_METHOD                 0
+
 // USING_ENTER_DEVICE_SLEEP_MODE_METHOD must be defined as a 1 to use the sleep function.
 #define USING_ENTER_DEVICE_SLEEP_MODE_METHOD                    0
 
@@ -101,6 +110,10 @@
 
 // USING_KERNEL_VERSION_TO_STRING must be defined as a 1 to use the KernelVersionToString() method.
 #define USING_KERNEL_VERSION_TO_STRING                          0
+
+// USING_ANALYZE_SYSTEM_STACK_METHOD will allow the user to see how many bytes
+// have been unused in the system stack
+#define USING_ANALYZE_SYSTEM_STACK_METHOD                       1
 //----------------------------------------------------------------------------------------------------
 
 
@@ -307,8 +320,18 @@
 #define USING_GET_NUMBER_OF_TASKS_METHOD                        0
 
 // This allows the OS to check if a TASK stack was in an overflow condition upon 
-// performing a context switch. (***UNIMPLEMENTED***)
+// performing a context switch.
 #define USING_CHECK_TASK_STACK_FOR_OVERFLOW                     0
+
+// This allows the OS to analyze the stack usage of a task.  At
+// TASK creation time TASK_STACK_FILL_VALUE will be put into the
+// entire stack area of the TASK.  Then the user can at any time
+// get the number of bytes free in the TASK stack area of a TASK.
+#define ANALYZE_TASK_STACK_USAGE                                0
+
+// This is the value to fill the TASK stack with if ANALYZE_TASK_STACK_USAGE
+// is set to a 1.  This is done at TASK creation time.
+#define TASK_STACK_FILL_VALUE                                   0xDEADBEEF
 //----------------------------------------------------------------------------------------------------
 
 
@@ -904,6 +927,10 @@
 // USING_IO_BUFFER_SET_NEW_LINE_METHOD if set to a 1 will allow the user
 // to set the new line sequence associated with the IO_BUFFER.
 #define USING_IO_BUFFER_SET_NEW_LINE_METHOD                     0
+
+// USING_IO_BUFFER_GET_STATE if set to a 1 will allow the user
+// to get the RX or TX state of the IO_BUFFER
+#define USING_IO_BUFFER_GET_STATE                               0
 
 // Set USING_X_X_IO_BUFFER to a 1 to use that associated IO_BUFFER.
 #define USING_UART_1_IO_BUFFER                                  0

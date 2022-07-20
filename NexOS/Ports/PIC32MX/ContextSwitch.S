@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.02
+    NexOS Kernel Version v1.01.03
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -59,6 +59,7 @@ GetSP:
 
 
 	.extern		NextTask
+	.extern		gSystemStackPointer
 	.global		ContextSwitch
 	.set		nomips16
  	.set		noreorder
@@ -135,6 +136,9 @@ ContextSwitch:
 	sw k0, 4(sp)
 	
 	move a0, sp /* Move the stack pointer to the register for value passing in C */
+	
+	la sp, gSystemStackPointer
+	lw sp, (sp)
 
 	jal OS_NextTask	/* go to switch task */
 	nop

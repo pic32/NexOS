@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.02
+    NexOS Kernel Version v1.01.03
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -1055,10 +1055,10 @@ OS_RESULT GetIOBuffer(  IO_BUFFER_ID IOBufferID
                         IOBuffer->BytesLeftToExchange = GenericBufferRead(&IOBuffer->RXGenericBuffer, GenericBufferGetSize(&IOBuffer->RXGenericBuffer), UserBuffer, UserBufferSizeInBytes, FALSE);
 
                         // copy over the user buffer size
-                        IOBuffer->UserBufferSizeInBytes = UserBufferSizeInBytes;
+                        IOBuffer->UserBufferSizeInBytes = UserBufferSizeInBytes - IOBuffer->BytesLeftToExchange;
                         
                         // now point to where the next byte will go
-                        IOBuffer->TaskBuffer = UserBuffer;
+                        IOBuffer->TaskBuffer = &UserBuffer[IOBuffer->BytesLeftToExchange];
 
                         // set the state to read until sequence
                         IOBuffer->RXState = IO_BUFFER_READ_UNTIL_SEQUENCE;
@@ -1854,3 +1854,34 @@ OS_RESULT GetIOBuffer(  IO_BUFFER_ID IOBufferID
         }
     #endif // end of #if(USING_IO_BUFFER_SET_NEW_LINE_METHOD == 1)
 #endif // end of #if (USING_IO_BUFFER_READ_LINE_METHOD == 1 || USING_IO_BUFFER_WRITE_LINE_METHOD == 1)
+
+#if (USING_IO_BUFFER_GET_STATE == 1)
+    IO_BUFFER_STATE IOBufferGetState(IO_BUFFER_ID IOBufferID
+    
+                                #if (USING_IO_BUFFER_ASYNC_WRITE == 1)
+                                    , BOOL TXBuffer
+                                #endif // end of #if (USING_IO_BUFFER_ASYNC_WRITE == 1)
+    )
+    {
+        IO_BUFFER_STATE BufferState;
+        IO_BUFFER *IOBuffer = OS_GetIOBufferHandle(IOBufferID);
+        
+        #if (USING_CHECK_IO_BUFFER_PARAMETERS == 1)
+            if (RAMAddressValid((OS_WORD)IOBuffer) == FALSE)
+                return NUMBER_OF_IO_BUFFER_STATES;
+        #endif // end of #if (USING_CHECK_IO_BUFFER_PARAMETERS == 1)
+
+        EnterCritical();
+        {
+            #if (USING_IO_BUFFER_ASYNC_WRITE == 1)
+                if(TXBuffer == TRUE)
+                    BufferState = IOBuffer->TXState;
+                else
+            #endif // end of #if (USING_IO_BUFFER_ASYNC_WRITE == 1)
+                    BufferState = IOBuffer->RXState;
+        }
+        ExitCritical();
+        
+        return BufferState;
+    }
+#endif // end of #if (USING_IO_BUFFER_GET_STATE == 1)

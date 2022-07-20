@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.00
+    NexOS Kernel Version v1.01.03
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -21,7 +21,7 @@
     SOFTWARE.
  */
 
-#include "OS_Callback.h"
+#include "../NexOS/Kernel/OS_Callback.h"
 
 /*
  * This intent of this file is to show the user the different callbacks, their
@@ -54,6 +54,13 @@
 
     }
 #endif // end of #if (USING_OS_TICK_UPDATE_USER_CALLBACK == 1)
+    
+#if (USING_CHECK_TASK_STACK_FOR_OVERFLOW == 1)
+    void TaskStackOverflowUserCallback(TASK *Task)
+    {
+        
+    }
+#endif // end of #if (USING_CHECK_TASK_STACK_FOR_OVERFLOW == 1)
     
 #if (USING_ENTER_DEVICE_SLEEP_MODE_USER_CALLBACK == 1)
     void EnterDeviceSleepModeUserCallback(void)

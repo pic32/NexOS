@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.02
+    NexOS Kernel Version v1.01.03
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -53,6 +53,8 @@
 // variable is decreased.  Once it gets back to zero, interrupts are enabled.
 extern volatile OS_WORD gCurrentCriticalCount;
 
+OS_WORD gSystemStack[SYSTEM_STACK_SIZE_IN_WORDS];
+OS_WORD *gSystemStackPointer;
 volatile UINT32 gOSTickCount;
 BOOL gCPUSchedulerRunning;
 TASK gIdleTask;						// This is the Idle TASK data structure
@@ -111,6 +113,8 @@ OS_RESULT InitOS(void)
 
 	// initialize all needed global variables
 	memset((void*)gCPUScheduler, 0, sizeof(gCPUScheduler));
+    
+    gSystemStackPointer = PortInitializeSystemStack(gSystemStack, sizeof(gSystemStack) / sizeof(OS_WORD));
 
 	gOSTickCount = 0;
 	gCurrentTask = &gIdleTask;
@@ -298,10 +302,19 @@ void StartOSScheduler(void)
     }
 #endif // end of #if (USING_GET_OS_TICK_COUNT_METHOD == 1)
 
-UINT32 GetOSTickCountFromISR(void)
-{
-    return gOSTickCount;
-}
+#if (USING_GET_OS_TICK_COUNT_FROM_ISR_METHOD == 1)
+    UINT32 GetOSTickCountFromISR(void)
+    {
+        return gOSTickCount;
+    }
+#endif // end of #if (USING_GET_OS_TICK_COUNT_FROM_ISR_METHOD == 1)
+    
+#if (USING_ANALYZE_SYSTEM_STACK_METHOD == 1)
+    UINT32 PortAnaylzeSystemStackUsage(void)
+    {
+        return PortAnaylzeTaskStackUsage(gSystemStack, sizeof(gSystemStack) / sizeof(OS_WORD));
+    }
+#endif // end of #if (USING_ANALYZE_SYSTEM_STACK_METHOD == 1)
 
 #if (USING_ENTER_DEVICE_SLEEP_MODE_METHOD == 1)
     void DeviceEnterSleepMode(void)
@@ -646,6 +659,11 @@ OS_WORD *OS_NextTask(OS_WORD *CurrentTaskStackPointer)
 {
 	// clear the core interrupt flag regardless of if it is set or not
 	PortClearCoreInterruptFlag();
+    
+    #if (USING_CHECK_TASK_STACK_FOR_OVERFLOW == 1)
+        if(PortIsStackOverflowed(CurrentTaskStackPointer, gCurrentTask->StartOfTaskStackPointer, gCurrentTask->StartingTaskStackSizeInWords) == TRUE)
+            TaskStackOverflowUserCallback(gCurrentTask);
+    #endif // end of #if (USING_CHECK_TASK_STACK_FOR_OVERFLOW == 1)
 
 	// Save the Stack Pointer of the Task whose Context we saved in ContextSwitch().
 	gCurrentTask->TaskStackPointer = CurrentTaskStackPointer;
@@ -829,9 +847,13 @@ OS_WORD *OS_InitializeTaskStack(TASK *Task, TASK_ENTRY_POINT StartingAddress, vo
 	if(Stack == (OS_WORD*)NULL)
 		return (OS_WORD*)NULL;
 
-	#if (USING_RESTART_TASK == 1 || USING_DELETE_TASK == 1)
+	#if (USING_RESTART_TASK == 1 || USING_DELETE_TASK == 1) || (ANALYZE_TASK_STACK_USAGE == 1) || (USING_CHECK_TASK_STACK_FOR_OVERFLOW == 1)
 		Task->StartOfTaskStackPointer = Stack;
-	#endif // end of USING_RESTART_TASK == 1 || USING_DELETE_TASK == 1
+	#endif // end of #if (USING_RESTART_TASK == 1 || USING_DELETE_TASK == 1) || (ANALYZE_TASK_STACK_USAGE == 1) || (USING_CHECK_TASK_STACK_FOR_OVERFLOW == 1)
+
+    #if (ANALYZE_TASK_STACK_USAGE == 1) || (USING_CHECK_TASK_STACK_FOR_OVERFLOW == 1)
+        Task->StartingTaskStackSizeInWords = StackSizeInWords;
+    #endif // end of #if (ANALYZE_TASK_STACK_USAGE == 1) || (USING_CHECK_TASK_STACK_FOR_OVERFLOW == 1)
 
 	return PortInitializeTaskStack(Stack, StackSizeInWords, StartingAddress, Args);
 }

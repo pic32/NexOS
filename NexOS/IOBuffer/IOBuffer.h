@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.02
+    NexOS Kernel Version v1.01.03
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -1119,4 +1119,42 @@ BYTE *IOBufferGetNewLine(IO_BUFFER_ID IOBufferID);
 */
 OS_RESULT IOBufferSetNewLine(IO_BUFFER_ID IOBufferID, BYTE *NewLine, UINT32 NewLineSequenceSizeInBytes);
 
+/*
+    UINT32 IOBufferGetState(IO_BUFFER_ID IOBufferID, BOOL TXBuffer)
+
+	Description: This method will return the current state of the IO_BUFFER.
+
+	Blocking: No
+
+	User Callable: Yes
+
+	Arguments:
+		IO_BUFFER_ID IOBufferID - A valid IO_BUFFER_ID which represents the IO_BUFFER
+        to get the state of.
+
+		BOOL TXBuffer - If TRUE the TX buffer state will be returned, 
+		otherwise the RX buffer state will be returned.
+
+	Returns: 
+		IO_BUFFER_STATE - The state of the specified RS or TX IO_BUFFER.
+
+	Notes:
+		- USING_IO_BUFFER_GET_STATE inside of RTOSConfig.h must be 
+          defined as a 1 to use this method.
+
+		- USING_IO_BUFFER_ASYNC_WRITE inside of RTOSConfig.h must
+          be defined as a 1 to use the BOOL TXBuffer argument.
+
+		- A TASK does not need to own the IO_BUFFER with a call to GetIOBuffer()
+		  in order to call this method.
+
+	See Also:
+		- None
+*/
+IO_BUFFER_STATE IOBufferGetState(IO_BUFFER_ID IOBufferID
+    
+                                #if (USING_IO_BUFFER_ASYNC_WRITE == 1)
+                                    , BOOL TXBuffer
+                                #endif // end of #if (USING_IO_BUFFER_ASYNC_WRITE == 1)
+    );
 #endif // end of #ifndef IO_BUFFER_H

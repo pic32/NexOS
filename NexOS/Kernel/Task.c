@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.02
+    NexOS Kernel Version v1.01.03
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -1102,3 +1102,30 @@ TASK *CreateTask(TASK_ENTRY_POINT StartingAddress,
         return NumberOfTasks;
     }
 #endif // end of #if (USING_GET_NUMBER_OF_TASKS_METHOD == 1)
+
+#if (ANALYZE_TASK_STACK_USAGE == 1)
+    UINT32 AnalyzeTaskStack(TASK *Task)
+    {
+        UINT32 FreeBytes;
+        
+        #if (USING_CHECK_TASK_PARAMETERS == 1)
+            if (Task != (TASK*)NULL)
+            {
+                if (RAMAddressValid((OS_WORD)Task) == FALSE)
+                    return 0xFFFFFFFF;
+            }
+        #endif // end of #if (USING_CHECK_TASK_PARAMETERS == 1)
+
+        EnterCritical();
+
+        if (Task == (TASK*)NULL)
+            Task = gCurrentTask;
+
+        // get the value
+        FreeBytes = PortAnaylzeTaskStackUsage(Task->StartOfTaskStackPointer, Task->StartingTaskStackSizeInWords);
+
+        ExitCritical();
+        
+        return FreeBytes;
+    }
+#endif // end of #if (ANALYZE_TASK_STACK_USAGE == 1)
