@@ -37,7 +37,7 @@
 #ifndef GENERIC_BUFFER_OBJECT_H
 	#define GENERIC_BUFFER_OBJECT_H
 
-#include "GenericTypeDefs.h"
+#include "GenericTypes.h"
 
 /*
 	The following struct is the definition

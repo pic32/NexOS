@@ -23,7 +23,7 @@
 #include <plib.h>
 
 #include "p32xxxx.h"
-#include "GenericTypeDefs.h"
+#include "GenericTypes.h"
 #include "HardwareProfile.h"
 
 UINT32 gPBFrequency = 0;

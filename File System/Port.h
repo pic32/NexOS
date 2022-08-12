@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.00
+    NexOS Kernel Version v1.01.04
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,7 +26,7 @@
 
 #include <plib.h>
 
-#include "GenericTypeDefs.h"
+#include "GenericTypes.h"
 #include "HardwareProfile.h"
 #include "CPUInfo.h"
 
@@ -49,6 +49,11 @@
 #define USER_PROGRAM_SIZE_IN_BYTES                                  GetProgramMemorySizeInBytes()
 #define USER_RAM_SIZE_IN_BYTES                                      GetRAMSizeInBytes()
     
+    /*
+ * This function is unique to the PIC32 and gets the global pointer value in register 28.
+ */
+OS_WORD GetGP(void);
+
 void ClearSoftwareInterrupt(void);
 
 /*
@@ -149,17 +154,7 @@ void ClearSoftwareInterrupt(void);
 	See Also:
 		- None
 */
-#if(0)
-#define PortUpdateOSTimer()                                                 \
-{                                                                           \
-    unsigned int old_period;                                                \
-    unsigned int period = GetInstructionClock() / 2 / OS_TICK_RATE_IN_HZ;   \
-    asm volatile("mfc0   %0, $11" : "=r"(old_period));                      \
-    period += old_period;                                                   \
-    asm volatile("mtc0   %0,$11" : "+r"(period));                           \
-}
-#endif // end of #if(0)
-#define PortUpdateOSTimer()                             OpenCoreTimer(GetInstructionClock() / 2 / OS_TICK_RATE_IN_HZ)
+#define PortUpdateOSTimer()                             UpdateCoreTimer(GetInstructionClock() / 2 / OS_TICK_RATE_IN_HZ)
 
 /*
 	void SurrenderCPU(void)
@@ -225,7 +220,7 @@ void PortStartOSScheduler(void);
 
 	Arguments:
 		OS_WORD *Stack - A pointer to a location in RAM where the TASK's stack starts from.  This is the
-        low end of the stack.  Meaning that Stack + StackSizeInWords = Direction of Growing Stack in Positive Direction.
+        low end of the stack.  Meaning that Stack + StackSizeInWords = direction of growing stack in positive direction.
  
         UINT32 StackSizeInWords - The size in OS_WORD of the stack.
  
@@ -246,6 +241,145 @@ void PortStartOSScheduler(void);
 		- None
 */
 OS_WORD *PortInitializeTaskStack(OS_WORD *Stack, UINT32 StackSizeInWords, TASK_ENTRY_POINT StartingAddress, void *Args);
+
+/*
+	OS_WORD *PortInitializeSystemStack(OS_WORD *Stack, UINT32 StackSizeInWords)
+
+	Description: This method will initialize the system stack.
+
+	Blocking: No
+
+	User Callable: No
+
+	Arguments:
+		OS_WORD *Stack - A pointer to a location in RAM where the system stack starts from.  This is the
+        low end of the stack.  Meaning that Stack + StackSizeInWords = direction of growing stack in positive direction.
+ 
+        UINT32 StackSizeInWords - The size in OS_WORD of the stack.
+
+	Returns: 
+        OS_WORD * - A valid pointer to the start of the systems stack.  If (OS_WORD*)NULL is returned the
+        method failed to initialized the stack.
+
+	Notes:
+		- This method must be implemented by the user depending upon which CPU architecture is used.
+        - The system stack is used anytime an interrupt is processed.
+
+	See Also:
+		- None
+*/
+OS_WORD *PortInitializeSystemStack(OS_WORD *Stack, UINT32 StackSizeInWords);
+
+/*
+	UINT32 PortAnaylzeTaskStackUsage(OS_WORD *StartOfStack, UINT32 StackSizeInWords)
+
+	Description: This method will analyze the stack passed in for usage.  At 
+    creation a TASKs stack is filled with the value specified by 
+    TASK_STACK_FILL_VALUE.  This method starts at the end of the stack and starts
+    iterating to the beginning of the stack while looking for a value other than
+    TASK_STACK_FILL_VALUE.  Once it finds a value other than TASK_STACK_FILL_VALUE
+    it will compute in words how much of the stack is assumingly unused.
+
+	Blocking: No
+
+	User Callable: No
+
+	Arguments:
+		OS_WORD *StartOfStack - A pointer to a location in RAM where the stack starts from.  This is the
+        low end of the stack.  Meaning that Stack + StackSizeInWords = direction of growing stack in positive direction.
+ 
+        UINT32 StackSizeInWords - The size in OS_WORD of the stack.
+
+	Returns: 
+        UINT32 - The number of times in a row the value TASK_STACK_FILL_VALUE was found from the end of the
+        stack going towards the beginning until another value is found.
+
+	Notes:
+		- This method must be implemented if ANALYZE_TASK_STACK_USAGE inside of RTOSConfig.h is a 1.
+        - A unique value for TASK_STACK_FILL_VALUE inside of RTOSConfig.h should be chosen.
+
+	See Also:
+		- PortIsStackOverflowed()
+*/
+UINT32 PortAnaylzeTaskStackUsage(OS_WORD *StartOfStack, UINT32 StackSizeInWords);
+
+/*
+	BOOL PortIsStackOverflowed(OS_WORD *CurrentStackPointer, OS_WORD *StartOfStack, UINT32 StackSizeInWords)
+
+	Description: This method will analyze the stack passed in to see if it has grown beyond its bounds.
+
+	Blocking: No
+
+	User Callable: No
+
+	Arguments:
+        OS_WORD * CurrentStackPointer - The location the stack is currently pointing to.
+
+		OS_WORD *StartOfStack - A pointer to a location in RAM where the stack starts from.  This is the
+        low end of the stack.  Meaning that Stack + StackSizeInWords = direction of growing stack in positive direction.
+ 
+        UINT32 StackSizeInWords - The size in OS_WORD of the stack.
+
+	Returns: 
+        BOOL - TRUE if the CurrentStackPointer is beyond the bounds of the stack, FALSE otherwise.
+
+	Notes:
+		- This method must be implemented if USING_CHECK_TASK_STACK_FOR_OVERFLOW inside of RTOSConfig.h is a 1.
+        - This method is called each time a TASK is swapped out for another TASK by the OS.
+        - TaskStackOverflowUserCallback() in OS_Callback.c is called if PortIsStackOverflowed() returns TRUE.
+
+	See Also:
+		- PortAnaylzeTaskStackUsage()
+*/
+BOOL PortIsStackOverflowed(OS_WORD *CurrentStackPointer, OS_WORD *StartOfStack, UINT32 StackSizeInWords);
+
+/*
+	UINT32 PortGetTaskRunTimeCounter(void)
+
+	Description: This method will return a rolling counter value so that the TASK execution
+    time can be calculated.
+
+	Blocking: No
+
+	User Callable: No
+
+	Arguments:
+        None
+
+	Returns: 
+        UINT32 - The current timer value of the system.
+
+	Notes:
+		- This method must be implemented if USING_TASK_RUNTIME_EXECUTION_COUNTER inside of RTOSConfig.h is a 1.
+
+	See Also:
+		- TaskRuntimeExecutionListToString() 
+*/
+#define PortGetTaskRunTimeCounter()                     (UINT32)ReadCoreTimer()
+
+/*
+	FLOAT32 PortGetExecutionTimeInSeconds(UINT32 TaskRunTime)
+
+	Description: This method should take the value generated by calls to PortGetTaskRuntimeCounter()
+    and convert the value into seconds.
+
+	Blocking: No
+
+	User Callable: No
+
+	Arguments:
+        UINT32 TaskRunTime - The number of clock ticks from PortGetTaskRuntimeCounter().
+
+	Returns: 
+        UINT32 - The execution time in seconds.
+
+	Notes:
+		- This method must be implemented if USING_TASK_RUNTIME_EXECUTION_COUNTER inside of RTOSConfig.h is a 1.
+
+	See Also:
+		- PortGetTaskRuntimeCounter(), TaskRuntimeExecutionListToString()
+*/
+FLOAT32 PortGetExecutionTimeInSeconds(UINT32 TaskRunTime);
 
 /*
 	void PortSetInterruptPriority(BYTE NewInterruptPriority)

@@ -4,12 +4,19 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
-      <logicalFolder name="f2" displayName="Generic Libraries" projectFiles="true">
-        <itemPath>GenericBufferConfig.h</itemPath>
-        <itemPath>DoubleLinkedListConfig.h</itemPath>
-        <itemPath>../Generic Libraries/Generic Buffer/GenericBuffer.h</itemPath>
-        <itemPath>../Generic Libraries/Generic Buffer/GenericBufferObject.h</itemPath>
-        <itemPath>../Generic Libraries/Double Linked List/DoubleLinkedList.h</itemPath>
+      <logicalFolder name="f2"
+                     displayName="Generic Data Structures"
+                     projectFiles="true">
+        <logicalFolder name="f1" displayName="Double Linked List" projectFiles="true">
+          <itemPath>DoubleLinkedListConfig.h</itemPath>
+          <itemPath>../Generic Libraries/Double Linked List/DoubleLinkedList.h</itemPath>
+        </logicalFolder>
+        <logicalFolder name="f2" displayName="Generic Buffer" projectFiles="true">
+          <itemPath>../Generic Libraries/Generic Buffer/GenericBufferObject.h</itemPath>
+          <itemPath>GenericBufferConfig.h</itemPath>
+          <itemPath>../Generic Libraries/Generic Buffer/GenericBuffer.h</itemPath>
+        </logicalFolder>
+        <itemPath>GenericTypes.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f1" displayName="NexOS" projectFiles="true">
         <logicalFolder name="f1" displayName="Kernel" projectFiles="true">
@@ -40,9 +47,15 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
-      <logicalFolder name="f2" displayName="Generic Libraries" projectFiles="true">
-        <itemPath>../Generic Libraries/Generic Buffer/GenericBuffer.c</itemPath>
-        <itemPath>../Generic Libraries/Double Linked List/DoubleLinkedList.c</itemPath>
+      <logicalFolder name="f2"
+                     displayName="Generic Data Structures"
+                     projectFiles="true">
+        <logicalFolder name="f1" displayName="Double Linked List" projectFiles="true">
+          <itemPath>../Generic Libraries/Double Linked List/DoubleLinkedList.c</itemPath>
+        </logicalFolder>
+        <logicalFolder name="f2" displayName="Generic Buffer" projectFiles="true">
+          <itemPath>../Generic Libraries/Generic Buffer/GenericBuffer.c</itemPath>
+        </logicalFolder>
       </logicalFolder>
       <logicalFolder name="f1" displayName="NexOS" projectFiles="true">
         <logicalFolder name="f1" displayName="Kernel" projectFiles="true">
@@ -311,6 +324,7 @@
         <property key="UART6" value="true"/>
         <property key="USB" value="true"/>
         <property key="debugoptions.useswbreakpoints" value="true"/>
+        <property key="firmware.download.all" value="false"/>
         <property key="hwtoolclock.frcindebug" value="false"/>
         <property key="hwtoolclock.instructionspeed" value="4"/>
         <property key="hwtoolclock.units" value="mips"/>

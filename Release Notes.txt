@@ -1,3 +1,18 @@
+v1.01.04 8/12/2022
+ - Added the ability to keep track of how long a TASK has executed for.
+ - Added a method to ToString() all the TASK execution times.
+ - Added the check statement for the right version of the RTOSConfig.h file.
+ - Added in the TASK unique ID feature.  Each TASK is assigned one at creation.
+ - Added in the ability to get a task execution history list with their latest
+   execution times.
+ - Added the GenericTypes.h file to the project.  This needs to be present in
+   the project folder to compile correctly.
+ - Tested out the stack usage of the IO Buffer TASK and Maintenance TASK.  Now
+   those stack sizes are smaller and reflect better the size they should be.
+ - Modified the file ff.h in the FileSystem project to use GenericTypes.h.
+ - Modified the PIC32 ADC port to support 16 bit ADC data reads.
+ - Updated all example projects to latest RTOSConfig.h file.
+
 v1.01.03 7/20/2022
  - Updated the path in OS_Callback.c for a relative location for the *.h file.
  - Added in the method IOBufferGetState().

@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.00
+    NexOS Kernel Version v1.01.04
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -21,6 +21,10 @@
     SOFTWARE.
  */
 
+#if(ANALYZE_TASK_STACK_USAGE == 1)
+    #include <string.h>
+#endif // end of // #if(ANALYZE_TASK_STACK_USAGE == 1)
+
 #include "Port.h"
 #include "HardwareProfile.h"
 #include "RTOSConfig.h"
@@ -31,11 +35,6 @@ void __attribute__((interrupt(IPL1SAVEALL), vector(_CORE_TIMER_VECTOR))) Context
 void __attribute__((interrupt(IPL2SAVEALL), vector(_CORE_SOFTWARE_0_VECTOR))) ContextSwitch(void);
 
 void OS_StartFirstTask(OS_WORD *FirstTaskStackPointer);
-
-/*
- * This function is unique to the PIC32 and gets the global pointer value in register 28.
- */
-OS_WORD GetGP(void);
 
 #if (USING_ENTER_DEVICE_SLEEP_MODE_METHOD == 1)
     #if(0)
@@ -77,10 +76,20 @@ void PortStartOSScheduler(void)
 
 OS_WORD *PortInitializeTaskStack(OS_WORD *Stack, UINT32 StackSizeInWords, TASK_ENTRY_POINT StartingAddress, void *Args)
 {
-    int i;
+    INT32 i;
 
-    //The below code is untested, but allegedly you need the stack aligned to the nearest 8 byte boundary...
+    // The below code is untested, but allegedly you need the stack aligned to the nearest 8 byte boundary...
 
+    // now lets fill the stack with the user assigned value for stack usage
+    #if(ANALYZE_TASK_STACK_USAGE == 1)
+    {
+        OS_WORD *Value = Stack;
+        
+        for(i = 0; i < StackSizeInWords; i++)
+            *Value++ = TASK_STACK_FILL_VALUE;
+    }
+    #endif // end of // #if(ANALYZE_TASK_STACK_USAGE == 1)
+    
     // point to the end of the stack
     Stack += StackSizeInWords;
 
@@ -119,6 +128,59 @@ OS_WORD *PortInitializeTaskStack(OS_WORD *Stack, UINT32 StackSizeInWords, TASK_E
 
     return Stack;
 }
+
+OS_WORD *PortInitializeSystemStack(OS_WORD *Stack, UINT32 StackSizeInWords)
+{
+    OS_WORD *SystemStackPointer;
+
+    #if(ANALYZE_TASK_STACK_USAGE == 1)
+    {
+        UINT32 i;
+        OS_WORD *Value = Stack;
+
+        for(i = 0; i < StackSizeInWords; i++)
+            *Value++ = TASK_STACK_FILL_VALUE;
+    }
+    #endif // end of // #if(ANALYZE_TASK_STACK_USAGE == 1)
+
+    SystemStackPointer = &Stack[StackSizeInWords - 1];
+
+    return SystemStackPointer;
+}
+
+#if(ANALYZE_TASK_STACK_USAGE == 1)
+    UINT32 PortAnaylzeTaskStackUsage(OS_WORD *StartOfStack, UINT32 StackSizeInWords)
+    {
+        UINT32 WordsUnused = 0;
+        
+        while(*StartOfStack == TASK_STACK_FILL_VALUE)
+        {
+            StartOfStack++;
+            
+            WordsUnused++;
+        }
+        
+        return WordsUnused;
+    }
+#endif // end of #if(ANALYZE_TASK_STACK_USAGE == 1)
+
+#if (USING_CHECK_TASK_STACK_FOR_OVERFLOW == 1)
+    BOOL PortIsStackOverflowed(OS_WORD *CurrentStackPointer, OS_WORD *StartOfStack, UINT32 StackSizeInWords)
+    {
+        return (BOOL)(CurrentStackPointer < StartOfStack);
+    }
+#endif // end of #if (USING_CHECK_TASK_STACK_FOR_OVERFLOW == 1)
+    
+#if(USING_TASK_RUNTIME_EXECUTION_COUNTER == 1)
+    FLOAT32 PortGetExecutionTimeInSeconds(UINT32 TaskRunTime)
+    {
+        FLOAT32 RunTime = (FLOAT32)TaskRunTime;
+        
+        RunTime *= (FLOAT32)((FLOAT32)1.0 / (FLOAT32)((FLOAT32)GetSystemClock() / (FLOAT32)2.0));
+        
+        return RunTime;
+    }
+#endif // end of #if(USING_TASK_RUNTIME_EXECUTION_COUNTER == 1)
 
 void PortSetInterruptPriority(BYTE NewInterruptPriority)
 {

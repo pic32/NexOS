@@ -27,7 +27,7 @@ CLEAN_SUBPROJECTS=${CLEAN_SUBPROJECTS_${SUBPROJECTS}}
 PROJECTNAME=File System
 
 # Active Configuration
-DEFAULTCONF=FlashFileSystem
+DEFAULTCONF=SDCardFileSystem
 CONF=${DEFAULTCONF}
 
 # All Configurations

@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.03
+    NexOS Kernel Version v1.01.04
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -60,10 +60,6 @@
 				if(Task->TaskCheckIn != (TASK_CHECK_IN*)NULL)
 					OS_ReleaseMemory((void*)Task->TaskCheckIn);
 			#endif // end of USING_TASK_CHECK_IN
-
-			#if (USING_MAILBOXES == 1)
-				// Delete any unread messages
-			#endif // end of USING_MAILBOXES
                 
 			OS_ReleaseMemory((void*)Task->StartOfTaskStackPointer);
 	
@@ -253,11 +249,11 @@ UINT32 IdleTaskCode(void *Args)
     
     #include "../IOBuffer/IOBuffer.h"
     #include "IOBufferPort.h"
-    
+
 	UINT32 IOBufferTaskCode(void *Args)
 	{
 		IO_BUFFER_ID CurrentIOBuffer;
-	
+
 		while(1)
 		{
             for(CurrentIOBuffer = INVALID_IO_BUFFER + 1; CurrentIOBuffer < NUMBER_OF_BUFFER_IDS; CurrentIOBuffer++)

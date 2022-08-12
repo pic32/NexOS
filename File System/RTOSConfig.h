@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.00
+    NexOS Kernel Version v1.01.04
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -31,8 +31,8 @@
 // OS Configurations
 //----------------------------------------------------------------------------------------------------
 
-// This is version v1.01.00 release of the RTOSConfig.h file.
-#define RTOS_CONFIG_H_VERSION                                   0x00000002
+// This is version v1.01.04 release of the RTOSConfig.h file.
+#define RTOS_CONFIG_H_VERSION                                   0x00000006
 
 // OS_PRIORITY is the priority of the OS compared to interrupts.  When an OS call is made the
 // interrupt priority will be set to OS_PRIORITY so that interrupts of OS_PRIORITY level or lower
@@ -65,6 +65,11 @@
 // can exist for the CPU.  This is used for error checking data.
 #define USER_RAM_STARTING_ADDRESS								0xA0000000
 
+// SYSTEM_STACK_SIZE_IN_WORDS is the size in words of the system stack.
+// The system stack is used to process interrupts so that the stack size
+// burden can be taken off of each TASK.
+#define SYSTEM_STACK_SIZE_IN_WORDS                              128
+
 // USING_TICKS_TO_MILLISECONDS_METHOD must be defined as a 1 to enable the ticks
 // to milliseconds conversion method.  A 1 enables this feature, and a 0 disables it.
 #define USING_TICKS_TO_MILLISECONDS_METHOD                      0
@@ -86,6 +91,10 @@
 // 32-bit wide number that will rollover from 0xFFFFFFFF to 0x00000000.
 #define USING_GET_OS_TICK_COUNT_METHOD                          0
 
+// USING_GET_OS_TICK_COUNT_FROM_ISR_METHOD must be defined as a 1 to get the OS
+// Tick count from an ISR method.
+#define USING_GET_OS_TICK_COUNT_FROM_ISR_METHOD                 0
+
 // USING_ENTER_DEVICE_SLEEP_MODE_METHOD must be defined as a 1 to use the sleep function.
 #define USING_ENTER_DEVICE_SLEEP_MODE_METHOD                    0
 
@@ -101,6 +110,26 @@
 
 // USING_KERNEL_VERSION_TO_STRING must be defined as a 1 to use the KernelVersionToString() method.
 #define USING_KERNEL_VERSION_TO_STRING                          0
+
+// USING_ANALYZE_SYSTEM_STACK_METHOD will allow the user to see how many bytes
+// have been unused in the system stack
+#define USING_ANALYZE_SYSTEM_STACK_METHOD                       0
+
+// USING_TASK_RUNTIME_EXECUTION_COUNTER will keep track of how much time
+// each TASK spends executing.
+#define USING_TASK_RUNTIME_EXECUTION_COUNTER                    0
+
+// USING_TASK_RUNTIME_EXECUTION_TO_STRING_METHOD will enable the method
+// which to strings all the TASKs that have run, and their total execution time.
+#define USING_TASK_RUNTIME_EXECUTION_TO_STRING_METHOD           0
+
+// USING_TASK_RUNTIME_HISTORY will enable keeping track of the last
+// TASK_RUNTIME_HISTORY_SIZE_IN_TASKS TASKs that have executed
+#define USING_TASK_RUNTIME_HISTORY                              0
+
+// TASK_RUNTIME_HISTORY_SIZE_IN_TASKS is the number of TASKs that the
+// USING_TASK_RUNTIME_HISTORY will keep track of
+#define TASK_RUNTIME_HISTORY_SIZE_IN_TASKS                      10
 //----------------------------------------------------------------------------------------------------
 
 
@@ -112,6 +141,12 @@
 
 // USING_REALLOC_MEMORY_METHOD must be defined as a 1 to use the ReallocMemory() method.
 #define USING_REALLOC_MEMORY_METHOD								0
+
+// USING_GET_HEAP_USED_IN_BYTES_METHOD must be defined as a 1 to use the GetHeapUsedInBytes() method.
+#define USING_GET_HEAP_USED_IN_BYTES_METHOD                     0
+
+// USING_GET_HEAP_REMAINING_IN_BYTES_METHOD must be defined as a 1 to use the GetHeapRemainingInBytes() method.
+#define USING_GET_HEAP_REMAINING_IN_BYTES_METHOD                0
 
 // MEMORY_WARNING_LEVEL_IN_BYTES when MEMORY_WARNING_LEVEL_IN_BYTES are used the
 // USING_MEMORY_WARNING_EVENT is raised if enabled and the USING_MEMORY_WARNING_USER_CALLBACK
@@ -145,11 +180,12 @@
 //----------------------------------------------------------------------------------------------------
 
 // This is the stack size in words that the Idle Task will be assigned.
-#define IDLE_TASK_STACK_SIZE_IN_WORDS                           100
+// Tests have shown that 59 words are used by the TASK.
+#define IDLE_TASK_STACK_SIZE_IN_WORDS                           64
 
 // This is the Idle Task priority and until further notice should always be set to zero.
 // The OS scheduler is designed around the fact that at least 1 task is in the READY
-// state.  That 1 guranteed TASK is the Idle Task.
+// state.  That 1 guaranteed TASK is the Idle Task.
 #define IDLE_TASK_PRIORITY										0
 
 // This is the name used by the Idle Task should USING_TASK_NAMES be defined as 1
@@ -169,7 +205,9 @@
 //----------------------------------------------------------------------------------------------------
 
 // This is the stack size in words that the Maintenance Task will be assigned.
-#define MAINTENANCE_TASK_STACK_SIZE_IN_WORDS                    1000
+// Test have shown 48 words are used.  This seems too low and will be evaluated
+// further in more depth.
+#define MAINTENANCE_TASK_STACK_SIZE_IN_WORDS                    64
 
 // This is the priority of the Maintenance Task.  It can be any valid priority.
 #define MAINTENANCE_TASK_PRIORITY 								HIGHEST_USER_TASK_PRIORITY
@@ -190,7 +228,8 @@
 //----------------------------------------------------------------------------------------------------
 
 // This is the stack size in words that the Buffer Task will be assigned.
-#define IO_BUFFER_TASK_STACK_SIZE_IN_WORDS                      1000
+// Test have shown that 61 words at least are needed.
+#define IO_BUFFER_TASK_STACK_SIZE_IN_WORDS                      96
 
 // This is the priority of the Buffer Task.  It can be any valid priority.
 #define IO_BUFFER_TASK_PRIORITY                                 HIGHEST_USER_TASK_PRIORITY
@@ -285,6 +324,10 @@
 // meaning if USING_TASK_NAMES is set to zero.
 #define TASK_NAME_LENGTH_IN_BYTES								16
 
+// USING_TASK_UNIQUE_ID if set to a 1 assigns each TASK a unique
+// ID at creation time.
+#define USING_TASK_UNIQUE_ID                                    0
+
 // USING_TASK_LOCAL_STORAGE_ACCESS if set to a 1 allows TASKs the ability
 // for other TASKs to interact with its own local variables which are
 // registered.
@@ -301,8 +344,18 @@
 #define USING_GET_NUMBER_OF_TASKS_METHOD                        0
 
 // This allows the OS to check if a TASK stack was in an overflow condition upon 
-// performing a context switch. (***UNIMPLEMENTED***)
+// performing a context switch.
 #define USING_CHECK_TASK_STACK_FOR_OVERFLOW                     0
+
+// This allows the OS to analyze the stack usage of a task.  At
+// TASK creation time TASK_STACK_FILL_VALUE will be put into the
+// entire stack area of the TASK.  Then the user can at any time
+// get the number of bytes free in the TASK stack area of a TASK.
+#define ANALYZE_TASK_STACK_USAGE                                0
+
+// This is the value to fill the TASK stack with if ANALYZE_TASK_STACK_USAGE
+// is set to a 1.  This is done at TASK creation time.
+#define TASK_STACK_FILL_VALUE                                   0xDEADBEEF
 //----------------------------------------------------------------------------------------------------
 
 
@@ -899,6 +952,10 @@
 // to set the new line sequence associated with the IO_BUFFER.
 #define USING_IO_BUFFER_SET_NEW_LINE_METHOD                     0
 
+// USING_IO_BUFFER_GET_STATE if set to a 1 will allow the user
+// to get the RX or TX state of the IO_BUFFER
+#define USING_IO_BUFFER_GET_STATE                               0
+
 // Set USING_X_X_IO_BUFFER to a 1 to use that associated IO_BUFFER.
 #define USING_UART_1_IO_BUFFER                                  0
 #define USING_UART_2_IO_BUFFER                                  0
@@ -1164,6 +1221,16 @@
         #error "NUMBER_OF_LOCAL_THREAD_STORAGE_POINTERS cannot be 0 if USING_TASK_LOCAL_STORAGE_ACCESS == 1!"
     #endif // end of #if (USING_TASK_LOCAL_STORAGE_ACCESS == 0)
 #endif // end of #if (USING_TASK_LOCAL_STORAGE_ACCESS == 1)
+
+#if (USING_TASK_RUNTIME_HISTORY == 1)
+    #if (USING_TASK_RUNTIME_EXECUTION_COUNTER != 1)
+        #error "If USING_TASK_RUNTIME_HISTORY == 1, USING_TASK_RUNTIME_EXECUTION_COUNTER must be 1!"
+    #endif // end of #if (USING_TASK_RUNTIME_EXECUTION_COUNTER != 1)
+
+    #if (TASK_RUNTIME_HISTORY_SIZE_IN_TASKS < 3)
+        #error "If USING_TASK_RUNTIME_HISTORY == 1, TASK_RUNTIME_HISTORY_SIZE_IN_TASKS must be greater than 2!"
+    #endif // end of #if (TASK_RUNTIME_HISTORY_SIZE_IN_TASKS < 3)
+#endif // end of #if (USING_TASK_RUNTIME_HISTORY == 1)
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 #endif // end of #ifndef RTOS_CONFIG_H

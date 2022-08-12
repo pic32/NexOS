@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.00
+    NexOS Kernel Version v1.01.04
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -73,7 +73,7 @@ UINT32 OSHeapDemoCode(void *Args)
     for(i = 0; i < sizeof(MemoryArray) / sizeof(void *); i++)
         MemoryArray[i] = (void*)NULL;
     
-    printf("\r\n%li bytes used in heap.\r\n%li bytes remain in heap.\r\n", GetHeapUsedInBytes(), GetHeapRemainingBytes());
+    printf("\r\n%li bytes used in heap.\r\n%li bytes remain in heap.\r\n", GetHeapUsedInBytes(), GetHeapRemainingInBytes());
     
     while(1)
     {
@@ -83,7 +83,7 @@ UINT32 OSHeapDemoCode(void *Args)
             MemoryArray[i] = AllocateMemory(1000);
             
             // print out all relevant memory usage
-            printf("\r\n%li bytes used in heap.\r\n%li bytes remain in heap.\r\n", GetHeapUsedInBytes(), GetHeapRemainingBytes());
+            printf("\r\n%li bytes used in heap.\r\n%li bytes remain in heap.\r\n", GetHeapUsedInBytes(), GetHeapRemainingInBytes());
             
             // we didn't get our allocation
             if(MemoryArray[i] == (void*)NULL)
@@ -97,7 +97,7 @@ UINT32 OSHeapDemoCode(void *Args)
                 break;
             
             // print out all relevant memory usage
-            printf("\r\n%li bytes used in heap.\r\n%li bytes remain in heap.\r\n", GetHeapUsedInBytes(), GetHeapRemainingBytes());
+            printf("\r\n%li bytes used in heap.\r\n%li bytes remain in heap.\r\n", GetHeapUsedInBytes(), GetHeapRemainingInBytes());
             
             // we didn't get our allocation
             if(MemoryArray[i] == (void*)NULL)
@@ -150,7 +150,7 @@ int main(int argc, char** argv)
 	#endif // end of #if SIMULATION
 
     // Now we are going to create our TASKs
-    if(CreateTask(OSHeapDemoCode, 4000, 1, (void*)NULL, (TASK*)NULL) == (TASK*)NULL)
+    if(CreateTask(OSHeapDemoCode, 5000, 1, (void*)NULL, (TASK*)NULL) == (TASK*)NULL)
         while(1);
     
     // This starts the OS Scheduler and will begin executing the TASK with the highest priority.

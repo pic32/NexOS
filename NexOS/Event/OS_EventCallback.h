@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.03
+    NexOS Kernel Version v1.01.04
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -324,7 +324,7 @@ void Timer4InterruptCallback(void);
 void Timer5InterruptCallback(void);
 
 /*
-	void ADC1InterruptCallback(BYTE ADCValue)
+	void ADC1InterruptCallback(UINT16 ADCValue)
 
 	Description: This method is called when the ADC 1 interrupt handler
     is triggered.  It is a means to allow the user a callback when this interrupt occurs.
@@ -334,7 +334,7 @@ void Timer5InterruptCallback(void);
 	User Callable: No
 
 	Arguments:
-		BYTE ADCValue - The value read from the ADC port.
+		UINT16 ADCValue - The value read from the ADC port.
 
 	Returns: 
         None
@@ -347,7 +347,7 @@ void Timer5InterruptCallback(void);
 		- None
 */
 #if(USING_ADC_1_IO_BUFFER == 1)
-    void ADC1InterruptCallback(BYTE ADCValue);
+    void ADC1InterruptCallback(UINT16 ADCValue);
 #else
     void ADC1InterruptCallback(void);
 #endif // end of #if(USING_ADC_1_IO_BUFFER == 1)

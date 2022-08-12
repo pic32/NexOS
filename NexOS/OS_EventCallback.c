@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.03
+    NexOS Kernel Version v1.01.04
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -21,7 +21,7 @@
     SOFTWARE.
  */
 
-#include "GenericTypeDefs.h"
+#include "GenericTypes.h"
 
 #include "RTOSConfig.h"
 
@@ -113,7 +113,7 @@
 
 #if (USING_ADC_1_CALLBACK == 1)
     #if(USING_ADC_1_IO_BUFFER == 1)
-        void ADC1InterruptCallback(BYTE ADCValue)
+        void ADC1InterruptCallback(UINT16 ADCValue)
         {
             
         }

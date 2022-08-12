@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.00
+    NexOS Kernel Version v1.01.04
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -105,7 +105,7 @@
 #define UART_6_ISR_DATA_BUFFER_SIZE_IN_BYTES                                8
 #define CAN_1_ISR_DATA_BUFFER_SIZE_IN_BYTES                                 sizeof(CANRxMessageBuffer)
 #define CAN_2_ISR_DATA_BUFFER_SIZE_IN_BYTES                                 sizeof(CANRxMessageBuffer)
-#define ADC_1_ISR_DATA_BUFFER_SIZE_IN_BYTES                                 16
+#define ADC_1_ISR_DATA_BUFFER_SIZE_IN_SAMPLES                               16
 #define CAN_MAXIMUM_PACKETS_PER_CHANNEL                                     32
 
 BOOL PortIOBufferInitializeInterrupt(IO_BUFFER_ID IOBufferID);

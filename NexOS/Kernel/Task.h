@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.03
+    NexOS Kernel Version v1.01.04
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -36,7 +36,7 @@
 	#define TASK_H
 
 #include "Kernel.h"
-#include "GenericTypeDefs.h"
+#include "GenericTypes.h"
 
 /*
 	TASK *CreateTask(TASK_ENTRY_POINT StartingAddress, UINT32 StackSizeInWords, BYTE Priority, void *Args, BOOL RestartTask, TASK_STATE StartingTaskState, BOOL Suspendable, BYTE *TaskName, TASK_EXIT_CALLBACK TaskExit, TASK *PreAllocatedTask)
@@ -893,7 +893,7 @@ UINT32 GetNumberOfTasks(void);
           use of this function.
 
 	See Also:
-        - PortAnaylzeSystemStackUsage()
+        - AnaylzeSystemStackUsage()
 */
 UINT32 AnalyzeTaskStack(TASK *Task);
 

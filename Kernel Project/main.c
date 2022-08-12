@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.03
+    NexOS Kernel Version v1.01.04
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,7 +25,7 @@
 #include <stdlib.h>
 #include <plib.h>
 
-#include "GenericTypeDefs.h"
+#include "GenericTypes.h"
 #include "HardwareProfile.h"
 #include "../NexOS/Kernel/Kernel.h"
 #include "../NexOS/Kernel/Memory.h"

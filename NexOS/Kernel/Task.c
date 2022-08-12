@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.03
+    NexOS Kernel Version v1.01.04
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -31,6 +31,10 @@
 
 extern TASK * volatile gCurrentTask;
 extern DOUBLE_LINKED_LIST_HEAD gCPUScheduler[];
+
+#if (USING_TASK_UNIQUE_ID == 1)
+    UINT32 gNextTaskUniqueID = 0;
+#endif // end of #if (USING_TASK_UNIQUE_ID == 1)
 
 #if (USING_SUSPEND_ALL_TASKS_METHOD == 1 || USING_SUSPEND_TASK_METHOD == 1)
 	extern DOUBLE_LINKED_LIST_HEAD gSuspendedQueueHead;
@@ -148,6 +152,11 @@ static TASK *OS_CreateTask(TASK_ENTRY_POINT StartingAddress,
 
 			strcpy((char*)(NewTask->TaskName), (char*)TaskName);
 		}
+        else
+        {
+            // just null terminate it
+            NewTask->TaskName[0] = 0;
+        }
 	#endif // end of USING_TASK_NAMES
 
     #if (USING_TASK_LOCAL_STORAGE_ACCESS == 1)
@@ -161,7 +170,7 @@ static TASK *OS_CreateTask(TASK_ENTRY_POINT StartingAddress,
 			// the user wants us to setup the task for restart
 			if((NewTask->RestartInfo = (TASK_RESTART_INFO*)AllocateMemory(sizeof(TASK_RESTART_INFO))) == NULL)
 			{
-				// if we failed to allocate the structre, abandon the operation.
+				// if we failed to allocate the structure, abandon the operation.
 				// free up the stack space
 				ReleaseMemory((void*)NewTask->StartOfTaskStackPointer);
 				
@@ -192,10 +201,38 @@ static TASK *OS_CreateTask(TASK_ENTRY_POINT StartingAddress,
 		}	
 	#endif // end of (USING_RESTART_TASK == 1)
 
+    #if (USING_TASK_UNIQUE_ID == 1)
+        NewTask->UniqueID = gNextTaskUniqueID++;
+        
+        // we can't use 0xFFFFFFFF because it is an error value
+        if(gNextTaskUniqueID == 0xFFFFFFFF)
+            gNextTaskUniqueID = 0;
+    #endif // end of #if (USING_TASK_UNIQUE_ID == 1)
+
+    #if (USING_TASK_RUNTIME_EXECUTION_COUNTER == 1)
+        if(OS_AddTaskToRuntimeExecutionList(NewTask) == FALSE)
+        {
+            #if(USING_RESTART_TASK == 1)
+                if(NewTask->RestartInfo != (TASK_RESTART_INFO*)NULL)
+                    ReleaseMemory((void*)NewTask->RestartInfo);
+            #endif // end of #if(USING_RESTART_TASK == 1)
+
+            // if we failed to allocate the structure, abandon the operation.
+            // free up the stack space
+            ReleaseMemory((void*)NewTask->StartOfTaskStackPointer);
+
+            // if the user didn't pass in a TASK, then we allocated it, so free it
+            if(PreAllocatedTask == (TASK*)NULL)
+                ReleaseMemory((void*)NewTask);
+
+            return (TASK*)NULL;
+        }
+    #endif // end of #if (USING_TASK_RUNTIME_EXECUTION_COUNTER == 1)  
+
 	#if(USING_TASK_CHECK_IN == 1)
 		NewTask->TaskCheckIn = (TASK_CHECK_IN*)NULL;
 	#endif // end of USING_TASK_CHECK_IN
-
+        
 	#if (USING_TASK_SIGNAL == 1)
 		NewTask->TaskSignal.OS_Signals.Word = 0;
 		NewTask->TaskSignal.UserSignals.Word = 0;
@@ -1129,3 +1166,21 @@ TASK *CreateTask(TASK_ENTRY_POINT StartingAddress,
         return FreeBytes;
     }
 #endif // end of #if (ANALYZE_TASK_STACK_USAGE == 1)
+    
+#if (USING_TASK_UNIQUE_ID == 1)
+    UINT32 TaskGetUniqueID(TASK *Task)
+    {
+        #if (USING_CHECK_TASK_PARAMETERS == 1)
+            if (Task != (TASK*)NULL)
+            {
+                if (RAMAddressValid((OS_WORD)Task) == FALSE)
+                    return 0xFFFFFFFF;
+            }
+        #endif // end of #if (USING_CHECK_TASK_PARAMETERS == 1)
+
+        if(Task == (TASK*)NULL)
+            return gCurrentTask->UniqueID;
+        
+        return Task->UniqueID;
+    }
+#endif // end of #if (USING_TASK_UNIQUE_ID == 1)

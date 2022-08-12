@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.03
+    NexOS Kernel Version v1.01.04
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -35,11 +35,6 @@ void __attribute__((interrupt(IPL1SAVEALL), vector(_CORE_TIMER_VECTOR))) Context
 void __attribute__((interrupt(IPL2SAVEALL), vector(_CORE_SOFTWARE_0_VECTOR))) ContextSwitch(void);
 
 void OS_StartFirstTask(OS_WORD *FirstTaskStackPointer);
-
-/*
- * This function is unique to the PIC32 and gets the global pointer value in register 28.
- */
-OS_WORD GetGP(void);
 
 #if (USING_ENTER_DEVICE_SLEEP_MODE_METHOD == 1)
     #if(0)
@@ -175,6 +170,17 @@ OS_WORD *PortInitializeSystemStack(OS_WORD *Stack, UINT32 StackSizeInWords)
         return (BOOL)(CurrentStackPointer < StartOfStack);
     }
 #endif // end of #if (USING_CHECK_TASK_STACK_FOR_OVERFLOW == 1)
+    
+#if(USING_TASK_RUNTIME_EXECUTION_COUNTER == 1)
+    FLOAT32 PortGetExecutionTimeInSeconds(UINT32 TaskRunTime)
+    {
+        FLOAT32 RunTime = (FLOAT32)TaskRunTime;
+        
+        RunTime *= (FLOAT32)((FLOAT32)1.0 / (FLOAT32)((FLOAT32)GetSystemClock() / (FLOAT32)2.0));
+        
+        return RunTime;
+    }
+#endif // end of #if(USING_TASK_RUNTIME_EXECUTION_COUNTER == 1)
 
 void PortSetInterruptPriority(BYTE NewInterruptPriority)
 {

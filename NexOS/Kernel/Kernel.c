@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.03
+    NexOS Kernel Version v1.01.04
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -48,6 +48,10 @@
 	#include "../Event/Event.h"
 #endif // end of USING_EVENTS
 
+#if (RTOS_CONFIG_H_VERSION != 0x00000006)
+    #error "Wrong RTOSConfig.h file version being used!"
+#endif // end of #if (RTOS_CONFIG_H_VERSION != 0xXXXXXXXX)
+
 // This is the critical count counter.  Each time a TASK calls a EnterCritical() 
 // this variable is increased.  Each time a TASK called ExitCritical() this
 // variable is decreased.  Once it gets back to zero, interrupts are enabled.
@@ -87,6 +91,16 @@ DOUBLE_LINKED_LIST_HEAD gCPUScheduler[CPU_SCHEDULER_QUEUE_SIZE]; // The main gut
 #if (USING_RESTART_TASK == 1)
 	DOUBLE_LINKED_LIST_HEAD gRestartTaskList;
 #endif // end of #if (USING_RESTART_TASK == 1)
+    
+#if (USING_TASK_RUNTIME_EXECUTION_COUNTER == 1)
+    DOUBLE_LINKED_LIST_HEAD gRuntimeExecutionList; // this is of type TASK_RUNTIME_INFO
+    UINT32 gCurrentTaskRunTimeCounter, gKernelMiscRunTimeCounter;
+#endif // end of #if (USING_TASK_RUNTIME_EXECUTION_COUNTER == 1)
+    
+#if (USING_TASK_RUNTIME_HISTORY == 1)
+    UINT32 gTaskRuntimeHistoryArrayCurrentIndex;
+    TASK_RUNTIME_HISTORY gTaskRuntimeHistoryArray[TASK_RUNTIME_HISTORY_SIZE_IN_TASKS];
+#endif // end of #if (USING_TASK_RUNTIME_HISTORY == 1)
 
 #if ((USING_DELETE_TASK == 1 && IDLE_TASK_PERFORM_DELETE_TASK == 0) || USING_RESTART_TASK == 1)
 	static TASK gMaintenanceTask;
@@ -145,6 +159,18 @@ OS_RESULT InitOS(void)
 	#if (USING_RESTART_TASK == 1)
 		InitializeDoubleLinkedListHead(&gRestartTaskList);
 	#endif // end of USING_RESTART_TASK
+
+    #if (USING_TASK_RUNTIME_EXECUTION_COUNTER == 1)
+        InitializeDoubleLinkedListHead(&gRuntimeExecutionList);
+        
+        gKernelMiscRunTimeCounter = 0;
+    #endif // end of #if (USING_TASK_RUNTIME_EXECUTION_COUNTER == 1)
+
+    #if (USING_TASK_RUNTIME_HISTORY == 1)
+        gTaskRuntimeHistoryArrayCurrentIndex = 0;
+        
+        memset((void*)gTaskRuntimeHistoryArray, 0, sizeof(gTaskRuntimeHistoryArray));
+    #endif // end of #if (USING_TASK_RUNTIME_HISTORY == 1)
 
 	#if (USING_TASK_HIBERNATION == 1 || USING_TASK_SIGNAL == 1 || USING_IO_BUFFERS == 1)
 		InitializeDoubleLinkedListHead(&gMiscellaneousBlockedQueueHead);
@@ -282,6 +308,14 @@ void StartOSScheduler(void)
     // call the specific hardware configuration method for the OS tick and 
     // anything else the CPU needs done to work with the OS.
 	PortStartOSScheduler();
+    
+    #if (USING_TASK_RUNTIME_EXECUTION_COUNTER == 1)
+        gCurrentTaskRunTimeCounter = PortGetTaskRunTimeCounter();
+    #endif // end of #if (USING_TASK_RUNTIME_EXECUTION_COUNTER == 1)
+
+    #if (USING_TASK_RUNTIME_HISTORY == 1)
+        gTaskRuntimeHistoryArray[gTaskRuntimeHistoryArrayCurrentIndex].TaskRuntimeInfo = gCurrentTask->TaskRunTime;
+    #endif // end of #if (USING_TASK_RUNTIME_HISTORY == 1)
 
     // now begin executing the first TASK
 	OS_StartFirstTask((OS_WORD*)(gCurrentTask->TaskStackPointer));
@@ -310,7 +344,7 @@ void StartOSScheduler(void)
 #endif // end of #if (USING_GET_OS_TICK_COUNT_FROM_ISR_METHOD == 1)
     
 #if (USING_ANALYZE_SYSTEM_STACK_METHOD == 1)
-    UINT32 PortAnaylzeSystemStackUsage(void)
+    UINT32 AnaylzeSystemStackUsage(void)
     {
         return PortAnaylzeTaskStackUsage(gSystemStack, sizeof(gSystemStack) / sizeof(OS_WORD));
     }
@@ -436,6 +470,150 @@ void StartOSScheduler(void)
     }
 #endif // end of #if (USING_KERNEL_VERSION_TO_STRING == 1)
 
+#if (USING_TASK_RUNTIME_EXECUTION_COUNTER == 1 && USING_TASK_RUNTIME_EXECUTION_TO_STRING_METHOD == 1)
+    #include <stdio.h>
+    
+    void TaskRuntimeExecutionListToString(BYTE *ToStringBuffer, BOOL Percentage)
+    {
+        FLOAT32 OverallPercentage, IndividualTaskPercent;
+        TASK_RUNTIME_INFO *TaskRunTimeInfo;
+        DOUBLE_LINKED_LIST_NODE *Node = gRuntimeExecutionList.Beginning;
+        
+        #if (USING_TASK_NAMES != 1 && USING_TASK_UNIQUE_ID != 1)
+            UINT32 i = 0;
+        #endif // #if (USING_TASK_NAMES != 1 && USING_TASK_UNIQUE_ID != 1)
+        
+        EnterCritical();
+        
+        if(Percentage == TRUE)
+        {
+            OverallPercentage = 0.0;
+            
+            while(Node != (DOUBLE_LINKED_LIST_NODE*)NULL)
+            {
+                TaskRunTimeInfo = (TASK_RUNTIME_INFO*)Node->Data;
+                
+                OverallPercentage += TaskRunTimeInfo->TaskRunTime;
+                
+                // iterate to the next TASK in the list        
+                Node = Node->NextNode;
+            }
+            
+            Node = gRuntimeExecutionList.Beginning;
+            
+            // now just do this once
+            OverallPercentage += gKernelMiscRunTimeCounter;
+                   
+            // now just do this once too
+            OverallPercentage = PortGetExecutionTimeInSeconds(OverallPercentage);
+        }
+        
+        while(Node != (DOUBLE_LINKED_LIST_NODE*)NULL)
+        {
+            TaskRunTimeInfo = (TASK_RUNTIME_INFO*)Node->Data;
+
+            if(Percentage == TRUE)
+            {
+                IndividualTaskPercent = PortGetExecutionTimeInSeconds(TaskRunTimeInfo->TaskRunTime) / OverallPercentage * (FLOAT32)100.00;
+                
+                #if (USING_TASK_NAMES == 1)
+                    sprintf((char*)&ToStringBuffer[strlen((const char*)ToStringBuffer)], "%s: % 5.2f%%\r\n", TaskRunTimeInfo->TaskName, IndividualTaskPercent);
+                #else
+                    #if (USING_TASK_UNIQUE_ID == 1)
+                        sprintf((char*)&ToStringBuffer[strlen((const char*)ToStringBuffer)], "TASK ID %l: %8.6fs\r\n", TaskRunTimeInfo->UniqueID, Percent);
+                    #else
+                        sprintf((char*)&ToStringBuffer[strlen((const char*)ToStringBuffer)], "TASK %i: %8.6fs\r\n", (int)i++, Percent);
+                    #endif // end of #if (USING_TASK_UNIQUE_ID == 1)
+                #endif // end of #if (USING_TASK_NAMES == 1)
+            }
+            else
+            {
+                #if (USING_TASK_NAMES == 1)
+                    sprintf((char*)&ToStringBuffer[strlen((const char*)ToStringBuffer)], "%s: %8.6fs\r\n", TaskRunTimeInfo->TaskName, PortGetExecutionTimeInSeconds(TaskRunTimeInfo->TaskRunTime));
+                #else
+                    #if (USING_TASK_UNIQUE_ID == 1)
+                        sprintf((char*)&ToStringBuffer[strlen((const char*)ToStringBuffer)], "TASK ID %l: %8.6fs\r\n", TaskRunTimeInfo->UniqueID, PortGetExecutionTimeInSeconds(TaskRunTimeInfo->TaskRunTime));
+                    #else
+                        sprintf((char*)&ToStringBuffer[strlen((const char*)ToStringBuffer)], "TASK %i: %8.6fs\r\n", (int)i++, PortGetExecutionTimeInSeconds(TaskRunTimeInfo->TaskRunTime));
+                    #endif // end of #if (USING_TASK_UNIQUE_ID == 1)
+                #endif // end of #if (USING_TASK_NAMES == 1)
+            }
+
+            // iterate to the next TASK in the list        
+            Node = Node->NextNode;
+        }
+
+        if(Percentage == TRUE)
+        {
+            IndividualTaskPercent = PortGetExecutionTimeInSeconds(gKernelMiscRunTimeCounter) / OverallPercentage * (FLOAT32)100.00;
+            
+            sprintf((char*)&ToStringBuffer[strlen((const char*)ToStringBuffer)], "MISC KERNEL: % 5.2f%%\r\n", IndividualTaskPercent);
+        }
+        else
+        {
+            sprintf((char*)&ToStringBuffer[strlen((const char*)ToStringBuffer)], "MISC KERNEL: %8.6fs\r\n", PortGetExecutionTimeInSeconds(gKernelMiscRunTimeCounter));
+        }
+            
+        ExitCritical();
+    }
+#endif // end of #if (USING_TASK_RUNTIME_EXECUTION_COUNTER == 1 && USING_TASK_RUNTIME_EXECUTION_TO_STRING_METHOD == 1)
+    
+#if (USING_TASK_RUNTIME_HISTORY == 1)
+    #include <stdio.h>
+    
+    void TaskRuntimeHistoryListToString(BYTE *ToStringBuffer, BOOL PrintRuntime)
+    {
+        TASK_RUNTIME_HISTORY *TaskRunTimeHistory;
+        UINT32 i, j = 0;
+        
+        #if (USING_TASK_NAMES != 1 && USING_TASK_UNIQUE_ID != 1)
+            UINT32 j = 0;
+        #endif // end of #if (USING_TASK_NAMES != 1 && USING_TASK_UNIQUE_ID != 1)
+        
+        // get the most recent TASK
+        i = gTaskRuntimeHistoryArrayCurrentIndex;
+        
+        if(i == 0)
+            i = TASK_RUNTIME_HISTORY_SIZE_IN_TASKS - 1;
+        else
+            i--;
+        
+        EnterCritical();
+        
+        while(j != TASK_RUNTIME_HISTORY_SIZE_IN_TASKS)
+        {
+            TaskRunTimeHistory = &gTaskRuntimeHistoryArray[i];
+
+            if(TaskRunTimeHistory->TaskRuntimeInfo != (TASK_RUNTIME_INFO*)NULL)
+            {
+                #if (USING_TASK_NAMES == 1)
+                    sprintf((char*)&ToStringBuffer[strlen((const char*)ToStringBuffer)], "%s", TaskRunTimeHistory->TaskRuntimeInfo->TaskName);
+                #else
+                    #if (USING_TASK_UNIQUE_ID == 1)
+                        sprintf((char*)&ToStringBuffer[strlen((const char*)ToStringBuffer)], "TASK ID %l", TaskRunTimeHistory->TaskRuntimeInfo->UniqueID);
+                    #else
+                        sprintf((char*)&ToStringBuffer[strlen((const char*)ToStringBuffer)], "TASK %i", (int)j++);
+                    #endif // end of #if (USING_TASK_UNIQUE_ID == 1)
+                #endif // end of #if (USING_TASK_NAMES == 1)
+
+                if(PrintRuntime == TRUE)
+                    sprintf((char*)&ToStringBuffer[strlen((const char*)ToStringBuffer)], ": %8.6fs", PortGetExecutionTimeInSeconds(TaskRunTimeHistory->PreviousExecutionTime));
+
+                strcat((char*)ToStringBuffer, "\r\n");
+            }
+            
+            if(i == 0)
+                i = TASK_RUNTIME_HISTORY_SIZE_IN_TASKS - 1;
+            else
+                i--;
+            
+            j++;
+        }
+        
+        ExitCritical();
+    }
+#endif // end of #if (USING_TASK_RUNTIME_HISTORY == 1)
+    
 //--------------------------------------------------------------------------------------------------//
 //																									//
 //									End user callable section										//
@@ -657,6 +835,31 @@ static void UpdateOSTick(UINT32 CurrentOSTickCount)
 
 OS_WORD *OS_NextTask(OS_WORD *CurrentTaskStackPointer)
 {
+    #if (USING_TASK_RUNTIME_EXECUTION_COUNTER == 1)
+        TASK_RUNTIME_INFO *TaskRunTimeInfo;
+        UINT32 TempTaskRuntimeCounter = PortGetTaskRunTimeCounter();
+        
+        TaskRunTimeInfo = (TASK_RUNTIME_INFO*)gCurrentTask->TaskRunTime;
+        
+        // did we roll over?
+        if(TempTaskRuntimeCounter < gCurrentTaskRunTimeCounter)
+        {
+            TaskRunTimeInfo->TaskRunTime += TempTaskRuntimeCounter + (0xFFFFFFFF - gCurrentTaskRunTimeCounter);
+            
+            #if (USING_TASK_RUNTIME_HISTORY == 1)
+                gTaskRuntimeHistoryArray[gTaskRuntimeHistoryArrayCurrentIndex++].PreviousExecutionTime = TempTaskRuntimeCounter + (0xFFFFFFFF - gCurrentTaskRunTimeCounter);
+            #endif // end of #if (USING_TASK_RUNTIME_HISTORY == 1)
+        }
+        else
+        {
+            TaskRunTimeInfo->TaskRunTime += TempTaskRuntimeCounter - gCurrentTaskRunTimeCounter;
+            
+            #if (USING_TASK_RUNTIME_HISTORY == 1)
+                gTaskRuntimeHistoryArray[gTaskRuntimeHistoryArrayCurrentIndex++].PreviousExecutionTime = TempTaskRuntimeCounter - gCurrentTaskRunTimeCounter;
+            #endif // end of #if (USING_TASK_RUNTIME_HISTORY == 1)
+        }
+    #endif // end of #if (USING_TASK_RUNTIME_EXECUTION_COUNTER == 1)
+
 	// clear the core interrupt flag regardless of if it is set or not
 	PortClearCoreInterruptFlag();
     
@@ -690,6 +893,27 @@ OS_WORD *OS_NextTask(OS_WORD *CurrentTaskStackPointer)
 	gCurrentTask = (TASK*)gCurrentNode->Data;
 
 	gCurrentCriticalCount = gCurrentTask->CriticalCount;
+    
+    #if (USING_TASK_RUNTIME_HISTORY == 1)
+        if(gTaskRuntimeHistoryArrayCurrentIndex == TASK_RUNTIME_HISTORY_SIZE_IN_TASKS)
+            gTaskRuntimeHistoryArrayCurrentIndex = 0;
+    
+        gTaskRuntimeHistoryArray[gTaskRuntimeHistoryArrayCurrentIndex].TaskRuntimeInfo = gCurrentTask->TaskRunTime;
+    #endif // end of #if (USING_TASK_RUNTIME_HISTORY == 1)
+
+    #if (USING_TASK_RUNTIME_EXECUTION_COUNTER == 1)
+        gCurrentTaskRunTimeCounter = PortGetTaskRunTimeCounter();
+        
+        // now get the misc kernel time
+        if(gCurrentTaskRunTimeCounter < TempTaskRuntimeCounter)
+        {
+            gKernelMiscRunTimeCounter += gCurrentTaskRunTimeCounter + (0xFFFFFFFF - TempTaskRuntimeCounter);
+        }
+        else
+        {
+            gKernelMiscRunTimeCounter += gCurrentTaskRunTimeCounter - TempTaskRuntimeCounter;
+        }
+    #endif // end of #if (USING_TASK_RUNTIME_EXECUTION_COUNTER == 1)
 
 	// Return the Stack Pointer of the Task whose Context will be restored by ContextSwitch().
 	return gCurrentTask->TaskStackPointer;
@@ -702,20 +926,20 @@ OS_WORD *OS_NextTask(OS_WORD *CurrentTaskStackPointer)
 #if (USING_OS_GENERAL_EXCEPTION_HANDLER == 1)
     #if (USING_OS_GENERAL_EXCEPTION_TO_STRING == 1)
         const char* ExceptionsErrorStrings[] = {
-           "Interrupt Error\0",
-           "Address Error I\0",
-           "Address Error LS\0",
-           "Bus Error I\0",
-           "Bus Error LS\0",
-           "Syscall Error\0",
-           "Breakpoint Error\0",
-           "Reserve Inst Err\0",
-           "CoCPU Unusable\0",
-           "Overflow Error\0",
-           "Trap Error\0",
-           "Imp Specific Err\0",
-           "CorExt Unusable\0",
-           "CoCPU 2 Unusable\0"
+           "INTERRUPT ERROR\0",
+           "ADDRESS ERROR I\0",
+           "ADDRESS ERROR LS\0",
+           "BUS ERROR I\0",
+           "BUS ERROR LS\0",
+           "SYSCALL ERROR\0",
+           "BREAKPOINT ERROR\0",
+           "RESERVE INST ERROR\0",
+           "COCPU UNUSABLE\0",
+           "OVERFLOW ERROR\0",
+           "TRAP ERROR\0",
+           "IMP SPECIFIC ERROR\0",
+           "COREXT UNUSABLE\0",
+           "COCPU 2 UNUSABLE\0"
         };
 
         const BYTE *ExceptionToString(OS_EXCEPTION_CODE EPCCode)
@@ -1058,6 +1282,35 @@ OS_WORD *OS_InitializeTaskStack(TASK *Task, TASK_ENTRY_POINT StartingAddress, vo
 		OS_PlaceTaskOnBlockedList(Task, &gDelayQueue, Node, BLOCKED, RemoveTaskFromReadyQueue);
 	}
 #endif // end of #if (USING_TASK_DELAY_TICKS_METHOD == 1)
+    
+#if (USING_TASK_RUNTIME_EXECUTION_COUNTER == 1)
+    BOOL OS_AddTaskToRuntimeExecutionList(TASK *Task)
+    {
+        TASK_RUNTIME_INFO *TaskRuntimeInfo = OS_AllocateMemory(sizeof(TASK_RUNTIME_INFO));
+        
+        if(TaskRuntimeInfo == (TASK_RUNTIME_INFO*)NULL)
+            return FALSE;
+        
+        #if (USING_TASK_NAMES == 1)
+            strcpy((char*)TaskRuntimeInfo->TaskName, (char*)Task->TaskName);
+        #endif // end of #if (USING_TASK_NAMES == 1)
+
+        #if (USING_TASK_UNIQUE_ID == 1)
+            TaskRuntimeInfo->TaskUniqueID = Task->UniqueID;
+        #endif // end of #if (USING_TASK_UNIQUE_ID == 1)
+
+        // now add it to the list
+        InsertNodeAtEndOfDoubleLinkedList(&gRuntimeExecutionList, &TaskRuntimeInfo->Node);
+        
+        TaskRuntimeInfo->Node.Data = (void*)TaskRuntimeInfo;
+        
+        TaskRuntimeInfo->TaskRunTime = 0;
+        
+        Task->TaskRunTime = (void*)TaskRuntimeInfo;
+        
+        return TRUE;
+    }
+#endif // end of #if (USING_TASK_RUNTIME_EXECUTION_COUNTER == 1)
 
 /*
 	This method is only created to serve the purpose of place ONE Task into the Ready Queue.  This method CANNOT be called

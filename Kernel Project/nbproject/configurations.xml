@@ -16,6 +16,7 @@
           <itemPath>GenericBufferConfig.h</itemPath>
           <itemPath>../Generic Libraries/Generic Buffer/GenericBufferObject.h</itemPath>
         </logicalFolder>
+        <itemPath>GenericTypes.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f1" displayName="Kernel" projectFiles="true">
         <logicalFolder name="f1" displayName="Port" projectFiles="true">

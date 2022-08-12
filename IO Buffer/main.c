@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.00
+    NexOS Kernel Version v1.01.04
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -389,14 +389,14 @@ UINT32 UARTBufferTaskCode(void *Args)
 #define ANALOG_CHANNEL                                  9
 
 // This is the Callback for the ADC Interrupt, it is optional
-void ADC1InterruptCallback(BYTE ADCValue)
+void ADC1InterruptCallback(UINT16 ADCValue)
 {
     /*
      * This function is called each time a single byte is received 
      * over the specified ADC.  That does not mean the interrupt was
      * technically triggered for each byte though.
      * 
-     * The argument BYTE Data is the byte which the ADC received.
+     * The argument UINT16 Data is the data which the ADC received.
      */
 }
 
@@ -409,7 +409,7 @@ void ADC1InterruptCallback(BYTE ADCValue)
  */
 UINT32 ADCBufferTaskCode(void *Args)
 {
-    BYTE ADCTaskBuffer[64];
+    UINT16 ADCTaskBuffer[64];
     UINT32 BytesRead = 0;
     
     
@@ -451,10 +451,10 @@ UINT32 ADCBufferTaskCode(void *Args)
     
     
     
-    // Create 1 buffer for RX at 128 bytes large.
+    // Create 1 buffer for RX at 256 bytes large.
     // If we passed in the buffers it's more efficient because we wouldn't be
     // using the OS Heap
-    if(InitIOBuffer(ADC_BUFFER_ID, (BYTE*)NULL, 128) != OS_SUCCESS)
+    if(InitIOBuffer(ADC_BUFFER_ID, (BYTE*)NULL, 256) != OS_SUCCESS)
         while(1);
     
     // Now obtain the ADC_BUFFER_ID so we can use it
@@ -482,7 +482,7 @@ UINT32 ADCBufferTaskCode(void *Args)
         
         // Now wait forever for sizeof(ADCTaskBuffer) ADC samples to come in.
         // With this port they are generated and read in chunks of 16
-        if(IOBufferReadBytes(ADC_BUFFER_ID, ADCTaskBuffer, sizeof(ADCTaskBuffer), sizeof(ADCTaskBuffer), &BytesRead, WAIT_FOREVER) != OS_SUCCESS)
+        if(IOBufferReadBytes(ADC_BUFFER_ID, (BYTE*)ADCTaskBuffer, sizeof(ADCTaskBuffer), sizeof(ADCTaskBuffer), &BytesRead, WAIT_FOREVER) != OS_SUCCESS)
             while(1);
         
         if(BytesRead != sizeof(ADCTaskBuffer))

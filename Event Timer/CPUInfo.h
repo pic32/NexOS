@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.00
+    NexOS Kernel Version v1.01.04
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,11 +25,11 @@
 	#define CPU_INFO_H
 /*
 	Developer: brodie
-	Date: April 19, 2011
+	Date: January 19, 2022
 	File Name: CPUInfo.h
-	Version: 1.00
-	IDE:  MPLAB IDE v8.63
-	Compiler: C99
+	Version: 1.03
+	IDE:  MPLAB X v3.26
+	Compiler: XC32 v1.40
 
 	Description:
 	This file contains mostly just macros for getting various information about the 
@@ -39,10 +39,11 @@
 /*! \mainpage CPUInfo Library
  *  \brief This is a Library written in C for getting information about the PIC32 CPU, RAM and Program Memory.
  *  \author brodie
- *  \version 1.00
- *  \date   April 19, 2011
+ *  \version 1.03
+ *  \date   January 19, 2022
  */
 
+#include "GenericTypes.h"
 #include "p32xxxx.h"
 	
 /*
@@ -357,12 +358,12 @@
 					Bits 15 - 8: Identifies the type of processor.  this field allow software to distinguish
 					between the various types of MIPS Technologies processors.
 					Bits 7 - 0: Specifies the revision number of the processor.  This field allows software to
-					distinguish between one revision and another of teh same processor type.  This field is broken
+					distinguish between one revision and another of the same processor type.  This field is broken
 					up into the following three subfields.
 					Major Revision<7:5> The number is increased on major revisions of the processor core.
 					Minor Revision<4:2> This number is increased on each incremental revision of the processor and 
 					reset on each new major revision.
-					Patch Level<1:0> If a patch is made to midify an older revision of the processor, this field
+					Patch Level<1:0> If a patch is made to modify an older revision of the processor, this field
 					will be incremented.
 
 	Notes: None.
@@ -377,12 +378,12 @@
 				Bits 15 - 8: Identifies the type of processor.  this field allow software to distinguish
 				between the various types of MIPS Technologies processors.
 				Bits 7 - 0: Specifies the revision number of the processor.  This field allows software to
-				distinguish between one revision and another of teh same processor type.  This field is broken
+				distinguish between one revision and another of the same processor type.  This field is broken
 				up into the following three subfields.
 				Major Revision<7:5> The number is increased on major revisions of the processor core.
 				Minor Revision<4:2> This number is increased on each incremental revision of the processor and 
 				reset on each new major revision.
-				Patch Level<1:0> If a patch is made to midify an older revision of the processor, this field
+				Patch Level<1:0> If a patch is made to modify an older revision of the processor, this field
 				will be incremented.
 		* @note None
 		* @sa None
@@ -416,5 +417,106 @@
 		* @since v1.00
 */
 #define GetLastBadVirtualAddress()			(UINT32)(_CP0_GET_BADVADDR())
+
+/*
+	Macro: UINT32 GetDeviceID(void)
+
+	Parameters: 
+		None
+
+	Returns:
+		UINT32 - Returns the device ID assigned by Microchip.
+
+	Description:  Each PIC32 has a unique device ID to identify it.  Refer to 
+    this link to get the device ID of each device: (DS61145 Rev L).
+    http://ww1.microchip.com/downloads/en/DeviceDoc/61145L.pdf
+
+	Notes: None
+*/
+/**
+		* @brief Each PIC32 has a unique device ID to identify it.  Refer to 
+        * this link to get the device ID of each device: (DS61145 Rev L).
+        * http://ww1.microchip.com/downloads/en/DeviceDoc/61145L.pdf
+		* @param None
+		* @return UINT32 - Returns the device ID assigned by Microchip.
+		* @note None
+		* @sa None
+		* @since v1.01
+*/
+#define GetDeviceID()                       ((UINT32)DEVIDbits.DEVID)
+
+
+/*
+	Macro: UINT32 GetDeviceSiliconRev(void)
+
+	Parameters: 
+		None
+
+	Returns:
+		UINT32 - Returns the silicon Rev ID assigned by Microchip.
+
+	Description:  This method can be used to get the rev silicon of the uC.
+
+	Notes: None
+*/
+/**
+		* @brief This method can be used to get the rev silicon of the uC.
+		* @param None
+		* @return UINT32 - Returns the silicon Rev ID assigned by Microchip.
+		* @note None
+		* @sa None
+		* @since v1.01
+*/
+#define GetDeviceSiliconRev()               ((UINT32)DEVIDbits.VER)
+
+
+/*
+	Macro: UINT64 GetDeviceMACID(void)
+
+	Parameters: 
+		None
+
+	Returns:
+		UINT64 - Returns the unique 48-bit MAC ID assigned by the factory.
+
+	Description:  This method gets the unique 48-bit MAC ID.  It can be useful
+    for using as a seed, or a unique identifier of some sort.
+
+	Notes: None
+*/
+/**
+		* @brief This method gets the unique 48-bit MAC ID.  IT can be useful
+        * for using as a seed, or a unique identifier of some sort.
+		* @param None
+		* @return UINT64 - Returns the unique 48-bit MAC ID assigned by the factory.
+		* @note None
+		* @sa None
+		* @since v1.01
+*/
+#define GetDeviceMACID()                    (UINT64)((UINT64)EMAC1SA2 << 32 | (UINT64)EMAC1SA1 << 16 | (UINT64)EMAC1SA0)
+
+/*
+	Macro: UINT16 GetUserID(void)
+
+	Parameters: 
+		None
+
+	Returns:
+		UINT16 - The user ID which is programmed at bootloader program time.
+
+	Description: This macro will get the value which was programmed into the uC
+        when it was programmed with the bootloader at the factory.
+
+	Notes: None
+*/
+/**
+		* @brief Gets user ID which is programmed at bootloader program time.
+		* @param None
+		* @return UINT16 - The user ID which is programmed at bootloader program time.
+		* @note None
+		* @sa None
+		* @since v1.03
+*/
+#define GetUserID()                         (UINT16)(DEVCFG3bits.USERID)
 
 #endif // end of CPU_INFO_H

@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.03
+    NexOS Kernel Version v1.01.04
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -484,25 +484,27 @@
             #if (USING_ADC_1_IO_BUFFER == 1)
                 case IO_BUFFER_ADC_1_ID:
                 {
-                    // we will always configure up the ADC to run 16 samples
-                    *DataBuffer++ = ADC1BUF0;
-                    *DataBuffer++ = ADC1BUF1;
-                    *DataBuffer++ = ADC1BUF2;
-                    *DataBuffer++ = ADC1BUF3;
-                    *DataBuffer++ = ADC1BUF4;
-                    *DataBuffer++ = ADC1BUF5;
-                    *DataBuffer++ = ADC1BUF6;
-                    *DataBuffer++ = ADC1BUF7;
-                    *DataBuffer++ = ADC1BUF8;
-                    *DataBuffer++ = ADC1BUF9;
-                    *DataBuffer++ = ADC1BUFA;
-                    *DataBuffer++ = ADC1BUFB;
-                    *DataBuffer++ = ADC1BUFC;
-                    *DataBuffer++ = ADC1BUFD;
-                    *DataBuffer++ = ADC1BUFE;
-                    *DataBuffer = ADC1BUFF;
+                    UINT16 *ADCDataBuffer = (UINT16*)DataBuffer;
                     
-                    BytesRead = 16;
+                    // we will always configure up the ADC to run 16 samples
+                    *ADCDataBuffer++ = ADC1BUF0;
+                    *ADCDataBuffer++ = ADC1BUF1;
+                    *ADCDataBuffer++ = ADC1BUF2;
+                    *ADCDataBuffer++ = ADC1BUF3;
+                    *ADCDataBuffer++ = ADC1BUF4;
+                    *ADCDataBuffer++ = ADC1BUF5;
+                    *ADCDataBuffer++ = ADC1BUF6;
+                    *ADCDataBuffer++ = ADC1BUF7;
+                    *ADCDataBuffer++ = ADC1BUF8;
+                    *ADCDataBuffer++ = ADC1BUF9;
+                    *ADCDataBuffer++ = ADC1BUFA;
+                    *ADCDataBuffer++ = ADC1BUFB;
+                    *ADCDataBuffer++ = ADC1BUFC;
+                    *ADCDataBuffer++ = ADC1BUFD;
+                    *ADCDataBuffer++ = ADC1BUFE;
+                    *ADCDataBuffer = ADC1BUFF;
+                    
+                    BytesRead = 32;
                     
                     break;
                 }

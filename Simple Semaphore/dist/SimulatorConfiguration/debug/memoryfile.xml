@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<project>                                  
+  <executable name="dist/SimulatorConfiguration/debug/Simple_Semaphore.debug.elf">                 
+    <memory name="program">                 
+      <units>bytes</units>                 
+      <length>531968</length>                 
+      <used>23524</used>                     
+      <free>508444</free>                     
+    </memory>                              
+    <memory name="data">              
+      <units>bytes</units>                 
+      <length>131072</length>                 
+      <used>51396</used>                     
+      <free>79676</free>                     
+    </memory>                              
+  </executable>                            
+</project>                                 

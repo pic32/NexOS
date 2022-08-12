@@ -23,7 +23,7 @@
 #ifndef DOUBLE_LINKED_LIST_H
 	#define DOUBLE_LINKED_LIST_H
 
-#include "GenericTypeDefs.h"
+#include "GenericTypes.h"
 
 /*
 	This structure is used link up tasks that are in a list.  It has a pointer

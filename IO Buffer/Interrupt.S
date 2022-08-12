@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.00
+    NexOS Kernel Version v1.01.04
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -29,6 +29,7 @@
 	
 #if (USING_EXT_INT_0_EVENT == 1 || USING_EXT_INT_0_CALLBACK == 1)
 	.extern		ExternalInterrupt0Handler
+	.extern		gSystemStackPointer
 	.global		ExternalInterrupt0Interrupt
 	.set		nomips16
  	.set		noreorder
@@ -101,6 +102,9 @@ ExternalInterrupt0Interrupt:
 	sw k0, 4(sp)
 	
 	move a0, sp /* Move the stack pointer to the register for value passing in C */
+	
+	la sp, gSystemStackPointer
+	lw sp, (sp)
 
 	jal ExternalInterrupt0Handler /* go to the interrupt handler */
 	nop
@@ -165,6 +169,7 @@ ExternalInterrupt0Interrupt:
 	
 #if (USING_EXT_INT_1_EVENT == 1 || USING_EXT_INT_1_CALLBACK == 1)
 	.extern		ExternalInterrupt1Handler
+	.extern		gSystemStackPointer
 	.global		ExternalInterrupt1Interrupt
 	.set		nomips16
  	.set		noreorder
@@ -238,6 +243,9 @@ ExternalInterrupt1Interrupt:
 	
 	move a0, sp /* Move the stack pointer to the register for value passing in C */
 
+	la sp, gSystemStackPointer
+	lw sp, (sp)
+	
 	jal ExternalInterrupt1Handler /* go to the interrupt handler */
 	nop
 	
@@ -301,6 +309,7 @@ ExternalInterrupt1Interrupt:
 		
 #if (USING_EXT_INT_2_EVENT == 1 || USING_EXT_INT_2_CALLBACK == 1)
 	.extern		ExternalInterrupt2Handler
+	.extern		gSystemStackPointer
 	.global		ExternalInterrupt2Interrupt
 	.set		nomips16
  	.set		noreorder
@@ -374,6 +383,9 @@ ExternalInterrupt2Interrupt:
 	
 	move a0, sp /* Move the stack pointer to the register for value passing in C */
 
+	la sp, gSystemStackPointer
+	lw sp, (sp)
+	
 	jal ExternalInterrupt2Handler /* go to the interrupt handler */
 	nop
 	
@@ -437,6 +449,7 @@ ExternalInterrupt2Interrupt:
 	
 #if (USING_EXT_INT_3_EVENT == 1 || USING_EXT_INT_3_CALLBACK == 1)
 	.extern		ExternalInterrupt3Handler
+	.extern		gSystemStackPointer
 	.global		ExternalInterrupt3Interrupt
 	.set		nomips16
  	.set		noreorder
@@ -510,6 +523,9 @@ ExternalInterrupt3Interrupt:
 	
 	move a0, sp /* Move the stack pointer to the register for value passing in C */
 
+	la sp, gSystemStackPointer
+	lw sp, (sp)
+	
 	jal ExternalInterrupt3Handler /* go to the interrupt handler */
 	nop
 	
@@ -573,6 +589,7 @@ ExternalInterrupt3Interrupt:
 	
 #if (USING_EXT_INT_4_EVENT == 1 || USING_EXT_INT_4_CALLBACK == 1)
 	.extern		ExternalInterrupt4Handler
+	.extern		gSystemStackPointer
 	.global		ExternalInterrupt4Interrupt
 	.set		nomips16
  	.set		noreorder
@@ -646,6 +663,9 @@ ExternalInterrupt4Interrupt:
 	
 	move a0, sp /* Move the stack pointer to the register for value passing in C */
 
+	la sp, gSystemStackPointer
+	lw sp, (sp)
+	
 	jal ExternalInterrupt4Handler /* go to the interrupt handler */
 	nop
 	
@@ -709,6 +729,7 @@ ExternalInterrupt4Interrupt:
 	
 #if (USING_CN_INT_EVENT == 1 || USING_CN_INT_CALLBACK == 1)
 	.extern		ChangeNotificationInterruptHandler
+	.extern		gSystemStackPointer
 	.global		ChangeNotificationInterrupt
 	.set		nomips16
  	.set		noreorder
@@ -782,6 +803,9 @@ ChangeNotificationInterrupt:
 	
 	move a0, sp /* Move the stack pointer to the register for value passing in C */
 
+	la sp, gSystemStackPointer
+	lw sp, (sp)
+	
 	jal ChangeNotificationInterruptHandler /* go to the interrupt handler */
 	nop
 	
@@ -845,6 +869,7 @@ ChangeNotificationInterrupt:
 	
 #if (USING_TIMER_1_EVENT == 1 || USING_TIMER_1_CALLBACK == 1)
 	.extern		Timer1InterruptHandler
+	.extern		gSystemStackPointer
 	.global		Timer1Interrupt
 	.set		nomips16
  	.set		noreorder
@@ -918,6 +943,9 @@ Timer1Interrupt:
 	
 	move a0, sp /* Move the stack pointer to the register for value passing in C */
 
+	la sp, gSystemStackPointer
+	lw sp, (sp)
+	
 	jal Timer1InterruptHandler /* go to the interrupt handler */
 	nop
 	
@@ -981,6 +1009,7 @@ Timer1Interrupt:
 
 #if (USING_TIMER_2_EVENT == 1 || USING_TIMER_2_CALLBACK == 1)
 	.extern		Timer2InterruptHandler
+	.extern		gSystemStackPointer
 	.global		Timer2Interrupt
 	.set		nomips16
  	.set		noreorder
@@ -1054,6 +1083,9 @@ Timer2Interrupt:
 	
 	move a0, sp /* Move the stack pointer to the register for value passing in C */
 
+	la sp, gSystemStackPointer
+	lw sp, (sp)
+	
 	jal Timer2InterruptHandler /* go to the interrupt handler */
 	nop
 	
@@ -1117,6 +1149,7 @@ Timer2Interrupt:
 
 #if (USING_TIMER_3_EVENT == 1 || USING_TIMER_3_CALLBACK == 1)
 	.extern		Timer3InterruptHandler
+	.extern		gSystemStackPointer
 	.global		Timer3Interrupt
 	.set		nomips16
  	.set		noreorder
@@ -1190,6 +1223,9 @@ Timer3Interrupt:
 	
 	move a0, sp /* Move the stack pointer to the register for value passing in C */
 
+	la sp, gSystemStackPointer
+	lw sp, (sp)
+	
 	jal Timer3InterruptHandler /* go to the interrupt handler */
 	nop
 	
@@ -1253,6 +1289,7 @@ Timer3Interrupt:
 
 #if (USING_TIMER_4_EVENT == 1 || USING_TIMER_4_CALLBACK == 1)
 	.extern		Timer4InterruptHandler
+	.extern		gSystemStackPointer
 	.global		Timer4Interrupt
 	.set		nomips16
  	.set		noreorder
@@ -1326,6 +1363,9 @@ Timer4Interrupt:
 	
 	move a0, sp /* Move the stack pointer to the register for value passing in C */
 
+	la sp, gSystemStackPointer
+	lw sp, (sp)
+	
 	jal Timer4InterruptHandler /* go to the interrupt handler */
 	nop
 	
@@ -1389,6 +1429,7 @@ Timer4Interrupt:
 
 #if (USING_TIMER_5_EVENT == 1 || USING_TIMER_5_CALLBACK == 1)
 	.extern		Timer5InterruptHandler
+	.extern		gSystemStackPointer
 	.global		Timer5Interrupt
 	.set		nomips16
  	.set		noreorder
@@ -1462,6 +1503,9 @@ Timer5Interrupt:
 	
 	move a0, sp /* Move the stack pointer to the register for value passing in C */
 
+	la sp, gSystemStackPointer
+	lw sp, (sp)
+	
 	jal Timer5InterruptHandler /* go to the interrupt handler */
 	nop
 	
@@ -1525,6 +1569,7 @@ Timer5Interrupt:
 
 #if (USING_ADC_1_EVENT == 1 || USING_ADC_1_CALLBACK == 1)
 	.extern		ADC1InterruptHandler
+	.extern		gSystemStackPointer
 	.global		ADC1Interrupt
 	.set		nomips16
  	.set		noreorder
@@ -1598,6 +1643,9 @@ ADC1Interrupt:
 	
 	move a0, sp /* Move the stack pointer to the register for value passing in C */
 
+	la sp, gSystemStackPointer
+	lw sp, (sp)
+	
 	jal ADC1InterruptHandler /* go to the interrupt handler */
 	nop
 	
@@ -1661,6 +1709,7 @@ ADC1Interrupt:
 	
 #if (USING_RTCC_ALARM_EVENT == 1 || USING_RTCC_ALARM_CALLBACK == 1)
 	.extern		RTCCAlarmInterruptHandler
+	.extern		gSystemStackPointer
 	.global		RTCCAlarmInterrupt
 	.set		nomips16
  	.set		noreorder
@@ -1734,6 +1783,9 @@ RTCCAlarmInterrupt:
 	
 	move a0, sp /* Move the stack pointer to the register for value passing in C */
 
+	la sp, gSystemStackPointer
+	lw sp, (sp)
+	
 	jal RTCCAlarmInterruptHandler /* go to the interrupt handler */
 	nop
 	
@@ -1797,6 +1849,7 @@ RTCCAlarmInterrupt:
 	
 #if (USING_EXT_OSC_FAILED_EVENT == 1 || USING_EXT_OSC_FAILED_CALLBACK == 1)
 	.extern		ExternalOscillatorFailedInterruptHandler
+	.extern		gSystemStackPointer
 	.global		ExternalOscillatorFailedInterrupt
 	.set		nomips16
  	.set		noreorder
@@ -1870,6 +1923,9 @@ ExternalOscillatorFailedInterrupt:
 	
 	move a0, sp /* Move the stack pointer to the register for value passing in C */
 
+	la sp, gSystemStackPointer
+	lw sp, (sp)
+	
 	jal ExternalOscillatorFailedInterruptHandler /* go to the interrupt handler */
 	nop
 	
@@ -1934,6 +1990,7 @@ ExternalOscillatorFailedInterrupt:
 #if (USING_IO_BUFFERS == 1)
     #if (USING_UART_1_RX_DONE_EVENT == 1 || USING_UART_1_TX_DONE_EVENT == 1 || USING_UART_1_ERROR_EVENT == 1 || USING_UART_1_RX_CALLBACK == 1 || USING_UART_1_TX_CALLBACK == 1 || USING_UART_1_ERROR_CALLBACK == 1 || USING_UART_1_IO_BUFFER == 1)
 	    .extern		UART1InterruptHandler
+	    .extern		gSystemStackPointer
 	    .global		UART1Interrupt
 	    .set		nomips16
 	    .set		noreorder
@@ -2007,6 +2064,9 @@ ExternalOscillatorFailedInterrupt:
 
 	    move a0, sp /* Move the stack pointer to the register for value passing in C */
 
+	    la sp, gSystemStackPointer
+	    lw sp, (sp)
+	
 	    jal UART1InterruptHandler /* go to the interrupt handler */
 	    nop
 
@@ -2070,6 +2130,7 @@ ExternalOscillatorFailedInterrupt:
 
     #if (USING_UART_2_RX_DONE_EVENT == 1 || USING_UART_2_TX_DONE_EVENT == 1 || USING_UART_2_ERROR_EVENT == 1 || USING_UART_2_RX_CALLBACK == 1 || USING_UART_2_TX_CALLBACK == 1 || USING_UART_2_ERROR_CALLBACK == 1 || USING_UART_2_IO_BUFFER == 1)
 	    .extern		UART2InterruptHandler
+	    .extern		gSystemStackPointer
 	    .global		UART2Interrupt
 	    .set		nomips16
 	    .set		noreorder
@@ -2143,6 +2204,9 @@ ExternalOscillatorFailedInterrupt:
 
 	    move a0, sp /* Move the stack pointer to the register for value passing in C */
 
+	    la sp, gSystemStackPointer
+	    lw sp, (sp)
+	    
 	    jal UART2InterruptHandler /* go to the interrupt handler */
 	    nop
 
@@ -2206,6 +2270,7 @@ ExternalOscillatorFailedInterrupt:
     
     #if (USING_UART_3_RX_DONE_EVENT == 1 || USING_UART_3_TX_DONE_EVENT == 1 || USING_UART_3_ERROR_EVENT == 1 || USING_UART_3_RX_CALLBACK == 1 || USING_UART_3_TX_CALLBACK == 1 || USING_UART_3_ERROR_CALLBACK == 1 || USING_UART_3_IO_BUFFER == 1)
 	    .extern		UART3InterruptHandler
+	    .extern		gSystemStackPointer
 	    .global		UART3Interrupt
 	    .set		nomips16
 	    .set		noreorder
@@ -2279,6 +2344,9 @@ ExternalOscillatorFailedInterrupt:
 
 	    move a0, sp /* Move the stack pointer to the register for value passing in C */
 
+	    la sp, gSystemStackPointer
+	    lw sp, (sp)
+	    
 	    jal UART3InterruptHandler /* go to the interrupt handler */
 	    nop
 
@@ -2342,6 +2410,7 @@ ExternalOscillatorFailedInterrupt:
     
     #if (USING_UART_4_RX_DONE_EVENT == 1 || USING_UART_4_TX_DONE_EVENT == 1 || USING_UART_4_ERROR_EVENT == 1 || USING_UART_4_RX_CALLBACK == 1 || USING_UART_3_TX_CALLBACK == 1 || USING_UART_4_ERROR_CALLBACK == 1 || USING_UART_4_IO_BUFFER == 1)
 	    .extern		UART4InterruptHandler
+	    .extern		gSystemStackPointer
 	    .global		UART4Interrupt
 	    .set		nomips16
 	    .set		noreorder
@@ -2415,6 +2484,9 @@ ExternalOscillatorFailedInterrupt:
 
 	    move a0, sp /* Move the stack pointer to the register for value passing in C */
 
+	    la sp, gSystemStackPointer
+	    lw sp, (sp)
+	    
 	    jal UART4InterruptHandler /* go to the interrupt handler */
 	    nop
 
@@ -2478,6 +2550,7 @@ ExternalOscillatorFailedInterrupt:
     
     #if (USING_UART_5_RX_DONE_EVENT == 1 || USING_UART_5_TX_DONE_EVENT == 1 || USING_UART_5_ERROR_EVENT == 1 || USING_UART_5_RX_CALLBACK == 1 || USING_UART_5_TX_CALLBACK == 1 || USING_UART_5_ERROR_CALLBACK == 1 || USING_UART_5_IO_BUFFER == 1)
 	    .extern		UART5InterruptHandler
+	    .extern		gSystemStackPointer
 	    .global		UART5Interrupt
 	    .set		nomips16
 	    .set		noreorder
@@ -2551,6 +2624,9 @@ ExternalOscillatorFailedInterrupt:
 
 	    move a0, sp /* Move the stack pointer to the register for value passing in C */
 
+	    la sp, gSystemStackPointer
+	    lw sp, (sp)
+	    
 	    jal UART5InterruptHandler /* go to the interrupt handler */
 	    nop
 
@@ -2614,6 +2690,7 @@ ExternalOscillatorFailedInterrupt:
     
     #if (USING_UART_6_RX_DONE_EVENT == 1 || USING_UART_6_TX_DONE_EVENT == 1 || USING_UART_6_ERROR_EVENT == 1 || USING_UART_6_RX_CALLBACK == 1 || USING_UART_6_TX_CALLBACK == 1 || USING_UART_6_ERROR_CALLBACK == 1 || USING_UART_6_IO_BUFFER == 1)
 	    .extern		UART6InterruptHandler
+	    .extern		gSystemStackPointer
 	    .global		UART6Interrupt
 	    .set		nomips16
 	    .set		noreorder
@@ -2687,6 +2764,9 @@ ExternalOscillatorFailedInterrupt:
 
 	    move a0, sp /* Move the stack pointer to the register for value passing in C */
 
+	    la sp, gSystemStackPointer
+	    lw sp, (sp)
+	    
 	    jal UART6InterruptHandler /* go to the interrupt handler */
 	    nop
 
@@ -2750,6 +2830,7 @@ ExternalOscillatorFailedInterrupt:
     
     #if (USING_CAN_1_IO_BUFFER == 1)
 	    .extern		CAN1InterruptHandler
+	    .extern		gSystemStackPointer
 	    .global		CAN1Interrupt
 	    .set		nomips16
 	    .set		noreorder
@@ -2823,6 +2904,9 @@ ExternalOscillatorFailedInterrupt:
 
 	    move a0, sp /* Move the stack pointer to the register for value passing in C */
 
+	    la sp, gSystemStackPointer
+	    lw sp, (sp)
+	    
 	    jal CAN1InterruptHandler /* go to the interrupt handler */
 	    nop
 
@@ -2886,6 +2970,7 @@ ExternalOscillatorFailedInterrupt:
     
     #if (USING_CAN_2_IO_BUFFER == 1)
 	    .extern		CAN2InterruptHandler
+	    .extern		gSystemStackPointer
 	    .global		CAN2Interrupt
 	    .set		nomips16
 	    .set		noreorder
@@ -2959,6 +3044,9 @@ ExternalOscillatorFailedInterrupt:
 
 	    move a0, sp /* Move the stack pointer to the register for value passing in C */
 
+	    la sp, gSystemStackPointer
+	    lw sp, (sp)
+	    
 	    jal CAN2InterruptHandler /* go to the interrupt handler */
 	    nop
 

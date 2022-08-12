@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.03
+    NexOS Kernel Version v1.01.04
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,7 +25,7 @@
     #define TASKOBJECT_H
 
 #include "RTOSConfig.h"
-#include "GenericTypeDefs.h"
+#include "GenericTypes.h"
 #include "../../Generic Libraries/Double Linked List/DoubleLinkedList.h"
 #include "Port.h"
 
@@ -173,6 +173,26 @@ typedef union
 
 typedef struct
 {
+    UINT32 TaskRunTime;
+    DOUBLE_LINKED_LIST_NODE Node;
+    
+    #if (USING_TASK_NAMES == 1)
+        BYTE TaskName[TASK_NAME_LENGTH_IN_BYTES + 1];
+    #endif // end of #if (USING_TASK_NAMES == 1)
+
+    #if (USING_TASK_UNIQUE_ID == 1)
+        UINT32 TaskUniqueID;
+    #endif // end of #if (USING_TASK_UNIQUE_ID == 1)
+}TASK_RUNTIME_INFO;
+
+typedef struct
+{
+    TASK_RUNTIME_INFO *TaskRuntimeInfo;
+    FLOAT32 PreviousExecutionTime;
+}TASK_RUNTIME_HISTORY;
+
+typedef struct
+{
 	TASK_NODE TaskNodeArray[NUMBER_OF_INTERNAL_TASK_NODES]; // this is what is used by lists to store the TASK
     OS_WORD *TaskStackPointer; // A pointer to a memory location as to where the tasks stack resides
 	OS_WORD CriticalCount;  // This stores the critical count of the system when the TASK was blocked by the OS
@@ -188,7 +208,7 @@ typedef struct
 
     #if (USING_TASK_NAMES == 1)
         BYTE TaskName[TASK_NAME_LENGTH_IN_BYTES + 1];
-    #endif // end of USING_TASK_NAMES
+    #endif // end of #if (USING_TASK_NAMES == 1)
 
     #if (USING_DELETE_TASK == 1) || (USING_RESTART_TASK == 1) || (ANALYZE_TASK_STACK_USAGE == 1) || (USING_CHECK_TASK_STACK_FOR_OVERFLOW == 1)
         OS_WORD *StartOfTaskStackPointer;
@@ -227,6 +247,14 @@ typedef struct
     #if (USING_TASK_LOCAL_STORAGE_ACCESS == 1)
         void *TaskLocalThreadStorageArray[NUMBER_OF_LOCAL_THREAD_STORAGE_POINTERS];
     #endif // end of #if (USING_TASK_LOCAL_STORAGE_ACCESS == 1)
+
+    #if (USING_TASK_RUNTIME_EXECUTION_COUNTER == 1)
+        TASK_RUNTIME_INFO *TaskRunTime;
+    #endif // end of #if (USING_TASK_RUNTIME_EXECUTION_COUNTER == 1)
+
+    #if (USING_TASK_UNIQUE_ID == 1)
+        UINT32 UniqueID;
+    #endif // end of #if (USING_TASK_UNIQUE_ID == 1)
 }TASK;
 
 #endif	/* TASKOBJECT_H */

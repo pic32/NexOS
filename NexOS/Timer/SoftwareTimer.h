@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.03
+    NexOS Kernel Version v1.01.04
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -33,7 +33,7 @@
 #ifndef SOFTWARE_TIMERS_H
 	#define SOFTWARE_TIMERS_H
 
-#include "GenericTypeDefs.h"
+#include "GenericTypes.h"
 #include "RTOSConfig.h"
 #include "../../Generic Libraries/Double Linked List/DoubleLinkedList.h"
 #include "../Kernel/Kernel.h"

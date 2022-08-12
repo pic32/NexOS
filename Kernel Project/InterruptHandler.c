@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.03
+    NexOS Kernel Version v1.01.04
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -269,21 +269,19 @@
 #endif // end of #if (USING_TIMER_5_EVENT == 1 || USING_TIMER_5_CALLBACK == 1)  
     
 #if (USING_ADC_1_IO_BUFFER == 1)
-    void ADC1InterruptCallback(BYTE ADCValue);
-
-    BOOL UpdateADC1Buffer(BYTE *Data, UINT32 DataBufferSize)
+    BOOL UpdateADC1Buffer(UINT16 *Data, UINT32 DataBufferSize)
     {
         BOOL SwapTask = FALSE;
         
         if(PortIOBufferDataAvailable(IO_BUFFER_ADC_1_ID) == TRUE)
         {
             // read the data in from the outside world, and then call appropriate methods or callbacks
-            UINT32 BytesRead = PortIOBufferReadAvailableData(IO_BUFFER_ADC_1_ID, Data, ADC_1_ISR_DATA_BUFFER_SIZE_IN_BYTES);
+            UINT32 BytesRead = PortIOBufferReadAvailableData(IO_BUFFER_ADC_1_ID, (BYTE*)Data, ADC_1_ISR_DATA_BUFFER_SIZE_IN_SAMPLES * 2);
 
             // now write the data to the IO Buffer
             if(BytesRead != 0)
             {
-                if(OS_WriteToIOBuffer(IO_BUFFER_ADC_1_ID, Data, BytesRead) == TRUE)
+                if(OS_WriteToIOBuffer(IO_BUFFER_ADC_1_ID, (BYTE*)Data, BytesRead) == TRUE)
                     SwapTask = TRUE;
 
                 #ifndef USE_RX_INTERRUPT_TRIGGER_LEVEL
@@ -298,7 +296,7 @@
             {
                 UINT32 i;
 
-                for(i = 0; i < BytesRead; i++)
+                for(i = 0; i < BytesRead / 2; i++)
                     ADC1InterruptCallback(Data[i]);
             }
             #endif // end of #if (USING_ADC_1_CALLBACK == 1)
@@ -314,11 +312,11 @@
     
     OS_WORD *ADC1InterruptHandler(OS_WORD *CurrentTaskStackPointer)
     {
-        BYTE Data[ADC_1_ISR_DATA_BUFFER_SIZE_IN_BYTES];
+        UINT16 Data[ADC_1_ISR_DATA_BUFFER_SIZE_IN_SAMPLES];
 
         // if there is data in the hardware FIFO, read it into the IO_BUFFER,
         // or the user buffer if a read is pending.
-        if(UpdateADC1Buffer(Data, ADC_1_ISR_DATA_BUFFER_SIZE_IN_BYTES) == TRUE)
+        if(UpdateADC1Buffer(Data, sizeof(Data)) == TRUE)
             CurrentTaskStackPointer = OS_NextTask(CurrentTaskStackPointer);
 
         // clear the interrupt flag
@@ -328,8 +326,6 @@
     }
 #else
     #if (USING_ADC_1_EVENT == 1 || USING_ADC_1_CALLBACK == 1)
-        void ADC1InterruptCallback(void);
-
         OS_WORD *ADC1InterruptHandler(OS_WORD *CurrentTaskStackPointer)
         {
             #if (USING_ADC_1_CALLBACK == 1)

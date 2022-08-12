@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.03
+    NexOS Kernel Version v1.01.04
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -41,21 +41,6 @@ GetGP:
 	nop
 
 	.end 		GetGP
-
-	.set		nomips16
- 	.set		noreorder
-	.set 		noat
-	.global 	GetSP
-
-	.ent		GetSP
-
-GetSP:
-	
-	addu  v0, sp, zero
-	jr ra
-	nop
-
-	.end 		GetSP
 
 
 	.extern		NextTask

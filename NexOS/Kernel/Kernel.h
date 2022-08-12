@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.03
+    NexOS Kernel Version v1.01.04
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -39,7 +39,7 @@
 #ifndef KERNEL_H
 	#define KERNEL_H
 
-#include "GenericTypeDefs.h"
+#include "GenericTypes.h"
 #include "RTOSConfig.h"
 #include "Port.h"
 #include "TaskObject.h"
@@ -76,7 +76,7 @@
  */
 #define KERNEL_MAJOR_VERSION_NUMBER										0x01
 #define KERNEL_MINOR_VERSION_NUMBER										0x01
-#define KERNEL_TEST_VERSION_NUMBER                                      0x03
+#define KERNEL_TEST_VERSION_NUMBER                                      0x04
 
 #define INVALID_TASK_PRIORITY											255
 
@@ -225,7 +225,7 @@ UINT32 GetOSTickCount(void);
 UINT32 GetOSTickCountFromISR(void);
 
 /*
-	UINT32 PortAnaylzeSystemStackUsage(void)
+	UINT32 AnaylzeSystemStackUsage(void)
 
 	Description: This method returns how many words have been unused by the system
     stack.  This denotes the high water mark inside the system stack.
@@ -249,7 +249,68 @@ UINT32 GetOSTickCountFromISR(void);
 	See Also:
 		- PortAnaylzeTaskStackUsage()
 */
-UINT32 PortAnaylzeSystemStackUsage(void);
+UINT32 AnaylzeSystemStackUsage(void);
+
+/*
+	void TaskRuntimeExecutionListToString(BYTE *ToStringBuffer, BOOL Percentage)
+
+	Description: This method will take the task execution times and to string
+    them into a buffer.
+	
+	Blocking: No
+
+	User Callable: Yes
+
+	Arguments:
+        BYTE *ToStringBuffer - The buffer to put the string in.
+  
+        BOOL Percentage - If TRUE the runtime in percentage will be printed, 
+        otherwise the runtime in seconds will be printed.
+
+	Returns:
+        None
+
+	Notes:
+        - USING_TASK_RUNTIME_EXECUTION_TO_STRING_METHOD inside of RTOSConfig.h 
+          must be defined as 1 to use this method.
+        - USING_TASK_RUNTIME_EXECUTION_COUNTER inside of RTOSConfig.h must be 
+          defined as 1 to use this method.
+		- PortGetExecutionTimeInSeconds() inside of Port.c must also be implemented for
+          use of this function.
+
+	See Also:
+		- PortGetExecutionTimeInSeconds()
+*/
+void TaskRuntimeExecutionListToString(BYTE *ToStringBuffer, BOOL Percentage);
+
+/*
+	void TaskRuntimeHistoryListToString(BYTE *ToStringBuffer)
+
+	Description: This method will take the runtime history of TASKs and 
+    to string the data to a buffer.  The most recently executed TASK will
+    be the first one to stringed in the buffer.  The buffer will contain up
+    to TASK_RUNTIME_HISTORY_SIZE_IN_TASKS number of TASKs data.
+	
+	Blocking: No
+
+	User Callable: Yes
+
+	Arguments:
+        BYTE *ToStringBuffer - The buffer to put the string in.
+
+        BOOL PrintRuntime - If set to TRUE the TASK runtime will also be printed.
+ 
+	Returns:
+        None 
+
+	Notes:
+        - USING_TASK_RUNTIME_EXECUTION_COUNTER inside of RTOSConfig.h must be 
+          defined as 1 to use this method.
+
+	See Also:
+		- TASK_RUNTIME_HISTORY_SIZE_IN_TASKS inside of RTOSConfig.h
+*/
+void TaskRuntimeHistoryListToString(BYTE *ToStringBuffer, BOOL PrintRuntime);
 
 /*
 	void DeviceEnterSleepMode(void)
@@ -613,6 +674,8 @@ void OS_IncrementTaskListPriorities(DOUBLE_LINKED_LIST_HEAD *ListHead);
 BOOL OS_ChangeTaskPriority(TASK *Task, BYTE Priority);
 
 void OS_AddTaskToDelayQueue(TASK *Task, TASK_NODE *Node, UINT32 TicksToDelay, BOOL RemoveTaskFromReadyQueue);
+
+BOOL OS_AddTaskToRuntimeExecutionList(TASK *Task);
 
 void OS_InitializeTaskNode(TASK_NODE *TaskNode, void *Data);
 

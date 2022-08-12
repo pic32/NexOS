@@ -57,17 +57,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED="../Generic Libraries/Generic Buffer/GenericBuffer.c" "../Generic Libraries/Double Linked List/DoubleLinkedList.c" ContextSwitch.S CriticalSection.c Interrupt.S InterruptHandler.c Port.c IOBufferPort.c ../NexOS/Kernel/Kernel.c ../NexOS/Kernel/KernelTasks.c ../NexOS/Kernel/Memory.c ../NexOS/Kernel/Task.c ../NexOS/Semaphore/OS_BinarySemaphore.c ../NexOS/Semaphore/Mutex/Mutex.c ../NexOS/IOBuffer/IOBuffer.c main.c HardwareProfile.c
+SOURCEFILES_QUOTED_IF_SPACED=ContextSwitch.S CriticalSection.c Interrupt.S InterruptHandler.c Port.c IOBufferPort.c ../NexOS/Kernel/Kernel.c ../NexOS/Kernel/KernelTasks.c ../NexOS/Kernel/Memory.c ../NexOS/Kernel/Task.c ../NexOS/Semaphore/OS_BinarySemaphore.c ../NexOS/Semaphore/Mutex/Mutex.c ../NexOS/IOBuffer/IOBuffer.c main.c HardwareProfile.c "../Generic Libraries/Double Linked List/DoubleLinkedList.c" "../Generic Libraries/Generic Buffer/GenericBuffer.c"
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/_ext/935638537/GenericBuffer.o ${OBJECTDIR}/_ext/1079146332/DoubleLinkedList.o ${OBJECTDIR}/ContextSwitch.o ${OBJECTDIR}/CriticalSection.o ${OBJECTDIR}/Interrupt.o ${OBJECTDIR}/InterruptHandler.o ${OBJECTDIR}/Port.o ${OBJECTDIR}/IOBufferPort.o ${OBJECTDIR}/_ext/918398346/Kernel.o ${OBJECTDIR}/_ext/918398346/KernelTasks.o ${OBJECTDIR}/_ext/918398346/Memory.o ${OBJECTDIR}/_ext/918398346/Task.o ${OBJECTDIR}/_ext/1152203115/OS_BinarySemaphore.o ${OBJECTDIR}/_ext/50398139/Mutex.o ${OBJECTDIR}/_ext/721120033/IOBuffer.o ${OBJECTDIR}/main.o ${OBJECTDIR}/HardwareProfile.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/_ext/935638537/GenericBuffer.o.d ${OBJECTDIR}/_ext/1079146332/DoubleLinkedList.o.d ${OBJECTDIR}/ContextSwitch.o.d ${OBJECTDIR}/CriticalSection.o.d ${OBJECTDIR}/Interrupt.o.d ${OBJECTDIR}/InterruptHandler.o.d ${OBJECTDIR}/Port.o.d ${OBJECTDIR}/IOBufferPort.o.d ${OBJECTDIR}/_ext/918398346/Kernel.o.d ${OBJECTDIR}/_ext/918398346/KernelTasks.o.d ${OBJECTDIR}/_ext/918398346/Memory.o.d ${OBJECTDIR}/_ext/918398346/Task.o.d ${OBJECTDIR}/_ext/1152203115/OS_BinarySemaphore.o.d ${OBJECTDIR}/_ext/50398139/Mutex.o.d ${OBJECTDIR}/_ext/721120033/IOBuffer.o.d ${OBJECTDIR}/main.o.d ${OBJECTDIR}/HardwareProfile.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/ContextSwitch.o ${OBJECTDIR}/CriticalSection.o ${OBJECTDIR}/Interrupt.o ${OBJECTDIR}/InterruptHandler.o ${OBJECTDIR}/Port.o ${OBJECTDIR}/IOBufferPort.o ${OBJECTDIR}/_ext/918398346/Kernel.o ${OBJECTDIR}/_ext/918398346/KernelTasks.o ${OBJECTDIR}/_ext/918398346/Memory.o ${OBJECTDIR}/_ext/918398346/Task.o ${OBJECTDIR}/_ext/1152203115/OS_BinarySemaphore.o ${OBJECTDIR}/_ext/50398139/Mutex.o ${OBJECTDIR}/_ext/721120033/IOBuffer.o ${OBJECTDIR}/main.o ${OBJECTDIR}/HardwareProfile.o ${OBJECTDIR}/_ext/1079146332/DoubleLinkedList.o ${OBJECTDIR}/_ext/935638537/GenericBuffer.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/ContextSwitch.o.d ${OBJECTDIR}/CriticalSection.o.d ${OBJECTDIR}/Interrupt.o.d ${OBJECTDIR}/InterruptHandler.o.d ${OBJECTDIR}/Port.o.d ${OBJECTDIR}/IOBufferPort.o.d ${OBJECTDIR}/_ext/918398346/Kernel.o.d ${OBJECTDIR}/_ext/918398346/KernelTasks.o.d ${OBJECTDIR}/_ext/918398346/Memory.o.d ${OBJECTDIR}/_ext/918398346/Task.o.d ${OBJECTDIR}/_ext/1152203115/OS_BinarySemaphore.o.d ${OBJECTDIR}/_ext/50398139/Mutex.o.d ${OBJECTDIR}/_ext/721120033/IOBuffer.o.d ${OBJECTDIR}/main.o.d ${OBJECTDIR}/HardwareProfile.o.d ${OBJECTDIR}/_ext/1079146332/DoubleLinkedList.o.d ${OBJECTDIR}/_ext/935638537/GenericBuffer.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/_ext/935638537/GenericBuffer.o ${OBJECTDIR}/_ext/1079146332/DoubleLinkedList.o ${OBJECTDIR}/ContextSwitch.o ${OBJECTDIR}/CriticalSection.o ${OBJECTDIR}/Interrupt.o ${OBJECTDIR}/InterruptHandler.o ${OBJECTDIR}/Port.o ${OBJECTDIR}/IOBufferPort.o ${OBJECTDIR}/_ext/918398346/Kernel.o ${OBJECTDIR}/_ext/918398346/KernelTasks.o ${OBJECTDIR}/_ext/918398346/Memory.o ${OBJECTDIR}/_ext/918398346/Task.o ${OBJECTDIR}/_ext/1152203115/OS_BinarySemaphore.o ${OBJECTDIR}/_ext/50398139/Mutex.o ${OBJECTDIR}/_ext/721120033/IOBuffer.o ${OBJECTDIR}/main.o ${OBJECTDIR}/HardwareProfile.o
+OBJECTFILES=${OBJECTDIR}/ContextSwitch.o ${OBJECTDIR}/CriticalSection.o ${OBJECTDIR}/Interrupt.o ${OBJECTDIR}/InterruptHandler.o ${OBJECTDIR}/Port.o ${OBJECTDIR}/IOBufferPort.o ${OBJECTDIR}/_ext/918398346/Kernel.o ${OBJECTDIR}/_ext/918398346/KernelTasks.o ${OBJECTDIR}/_ext/918398346/Memory.o ${OBJECTDIR}/_ext/918398346/Task.o ${OBJECTDIR}/_ext/1152203115/OS_BinarySemaphore.o ${OBJECTDIR}/_ext/50398139/Mutex.o ${OBJECTDIR}/_ext/721120033/IOBuffer.o ${OBJECTDIR}/main.o ${OBJECTDIR}/HardwareProfile.o ${OBJECTDIR}/_ext/1079146332/DoubleLinkedList.o ${OBJECTDIR}/_ext/935638537/GenericBuffer.o
 
 # Source Files
-SOURCEFILES=../Generic Libraries/Generic Buffer/GenericBuffer.c ../Generic Libraries/Double Linked List/DoubleLinkedList.c ContextSwitch.S CriticalSection.c Interrupt.S InterruptHandler.c Port.c IOBufferPort.c ../NexOS/Kernel/Kernel.c ../NexOS/Kernel/KernelTasks.c ../NexOS/Kernel/Memory.c ../NexOS/Kernel/Task.c ../NexOS/Semaphore/OS_BinarySemaphore.c ../NexOS/Semaphore/Mutex/Mutex.c ../NexOS/IOBuffer/IOBuffer.c main.c HardwareProfile.c
+SOURCEFILES=ContextSwitch.S CriticalSection.c Interrupt.S InterruptHandler.c Port.c IOBufferPort.c ../NexOS/Kernel/Kernel.c ../NexOS/Kernel/KernelTasks.c ../NexOS/Kernel/Memory.c ../NexOS/Kernel/Task.c ../NexOS/Semaphore/OS_BinarySemaphore.c ../NexOS/Semaphore/Mutex/Mutex.c ../NexOS/IOBuffer/IOBuffer.c main.c HardwareProfile.c ../Generic Libraries/Double Linked List/DoubleLinkedList.c ../Generic Libraries/Generic Buffer/GenericBuffer.c
 
 
 
@@ -135,18 +135,6 @@ endif
 # ------------------------------------------------------------------------------------
 # Rules for buildStep: compile
 ifeq ($(TYPE_IMAGE), DEBUG_RUN)
-${OBJECTDIR}/_ext/935638537/GenericBuffer.o: ../Generic\ Libraries/Generic\ Buffer/GenericBuffer.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} "${OBJECTDIR}/_ext/935638537" 
-	@${RM} ${OBJECTDIR}/_ext/935638537/GenericBuffer.o.d 
-	@${RM} ${OBJECTDIR}/_ext/935638537/GenericBuffer.o 
-	@${FIXDEPS} "${OBJECTDIR}/_ext/935638537/GenericBuffer.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_REAL_ICE=1  -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -D_SUPPRESS_PLIB_WARNING -I"../IO Buffer" -Wall -MMD -MF "${OBJECTDIR}/_ext/935638537/GenericBuffer.o.d" -o ${OBJECTDIR}/_ext/935638537/GenericBuffer.o "../Generic Libraries/Generic Buffer/GenericBuffer.c"    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -mdfp=${DFP_DIR}  
-	
-${OBJECTDIR}/_ext/1079146332/DoubleLinkedList.o: ../Generic\ Libraries/Double\ Linked\ List/DoubleLinkedList.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} "${OBJECTDIR}/_ext/1079146332" 
-	@${RM} ${OBJECTDIR}/_ext/1079146332/DoubleLinkedList.o.d 
-	@${RM} ${OBJECTDIR}/_ext/1079146332/DoubleLinkedList.o 
-	@${FIXDEPS} "${OBJECTDIR}/_ext/1079146332/DoubleLinkedList.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_REAL_ICE=1  -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -D_SUPPRESS_PLIB_WARNING -I"../IO Buffer" -Wall -MMD -MF "${OBJECTDIR}/_ext/1079146332/DoubleLinkedList.o.d" -o ${OBJECTDIR}/_ext/1079146332/DoubleLinkedList.o "../Generic Libraries/Double Linked List/DoubleLinkedList.c"    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -mdfp=${DFP_DIR}  
-	
 ${OBJECTDIR}/CriticalSection.o: CriticalSection.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}" 
 	@${RM} ${OBJECTDIR}/CriticalSection.o.d 
@@ -225,19 +213,19 @@ ${OBJECTDIR}/HardwareProfile.o: HardwareProfile.c  nbproject/Makefile-${CND_CONF
 	@${RM} ${OBJECTDIR}/HardwareProfile.o 
 	@${FIXDEPS} "${OBJECTDIR}/HardwareProfile.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_REAL_ICE=1  -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -D_SUPPRESS_PLIB_WARNING -I"../IO Buffer" -Wall -MMD -MF "${OBJECTDIR}/HardwareProfile.o.d" -o ${OBJECTDIR}/HardwareProfile.o HardwareProfile.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -mdfp=${DFP_DIR}  
 	
-else
-${OBJECTDIR}/_ext/935638537/GenericBuffer.o: ../Generic\ Libraries/Generic\ Buffer/GenericBuffer.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} "${OBJECTDIR}/_ext/935638537" 
-	@${RM} ${OBJECTDIR}/_ext/935638537/GenericBuffer.o.d 
-	@${RM} ${OBJECTDIR}/_ext/935638537/GenericBuffer.o 
-	@${FIXDEPS} "${OBJECTDIR}/_ext/935638537/GenericBuffer.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -D_SUPPRESS_PLIB_WARNING -I"../IO Buffer" -Wall -MMD -MF "${OBJECTDIR}/_ext/935638537/GenericBuffer.o.d" -o ${OBJECTDIR}/_ext/935638537/GenericBuffer.o "../Generic Libraries/Generic Buffer/GenericBuffer.c"    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -mdfp=${DFP_DIR}  
-	
 ${OBJECTDIR}/_ext/1079146332/DoubleLinkedList.o: ../Generic\ Libraries/Double\ Linked\ List/DoubleLinkedList.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}/_ext/1079146332" 
 	@${RM} ${OBJECTDIR}/_ext/1079146332/DoubleLinkedList.o.d 
 	@${RM} ${OBJECTDIR}/_ext/1079146332/DoubleLinkedList.o 
-	@${FIXDEPS} "${OBJECTDIR}/_ext/1079146332/DoubleLinkedList.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -D_SUPPRESS_PLIB_WARNING -I"../IO Buffer" -Wall -MMD -MF "${OBJECTDIR}/_ext/1079146332/DoubleLinkedList.o.d" -o ${OBJECTDIR}/_ext/1079146332/DoubleLinkedList.o "../Generic Libraries/Double Linked List/DoubleLinkedList.c"    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -mdfp=${DFP_DIR}  
+	@${FIXDEPS} "${OBJECTDIR}/_ext/1079146332/DoubleLinkedList.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_REAL_ICE=1  -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -D_SUPPRESS_PLIB_WARNING -I"../IO Buffer" -Wall -MMD -MF "${OBJECTDIR}/_ext/1079146332/DoubleLinkedList.o.d" -o ${OBJECTDIR}/_ext/1079146332/DoubleLinkedList.o "../Generic Libraries/Double Linked List/DoubleLinkedList.c"    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -mdfp=${DFP_DIR}  
 	
+${OBJECTDIR}/_ext/935638537/GenericBuffer.o: ../Generic\ Libraries/Generic\ Buffer/GenericBuffer.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/_ext/935638537" 
+	@${RM} ${OBJECTDIR}/_ext/935638537/GenericBuffer.o.d 
+	@${RM} ${OBJECTDIR}/_ext/935638537/GenericBuffer.o 
+	@${FIXDEPS} "${OBJECTDIR}/_ext/935638537/GenericBuffer.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_REAL_ICE=1  -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -D_SUPPRESS_PLIB_WARNING -I"../IO Buffer" -Wall -MMD -MF "${OBJECTDIR}/_ext/935638537/GenericBuffer.o.d" -o ${OBJECTDIR}/_ext/935638537/GenericBuffer.o "../Generic Libraries/Generic Buffer/GenericBuffer.c"    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -mdfp=${DFP_DIR}  
+	
+else
 ${OBJECTDIR}/CriticalSection.o: CriticalSection.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}" 
 	@${RM} ${OBJECTDIR}/CriticalSection.o.d 
@@ -315,6 +303,18 @@ ${OBJECTDIR}/HardwareProfile.o: HardwareProfile.c  nbproject/Makefile-${CND_CONF
 	@${RM} ${OBJECTDIR}/HardwareProfile.o.d 
 	@${RM} ${OBJECTDIR}/HardwareProfile.o 
 	@${FIXDEPS} "${OBJECTDIR}/HardwareProfile.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -D_SUPPRESS_PLIB_WARNING -I"../IO Buffer" -Wall -MMD -MF "${OBJECTDIR}/HardwareProfile.o.d" -o ${OBJECTDIR}/HardwareProfile.o HardwareProfile.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -mdfp=${DFP_DIR}  
+	
+${OBJECTDIR}/_ext/1079146332/DoubleLinkedList.o: ../Generic\ Libraries/Double\ Linked\ List/DoubleLinkedList.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/_ext/1079146332" 
+	@${RM} ${OBJECTDIR}/_ext/1079146332/DoubleLinkedList.o.d 
+	@${RM} ${OBJECTDIR}/_ext/1079146332/DoubleLinkedList.o 
+	@${FIXDEPS} "${OBJECTDIR}/_ext/1079146332/DoubleLinkedList.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -D_SUPPRESS_PLIB_WARNING -I"../IO Buffer" -Wall -MMD -MF "${OBJECTDIR}/_ext/1079146332/DoubleLinkedList.o.d" -o ${OBJECTDIR}/_ext/1079146332/DoubleLinkedList.o "../Generic Libraries/Double Linked List/DoubleLinkedList.c"    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -mdfp=${DFP_DIR}  
+	
+${OBJECTDIR}/_ext/935638537/GenericBuffer.o: ../Generic\ Libraries/Generic\ Buffer/GenericBuffer.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/_ext/935638537" 
+	@${RM} ${OBJECTDIR}/_ext/935638537/GenericBuffer.o.d 
+	@${RM} ${OBJECTDIR}/_ext/935638537/GenericBuffer.o 
+	@${FIXDEPS} "${OBJECTDIR}/_ext/935638537/GenericBuffer.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -D_SUPPRESS_PLIB_WARNING -I"../IO Buffer" -Wall -MMD -MF "${OBJECTDIR}/_ext/935638537/GenericBuffer.o.d" -o ${OBJECTDIR}/_ext/935638537/GenericBuffer.o "../Generic Libraries/Generic Buffer/GenericBuffer.c"    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -mdfp=${DFP_DIR}  
 	
 endif
 

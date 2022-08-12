@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.00
+    NexOS Kernel Version v1.01.04
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -42,23 +42,9 @@ GetGP:
 
 	.end 		GetGP
 
-	.set		nomips16
- 	.set		noreorder
-	.set 		noat
-	.global 	GetSP
-
-	.ent		GetSP
-
-GetSP:
-	
-	addu  v0, sp, zero
-	jr ra
-	nop
-
-	.end 		GetSP
-
 
 	.extern		NextTask
+	.extern		gSystemStackPointer
 	.global		ContextSwitch
 	.set		nomips16
  	.set		noreorder
@@ -135,6 +121,9 @@ ContextSwitch:
 	sw k0, 4(sp)
 	
 	move a0, sp /* Move the stack pointer to the register for value passing in C */
+	
+	la sp, gSystemStackPointer
+	lw sp, (sp)
 
 	jal OS_NextTask	/* go to switch task */
 	nop

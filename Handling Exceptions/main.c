@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.00
+    NexOS Kernel Version v1.01.04
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -62,7 +62,7 @@
  *      4. Show how to use the MESSAGE_QUEUE.
  * 
  *  Notes:
- *      The MemoryAccessViolationTask is restarted upon the exception being generated and the MemoryAccessViolationTask is deleted upon generating an exception.
+ *      The DivideByZeroTask is restarted upon the exception being generated and the MemoryAccessViolationTask is deleted upon generating an exception.
  *      It takes some time for the Maintenance Task to run for the deletion and restart to happen so let the program run a bit.
  * 
  *      This demo code is designed to work with the MPLAB X IDE Simulator.
