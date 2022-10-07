@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.04
+    NexOS Kernel Version v1.01.05
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -250,7 +250,7 @@ static TASK *OS_CreateTask(TASK_ENTRY_POINT StartingAddress,
 }
 
 TASK *CreateTask(TASK_ENTRY_POINT StartingAddress,
-				UINT32 StackSizeInWords,
+				UINT32 StackSizeInBytes,
 				BYTE Priority,
 				void *Args,
 
@@ -277,6 +277,7 @@ TASK *CreateTask(TASK_ENTRY_POINT StartingAddress,
 				TASK *PreAllocatedTask)
 {
 	TASK *Task;
+    UINT32 StackSizeInWords = StackSizeInBytes / OS_WORD_SIZE_IN_BYTES;
 
     #if (USING_CHECK_TASK_PARAMETERS == 1)
         if(PreAllocatedTask != (TASK*)NULL)
@@ -308,7 +309,7 @@ TASK *CreateTask(TASK_ENTRY_POINT StartingAddress,
         if (Priority > HIGHEST_USER_TASK_PRIORITY)
             return (TASK*)NULL;
 
-        if(StackSizeInWords < MINIMUM_STACK_SIZE)
+        if(StackSizeInBytes < MINIMUM_STACK_SIZE_IN_BYTES)
             return (TASK*)NULL;
 
         #if(USING_TASK_NAMES == 1)
@@ -608,10 +609,10 @@ TASK *CreateTask(TASK_ENTRY_POINT StartingAddress,
 #endif // end of USING_DELETE_TASK
 
 #if (USING_TASK_DELAY_TICKS_METHOD == 1)
-	OS_RESULT TaskDelayTicks(UINT32 TicksToDelay)
+	OS_RESULT TaskDelayTicks(INT32 TicksToDelay)
 	{
         #if (USING_CHECK_TASK_PARAMETERS == 1)
-            if (TicksToDelay == 0 || TicksToDelay >= INVALID_TIMEOUT_TICKS_VALUE)
+            if (TicksToDelay <= 0)
                 return OS_INVALID_ARGUMENT;
         #endif // end of #if (USING_CHECK_TASK_PARAMETERS == 1)
 
@@ -938,7 +939,7 @@ TASK *CreateTask(TASK_ENTRY_POINT StartingAddress,
 	OS_RESULT TaskWaitOnSignals(UINT16 SignalsToWaitOn
 
 								#if (USING_TASK_DELAY_TICKS_METHOD == 1)
-									, UINT32 TicksToDelay
+									, INT32 TimeoutInTicks
 								#endif // end of #if (USING_TASK_DELAY_TICKS_METHOD == 1)
 		
 								)
@@ -950,6 +951,11 @@ TASK *CreateTask(TASK_ENTRY_POINT StartingAddress,
                 return OS_INVALID_ARGUMENT;
         #endif // end of #if (USING_CHECK_TASK_PARAMETERS == 1)
 
+        #if (USING_TASK_DELAY_TICKS_METHOD == 1)
+            if (TimeoutInTicks == 0)
+                return OS_INVALID_ARGUMENT;
+        #endif // end of #if (USING_TASK_DELAY_TICKS_METHOD == 1)
+
 		EnterCritical();
 
 		// set the signals bits
@@ -959,8 +965,8 @@ TASK *CreateTask(TASK_ENTRY_POINT StartingAddress,
 		OS_BlockOnSignals(gCurrentTask, PRIMARY_TASK_NODE, TRUE);
 
 		#if (USING_TASK_DELAY_TICKS_METHOD == 1)
-			if (TicksToDelay > 0)
-				OS_AddTaskToDelayQueue(gCurrentTask, &gCurrentTask->TaskNodeArray[SECONDARY_TASK_NODE], TicksToDelay, FALSE);
+			if (TimeoutInTicks > 0)
+				OS_AddTaskToDelayQueue(gCurrentTask, &gCurrentTask->TaskNodeArray[SECONDARY_TASK_NODE], TimeoutInTicks, FALSE);
 		#endif // end of #if (USING_TASK_DELAY_TICKS_METHOD == 1)
 
 		SurrenderCPU();
@@ -1143,7 +1149,7 @@ TASK *CreateTask(TASK_ENTRY_POINT StartingAddress,
 #if (ANALYZE_TASK_STACK_USAGE == 1)
     UINT32 AnalyzeTaskStack(TASK *Task)
     {
-        UINT32 FreeBytes;
+        UINT32 FreeWords;
         
         #if (USING_CHECK_TASK_PARAMETERS == 1)
             if (Task != (TASK*)NULL)
@@ -1159,11 +1165,11 @@ TASK *CreateTask(TASK_ENTRY_POINT StartingAddress,
             Task = gCurrentTask;
 
         // get the value
-        FreeBytes = PortAnaylzeTaskStackUsage(Task->StartOfTaskStackPointer, Task->StartingTaskStackSizeInWords);
+        FreeWords = PortAnaylzeTaskStackUsage(Task->StartOfTaskStackPointer, Task->StartingTaskStackSizeInWords);
 
         ExitCritical();
         
-        return FreeBytes;
+        return FreeWords * OS_WORD_SIZE_IN_BYTES;
     }
 #endif // end of #if (ANALYZE_TASK_STACK_USAGE == 1)
     

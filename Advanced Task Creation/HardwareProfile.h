@@ -9,8 +9,8 @@
     #define HARDWAREPROFILE_H
 
 #include <plib.h>
-
-#include "GenericTypeDefs.h"
+#include "p32xxxx.h"
+#include "GenericTypes.h"
 
 UINT32 GetPeripheralClock(void);
 

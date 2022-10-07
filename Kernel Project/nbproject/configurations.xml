@@ -51,6 +51,7 @@
       <itemPath>../NexOS/Kernel/OS_Callback.h</itemPath>
       <itemPath>../NexOS/Kernel/OS_Exception.h</itemPath>
       <itemPath>../NexOS/Event/OS_EventCallback.h</itemPath>
+      <itemPath>HardwareProfile.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"

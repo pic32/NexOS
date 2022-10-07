@@ -9,8 +9,8 @@
     #define HARDWAREPROFILE_H
 
 #include <plib.h>
-
-#include <GenericTypeDefs.h>
+#include "p32xxxx.h"
+#include "GenericTypes.h"
 
 UINT32 GetPeripheralClock(void);
 
@@ -52,6 +52,7 @@ void SetSystemClocks(UINT32 CPUFrequency);
 #define EEPROM_CS_ACTIVE                                0
 #define EEPROM_CS_INACTIVE                              1
 
+
 /*
 	In order for this library to be fully utilized, the CS pin of
 	the SRAM CANNOT BE MANUALLY CONTROLLED BY THE SPI PORT!  This
@@ -65,20 +66,6 @@ void SetSystemClocks(UINT32 CPUFrequency);
 #define SRAM_CS_TRIS                                    TRISBbits.TRISB5
 #define SRAM_CS_ACTIVE                                  0
 #define SRAM_CS_INACTIVE                                1
-
-/*
-    In order for this library to be fully utilized, the CS pin of
-    the SERIAL FLASH CANNOT BE MANUALLY CONTROLLED BY THE SPI PORT!  This
-    is because the CS must remain active between certain data transfers
-    to get the optimal performance out of the Serial Flash.
-*/
-
-#define SERIAL_FLASH_SPI_CHANNEL                        SPI_CHANNEL4
-#define SERIAL_FLASH_CS_PIN								LATBbits.LATB15
-#define SERIAL_FLASH_CS_TRIS                            TRISBbits.TRISB15
-#define SERIAL_FLASH_SPI_CONFIG_BITS                    (SPI_OPEN_MSTEN | SPI_OPEN_SMP_END | SPI_OPEN_MODE8 | SPI_OPEN_CKE_REV)
-#define SERIAL_FLASH_CS_ACTIVE                          0
-#define SERIAL_FLASH_CS_INACTIVE                        1
 
 
 // Select your interface type
@@ -130,7 +117,7 @@ void SetSystemClocks(UINT32 CPUFrequency);
 //#ifdef USE_SD_INTERFACE_WITH_SPI
 
     // Registers for the SPI module you want to use
-    #define MDD_USE_SPI_2
+    #define MDD_USE_SPI_4
 
     //SPI Configuration
     #define SPI_START_CFG_1     (PRI_PRESCAL_64_1 | SEC_PRESCAL_8_1 | MASTER_ENABLE_ON | SPI_CKE_ON | SPI_SMP_ON)
@@ -140,14 +127,14 @@ void SetSystemClocks(UINT32 CPUFrequency);
     #define SPI_FREQUENCY       (20000000)
 
     // Description: SD-SPI Chip Select Output bit
-    #define SD_CS               LATGbits.LATG12
+    #define SD_CS               LATBbits.LATB1
     // Description: SD-SPI Chip Select TRIS bit
-    #define SD_CS_TRIS          TRISGbits.TRISG12
+    #define SD_CS_TRIS          TRISBbits.TRISB1
 
     // Description: SD-SPI Card Detect Input bit
-    #define SD_CD               PORTGbits.RG14
+    #define SD_CD               PORTBbits.RB2
     // Description: SD-SPI Card Detect TRIS bit
-    #define SD_CD_TRIS          TRISGbits.TRISG14
+    #define SD_CD_TRIS          TRISBbits.TRISB2
 
     // define if the SD Card Detect is active high or low
     #define SD_CD_ACTIVE        0
@@ -171,11 +158,11 @@ void SetSystemClocks(UINT32 CPUFrequency);
         #define SPIBRG			    SPI1BRG
 
         // Tris pins for SCK/SDI/SDO lines
-        #define SPICLOCK            TRISFbits.TRISF6
+        #define SPICLOCK            TRISFbits.TRISF13
         // Description: The TRIS bit for the SDI pin
-        #define SPIIN               TRISFbits.TRISF7
+        #define SPIIN               TRISFbits.TRISF4
         // Description: The TRIS bit for the SDO pin
-        #define SPIOUT              TRISFbits.TRISF8
+        #define SPIOUT              TRISFbits.TRISF5
 
         //SPI library functions
         #define putcSPI             putcSPI1
@@ -212,6 +199,37 @@ void SetSystemClocks(UINT32 CPUFrequency);
             #define putcSPI             putcSPI2
             #define getcSPI             getcSPI2
             #define OpenSPI(config1, config2)   OpenSPI2(config1, config2)
+        #elif defined MDD_USE_SPI_4
+             // Description: The main SPI control register
+            #define SPICON1             SPI4CON
+            // Description: The SPI status register
+            #define SPISTAT             SPI4STAT
+            // Description: The SPI Buffer
+            #define SPIBUF              SPI4BUF
+            // Description: The receive buffer full bit in the SPI status register
+            #define SPISTAT_RBF         SPI4STATbits.SPIRBF
+            // Description: The bitwise define for the SPI control register (i.e. _____bits)
+            #define SPICON1bits         SPI4CONbits
+            // Description: The bitwise define for the SPI status register (i.e. _____bits)
+            #define SPISTATbits         SPI4STATbits
+            // Description: The enable bit for the SPI module
+            #define SPIENABLE           SPI4CONbits.ON
+            // Description: The definition for the SPI baud rate generator register (PIC32)
+            #define SPIBRG			    SPI4BRG
+
+            // Tris pins for SCK/SDI/SDO lines
+            #define SPICLOCK            TRISFbits.TRISF13
+            // Description: The TRIS bit for the SDI pin
+            #define SPIIN               TRISFbits.TRISF4
+            // Description: The TRIS bit for the SDO pin
+            #define SPIOUT              TRISFbits.TRISF5
+
+            #include "plib.h"
+
+            //SPI library functions
+            #define putcSPI(data)       SpiChnPutC(SPI_CHANNEL4, data)
+            #define getcSPI()           SpiChnGetC(SPI_CHANNEL4)
+            #define OpenSPI(config1, config2)   SpiChnOpenEx(SPI_CHANNEL4, config1, config2, GetPeripheralClock() / SPI_FREQUENCY)
         #endif
 
         // Will generate an error if the clock speed is too low to interface to the card

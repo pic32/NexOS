@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.04
+    NexOS Kernel Version v1.01.05
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -335,7 +335,7 @@ BOOL OS_RaiseEvent(EVENT Event);
 OS_RESULT RaiseEvent(EVENT Event);
 
 /*
-	OS_RESULT WaitOnEvent(EVENT Event, UINT32 TimeoutInTicks)
+	OS_RESULT WaitOnEvent(EVENT Event, INT32 TimeoutInTicks)
 
 	Description: This method blocks the current TASK until the specified event 
 	occurs.  There is also an optional timeout.
@@ -347,9 +347,18 @@ OS_RESULT RaiseEvent(EVENT Event);
 	Arguments:
 		EVENT Event - A valid User EVENT to wait to occur.
 
-		UINT32 TimeoutInTicks - If a timeout is desired a value greater than
-		zero should be specified.  Otherwise a value of zero means to wait
-		indefinitely for the event to occur.  The timeout is in OS timer ticks.
+		INT32 TimeoutInTicks - This is a timeout value in ticks to wait
+		for the EVENT.  Below are valid values for TimeoutInTicks.
+
+            TimeoutInTicks = 1 to (2^31 - 1): The calling TASK will be placed onto the
+            Delayed Queue up to the specified number of ticks if
+            the EVENT does not occur.
+
+            TimeoutInTicks = 0: The calling TASK will not be placed on the
+            Delayed Queue and this method will return OS_INVALID_ARGUMENT.
+
+            TimeoutInTicks <= -1: The calling TASK will not be placed on the
+            Delay Queue and will wait forever for the specified EVENT.
 
 	Returns: OS_SUCCESS if the event was successfully encountered within the
 	specified timeout, or another OS_RESULT value otherwise.
@@ -364,7 +373,7 @@ OS_RESULT RaiseEvent(EVENT Event);
 OS_RESULT WaitOnEvent(	EVENT Event
 
 						#if (USING_TASK_DELAY_TICKS_METHOD == 1)
-							, UINT32 TimeoutInTicks
+							, INT32 TimeoutInTicks
 						#endif // end of #if (USING_TASK_DELAY_TICKS_METHOD == 1)
 
 						);

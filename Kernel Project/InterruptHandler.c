@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.04
+    NexOS Kernel Version v1.01.05
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -269,6 +269,8 @@
 #endif // end of #if (USING_TIMER_5_EVENT == 1 || USING_TIMER_5_CALLBACK == 1)  
     
 #if (USING_ADC_1_IO_BUFFER == 1)
+    void ADC1InterruptCallback(UINT16 ADCValue);
+
     BOOL UpdateADC1Buffer(UINT16 *Data, UINT32 DataBufferSize)
     {
         BOOL SwapTask = FALSE;
@@ -326,6 +328,8 @@
     }
 #else
     #if (USING_ADC_1_EVENT == 1 || USING_ADC_1_CALLBACK == 1)
+        void ADC1InterruptCallback(void);
+
         OS_WORD *ADC1InterruptHandler(OS_WORD *CurrentTaskStackPointer)
         {
             #if (USING_ADC_1_CALLBACK == 1)

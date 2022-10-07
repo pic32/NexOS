@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.04
+    NexOS Kernel Version v1.01.05
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -185,7 +185,7 @@ int main(int argc, char** argv)
         
         // Now we are creating 6 TASKs that will all execute the same program.
         // The only difference is the void *Args passed to each one and the task name.
-        if(CreateTask(AdvancedTaskCreationDemonstrationCode, 300, 1, (void*)i, FALSE, TaskName, (TASK*)NULL) == (TASK*)NULL)
+        if(CreateTask(AdvancedTaskCreationDemonstrationCode, 1200, 1 + i, (void*)i, FALSE, TaskName, (TASK*)NULL) == (TASK*)NULL)
             while(1);
     }
     

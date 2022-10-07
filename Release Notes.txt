@@ -1,3 +1,15 @@
+v1.01.05 10/07/2022
+ - Changed the stack units from words to bytes.
+ - Fixed bugs in the calculations of all methods converting to or from OS ticks.
+ - Fixed a bug where a value < 0 for the wait period in WaitForEvent() would
+   actually cause the TASK to wake up eventually.
+ - Made all methods that used a delay in ticks use an INT32 and all behaviors
+   are the same for the delay regardless of method.
+ - Added the CallbackTimerSetCallback(), CallbackTimerResetFromISR(), and
+   CallbackTimerEnableFromISR() methods.
+ - Moved the MINIMUM_STACK_SIZE_IN_BYTES to RTOSConfig.h
+ - Added the TaskDelayMicroseconds() method.
+
 v1.01.04 8/12/2022
  - Added the ability to keep track of how long a TASK has executed for.
  - Added a method to ToString() all the TASK execution times.

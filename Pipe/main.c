@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.04
+    NexOS Kernel Version v1.01.05
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -138,11 +138,11 @@ int main(int argc, char** argv)
     // Now we are going to create our TASKs
         
     // this is the producer task
-    if(CreateTask(DataProducerTask, 300, 2, (void*)NULL, (TASK*)NULL) == (TASK*)NULL)
+    if(CreateTask(DataProducerTask, 1200, 2, (void*)NULL, (TASK*)NULL) == (TASK*)NULL)
         while(1);
         
     // this is the consumer task
-    if(CreateTask(DataConsumerTask, 300, 1, (void*)NULL, (TASK*)NULL) == (TASK*)NULL)
+    if(CreateTask(DataConsumerTask, 1200, 1, (void*)NULL, (TASK*)NULL) == (TASK*)NULL)
         while(1);
     
     // This starts the OS Scheduler and will begin executing the TASK with the highest priority.

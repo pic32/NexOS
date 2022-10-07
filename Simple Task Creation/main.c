@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.04
+    NexOS Kernel Version v1.01.05
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -148,13 +148,13 @@ int main(int argc, char** argv)
 	#endif // end of #if SIMULATION
 
     // Now we are going to create our TASKs
-    if(CreateTask(Task1Code, 300, 1, (void*)NULL, (TASK*)NULL) == (TASK*)NULL)
+    if(CreateTask(Task1Code, 1200, 1, (void*)NULL, (TASK*)NULL) == (TASK*)NULL)
         while(1);
             
-    if(CreateTask(Task2Code, 300, 2, (void*)NULL, (TASK*)NULL) == (TASK*)NULL)
+    if(CreateTask(Task2Code, 1200, 2, (void*)NULL, (TASK*)NULL) == (TASK*)NULL)
         while(1);
         
-    if(CreateTask(Task3Code, 300, 3, (void*)NULL, (TASK*)NULL) == (TASK*)NULL)
+    if(CreateTask(Task3Code, 1200, 3, (void*)NULL, (TASK*)NULL) == (TASK*)NULL)
         while(1);
     
     // This starts the OS Scheduler and will begin executing the TASK with the highest priority.

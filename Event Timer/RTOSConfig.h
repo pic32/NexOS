@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.04
+    NexOS Kernel Version v1.01.05
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -31,8 +31,8 @@
 // OS Configurations
 //----------------------------------------------------------------------------------------------------
 
-// This is version v1.01.04 release of the RTOSConfig.h file.
-#define RTOS_CONFIG_H_VERSION                                   0x00000006
+// This is version v1.01.05 release of the RTOSConfig.h file.
+#define RTOS_CONFIG_H_VERSION                                   0x00000007
 
 // OS_PRIORITY is the priority of the OS compared to interrupts.  When an OS call is made the
 // interrupt priority will be set to OS_PRIORITY so that interrupts of OS_PRIORITY level or lower
@@ -69,6 +69,10 @@
 // The system stack is used to process interrupts so that the stack size
 // burden can be taken off of each TASK.
 #define SYSTEM_STACK_SIZE_IN_WORDS                              256
+
+// MINIMUM_STACK_SIZE_IN_BYTES is the number of bytes large a TASK
+// stack must be when created.
+#define MINIMUM_STACK_SIZE_IN_BYTES							    200
 
 // USING_TICKS_TO_MILLISECONDS_METHOD must be defined as a 1 to enable the ticks
 // to milliseconds conversion method.  A 1 enables this feature, and a 0 disables it.
@@ -181,7 +185,7 @@
 
 // This is the stack size in words that the Idle Task will be assigned.
 // Tests have shown that 59 words are used by the TASK.
-#define IDLE_TASK_STACK_SIZE_IN_WORDS                           64
+#define IDLE_TASK_STACK_SIZE_IN_BYTES                           384
 
 // This is the Idle Task priority and until further notice should always be set to zero.
 // The OS scheduler is designed around the fact that at least 1 task is in the READY
@@ -207,7 +211,7 @@
 // This is the stack size in words that the Maintenance Task will be assigned.
 // Test have shown 48 words are used.  This seems too low and will be evaluated
 // further in more depth.
-#define MAINTENANCE_TASK_STACK_SIZE_IN_WORDS                    64
+#define MAINTENANCE_TASK_STACK_SIZE_IN_BYTES                    256
 
 // This is the priority of the Maintenance Task.  It can be any valid priority.
 #define MAINTENANCE_TASK_PRIORITY 								HIGHEST_USER_TASK_PRIORITY
@@ -229,7 +233,7 @@
 
 // This is the stack size in words that the Buffer Task will be assigned.
 // Test have shown that 61 words at least are needed.
-#define IO_BUFFER_TASK_STACK_SIZE_IN_WORDS                      96
+#define IO_BUFFER_TASK_STACK_SIZE_IN_BYTES                      384
 
 // This is the priority of the Buffer Task.  It can be any valid priority.
 #define IO_BUFFER_TASK_PRIORITY                                 HIGHEST_USER_TASK_PRIORITY
@@ -557,6 +561,10 @@
 // change the periodicity of the callback method in the CALLBACK_TIMER.
 #define USING_CALLBACK_TIMER_SET_PERIODICITY_METHOD				0
 
+// USING_CALLBACK_TIMER_SET_CALLBACK_METHOD if set to a 1 will allow the user to
+// change the callback method of a CALLBACK_TIMER.
+#define USING_CALLBACK_TIMER_SET_CALLBACK_METHOD                0
+
 // USING_CALLBACK_TIMER_GET_PERIODICITY_IN_TICKS_METHOD if set to a 1 will allow the user
 // to get the current periodicity of the callback method in the CALLBACK_TIMER.
 #define USING_CALLBACK_TIMER_GET_PERIODICITY_IN_TICKS_METHOD	0
@@ -583,6 +591,14 @@
 // USING_CALLBACK_TIMER_IS_RUNNING_METHOD if set to a 1 will allow the user to
 // know if a CALLBACK_TIMER is currently running (enabled).
 #define USING_CALLBACK_TIMER_IS_RUNNING_METHOD					0
+
+// USING_CALLBACK_TIMER_RESET_FROM_ISR_METHOD if set to a 1 will allow the user
+// to reset a CALLBACK_TIMER from an ISR or critical section.
+#define USING_CALLBACK_TIMER_RESET_FROM_ISR_METHOD              0
+
+// USING_CALLBACK_TIMER_ENABLE_FROM_ISR_METHOD if set to a 1 will allow the user
+// to enable or disable a CALLBACK_TIMER from an ISR or critical section.
+#define USING_CALLBACK_TIMER_ENABLE_FROM_ISR_METHOD             0
 //----------------------------------------------------------------------------------------------------
 
 

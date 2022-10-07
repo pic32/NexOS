@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.04
+    NexOS Kernel Version v1.01.05
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -104,7 +104,7 @@ UINT32 EventTaskCode(void *Args)
     {
         // Now we will wait on the USER_1_EVENT to fire.
         // this way we sync ourselves up with the 
-        if(WaitOnEvent(USER_1_EVENT, 0) == OS_SUCCESS)
+        if(WaitOnEvent(USER_1_EVENT, WAIT_FOREVER) == OS_SUCCESS)
         {
             // if we got into here the USER_1_EVENT event fired
             LATDINV = 0x0001;
@@ -175,11 +175,11 @@ int main(int argc, char** argv)
 	#endif // end of #if SIMULATION
 
     // Now we are going to create our TASKs
-    if(CreateTask(EventTaskCode, 300, 2, (void*)NULL, (TASK*)NULL) == (TASK*)NULL)
+    if(CreateTask(EventTaskCode, 1200, 2, (void*)NULL, (TASK*)NULL) == (TASK*)NULL)
         while(1);
         
     // Now we are going to create our TASKs
-    if(CreateTask(UserEventTaskCode, 300, 1, (void*)NULL, (TASK*)NULL) == (TASK*)NULL)
+    if(CreateTask(UserEventTaskCode, 1200, 1, (void*)NULL, (TASK*)NULL) == (TASK*)NULL)
         while(1);
     
     // This starts the OS Scheduler and will begin executing the TASK with the highest priority.

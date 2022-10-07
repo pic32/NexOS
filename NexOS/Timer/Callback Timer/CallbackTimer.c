@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.04
+    NexOS Kernel Version v1.01.05
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -66,7 +66,7 @@ BOOL OS_InitCallbackTimersLib(void)
 CALLBACK_TIMER *CreateCallbackTimer(CALLBACK_TIMER *CallbackTimer, UINT32 PeriodicityInTicks, CALLBACK_TIMER_CALLBACK CallbackTimerCallback, BOOL Enable)
 {
     #if (USING_CHECK_CALLBACK_TIMER_PARAMETERS == 1)
-        if (PeriodicityInTicks == 0 || PeriodicityInTicks >= INVALID_TIMEOUT_TICKS_VALUE)
+        if (PeriodicityInTicks == 0 || PeriodicityInTicks == INVALID_TIMER_TICKS_VALUE)
             return (CALLBACK_TIMER*)NULL;
 
         if (ProgramAddressValid((OS_WORD)CallbackTimerCallback) == FALSE)
@@ -110,6 +110,8 @@ CALLBACK_TIMER *CreateCallbackTimer(CALLBACK_TIMER *CallbackTimer, UINT32 Period
 #if (USING_CALLBACK_TIMER_ENABLE_METHOD == 1)
 	OS_RESULT CallbackTimerEnable(CALLBACK_TIMER *CallbackTimer, BOOL Enable)
 	{
+        OS_RESULT Result;
+        
         #if (USING_CHECK_CALLBACK_TIMER_PARAMETERS == 1)
             if(RAMAddressValid((OS_WORD)CallbackTimer) == FALSE)
                 return OS_INVALID_ARGUMENT_ADDRESS;
@@ -117,23 +119,11 @@ CALLBACK_TIMER *CreateCallbackTimer(CALLBACK_TIMER *CallbackTimer, UINT32 Period
 
 		EnterCritical();
 
-		if (OS_SoftwareTimerIsRunning(&CallbackTimer->Timer) == Enable)
-		{
-			ExitCritical();
-
-			return OS_SUCCESS;
-		}
-
-		if(Enable == TRUE)
-			InsertNodeAtEndOfDoubleLinkedList(&gCallbackTimerList, &CallbackTimer->Node);
-		else
-			RemoveNodeFromDoubleLinkedList(&gCallbackTimerList, &CallbackTimer->Node);
-
-		SoftwareTimerEnable(&(CallbackTimer->Timer), Enable);
+        Result = CallbackTimerEnableFromISR(CallbackTimer, Enable);
 
 		ExitCritical();
 
-		return OS_SUCCESS;
+		return Result;
 	}
 #endif // end of #if (USING_CALLBACK_TIMER_ENABLE_METHOD == 1)
 
@@ -141,6 +131,8 @@ CALLBACK_TIMER *CreateCallbackTimer(CALLBACK_TIMER *CallbackTimer, UINT32 Period
 	// stops timer and sets the CurrentCount to 0
 	OS_RESULT CallbackTimerReset(CALLBACK_TIMER *CallbackTimer)
 	{
+        OS_RESULT Result;
+        
         #if (USING_CHECK_CALLBACK_TIMER_PARAMETERS == 1)
             if(RAMAddressValid((OS_WORD)CallbackTimer) == FALSE)
                 return OS_INVALID_ARGUMENT_ADDRESS;
@@ -148,15 +140,11 @@ CALLBACK_TIMER *CreateCallbackTimer(CALLBACK_TIMER *CallbackTimer, UINT32 Period
 
 		EnterCritical();
 
-        // clear the timer
-		OS_SoftwareTimerClear(&CallbackTimer->Timer);
-
-        // now disable it
-        CallbackTimerEnable(CallbackTimer, FALSE);
+        Result = CallbackTimerResetFromISR(CallbackTimer);
 
 		ExitCritical();
 
-		return OS_SUCCESS;
+		return Result;
 	}
 #endif // end of #if (USING_CALLBACK_TIMER_RESET_METHOD == 1)
 
@@ -247,6 +235,27 @@ CALLBACK_TIMER *CreateCallbackTimer(CALLBACK_TIMER *CallbackTimer, UINT32 Period
 	}
 #endif // end of #if (USING_CALLBACK_TIMER_SET_PERIODICITY_METHOD == 1)
 
+#if(USING_CALLBACK_TIMER_SET_CALLBACK_METHOD == 1)
+    OS_RESULT CallbackTimerSetCallback(CALLBACK_TIMER *CallbackTimer, CALLBACK_TIMER_CALLBACK CallbackTimerCallback)
+	{
+        #if (USING_CHECK_CALLBACK_TIMER_PARAMETERS == 1)
+            if(RAMAddressValid((OS_WORD)CallbackTimer) == FALSE)
+                return OS_INVALID_ARGUMENT_ADDRESS;
+
+            if (ProgramAddressValid((OS_WORD)CallbackTimerCallback) == FALSE)
+                return OS_INVALID_ARGUMENT_ADDRESS;
+        #endif // end of #if (USING_CHECK_CALLBACK_TIMER_PARAMETERS == 1)
+
+		EnterCritical();
+
+		CallbackTimer->CallbackTimerCallback = CallbackTimerCallback;
+
+		ExitCritical();
+
+		return OS_SUCCESS;
+	}
+#endif // end of #if(USING_CALLBACK_TIMER_SET_CALLBACK_METHOD == 1)
+    
 #if (USING_CALLBACK_TIMER_DELETE_METHOD == 1)
 	OS_RESULT CallbackTimerDelete(CALLBACK_TIMER *CallbackTimer)
 	{
@@ -285,3 +294,44 @@ CALLBACK_TIMER *CreateCallbackTimer(CALLBACK_TIMER *CallbackTimer, UINT32 Period
 		return SoftwareTimerIsRunning(&CallbackTimer->Timer);
 	}
 #endif // end of #if (USING_CALLBACK_TIMER_IS_RUNNING_METHOD == 1)
+
+#if (USING_CALLBACK_TIMER_RESET_FROM_ISR_METHOD == 1)
+	// stops timer and sets the CurrentCount to 0
+	OS_RESULT CallbackTimerResetFromISR(CALLBACK_TIMER *CallbackTimer)
+	{
+        #if (USING_CHECK_CALLBACK_TIMER_PARAMETERS == 1)
+            if(RAMAddressValid((OS_WORD)CallbackTimer) == FALSE)
+                return OS_INVALID_ARGUMENT_ADDRESS;
+        #endif // end of #if (USING_CHECK_CALLBACK_TIMER_PARAMETERS == 1)
+
+        // clear the timer
+		OS_SoftwareTimerClear(&CallbackTimer->Timer);
+
+        // now disable it
+        CallbackTimerEnableFromISR(CallbackTimer, FALSE);
+
+		return OS_SUCCESS;
+	}
+#endif // end of #if (USING_CALLBACK_TIMER_RESET_METHOD == 1)
+    
+#if (USING_CALLBACK_TIMER_ENABLE_FROM_ISR_METHOD == 1)
+	OS_RESULT CallbackTimerEnableFromISR(CALLBACK_TIMER *CallbackTimer, BOOL Enable)
+	{
+        #if (USING_CHECK_CALLBACK_TIMER_PARAMETERS == 1)
+            if(RAMAddressValid((OS_WORD)CallbackTimer) == FALSE)
+                return OS_INVALID_ARGUMENT_ADDRESS;
+        #endif // end of #if (USING_CHECK_CALLBACK_TIMER_PARAMETERS == 1)
+
+		if (OS_SoftwareTimerIsRunning(&CallbackTimer->Timer) == Enable)
+			return OS_SUCCESS;
+
+		if(Enable == TRUE)
+			InsertNodeAtEndOfDoubleLinkedList(&gCallbackTimerList, &CallbackTimer->Node);
+		else
+			RemoveNodeFromDoubleLinkedList(&gCallbackTimerList, &CallbackTimer->Node);
+
+		SoftwareTimerEnableFromISR(&(CallbackTimer->Timer), Enable);
+
+		return OS_SUCCESS;
+	}
+#endif // end of #if (USING_CALLBACK_TIMER_ENABLE_METHOD == 1)

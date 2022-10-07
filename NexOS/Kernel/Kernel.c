@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.04
+    NexOS Kernel Version v1.01.05
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -48,7 +48,7 @@
 	#include "../Event/Event.h"
 #endif // end of USING_EVENTS
 
-#if (RTOS_CONFIG_H_VERSION != 0x00000006)
+#if (RTOS_CONFIG_H_VERSION != 0x00000007)
     #error "Wrong RTOSConfig.h file version being used!"
 #endif // end of #if (RTOS_CONFIG_H_VERSION != 0xXXXXXXXX)
 
@@ -178,7 +178,7 @@ OS_RESULT InitOS(void)
 
 	// create the idle TASK
 	if (CreateTask(	IdleTaskCode, 
-					IDLE_TASK_STACK_SIZE_IN_WORDS,
+					IDLE_TASK_STACK_SIZE_IN_BYTES,
 					IDLE_TASK_PRIORITY,
 					IDLE_TASK_ARGS,
 
@@ -208,7 +208,7 @@ OS_RESULT InitOS(void)
 	// create the maintenance TASK
 	#if ((USING_DELETE_TASK == 1 && IDLE_TASK_PERFORM_DELETE_TASK == 0) || USING_RESTART_TASK == 1)
 		if (CreateTask(	MaintenanceTaskCode,
-						MAINTENANCE_TASK_STACK_SIZE_IN_WORDS,
+						MAINTENANCE_TASK_STACK_SIZE_IN_BYTES,
 						MAINTENANCE_TASK_PRIORITY,
 						MAINTENANCE_TASK_ARGS,
 
@@ -238,7 +238,7 @@ OS_RESULT InitOS(void)
 
     #if (USING_IO_BUFFERS == 1)
 		if (CreateTask(	IOBufferTaskCode,
-						IO_BUFFER_TASK_STACK_SIZE_IN_WORDS,
+						IO_BUFFER_TASK_STACK_SIZE_IN_BYTES,
 						IO_BUFFER_TASK_PRIORITY,
 						IO_BUFFER_TASK_ARGS,
 
@@ -390,28 +390,42 @@ void StartOSScheduler(void)
 #if (USING_TICKS_TO_MILLISECONDS_METHOD == 1)
     UINT32 TicksToMilliseconds(UINT32 Ticks)
     {
-        return (UINT32)(Ticks / (OS_TICK_RATE_IN_HZ / 1000));
+        FLOAT32 MillisecondsPerTick = (FLOAT32)((FLOAT32)((FLOAT32)1.0 / (FLOAT32)OS_TICK_RATE_IN_HZ) / (FLOAT32)0.001);
+        
+        return (UINT32)((FLOAT32)Ticks * MillisecondsPerTick);
     }
 #endif // end of #if (USING_TICKS_TO_MILLISECONDS_METHOD == 1)
 
 #if (USING_MILLISECONDS_TO_TICKS_METHOD == 1)
     UINT32 MillisecondsToTicks(UINT32 Milliseconds)
     {
-        return (UINT32)(Milliseconds * (OS_TICK_RATE_IN_HZ / 1000));
+        FLOAT32 MillisecondsPerTick = (FLOAT32)((FLOAT32)((FLOAT32)1.0 / (FLOAT32)OS_TICK_RATE_IN_HZ) / (FLOAT32)0.001);
+        
+        if(MillisecondsPerTick > (FLOAT32)Milliseconds)
+            return 1;
+        
+        return (UINT32)((FLOAT32)Milliseconds / MillisecondsPerTick);
     }
 #endif // end of #if (USING_MILLISECONDS_TO_TICKS_METHOD == 1)
 
 #if (USING_TICKS_TO_MICROSECONDS_METHOD == 1)
     UINT32 TicksToMicroseconds(UINT32 Ticks)
     {
-        return (UINT32)((float)Ticks / (float)((float)OS_TICK_RATE_IN_HZ / 1000000.0));
+        FLOAT32 MicrosecondsPerTick = (FLOAT32)((FLOAT32)((FLOAT32)1.0 / (FLOAT32)OS_TICK_RATE_IN_HZ) / (FLOAT32)0.000001);
+        
+        return (UINT32)((FLOAT32)Ticks * MicrosecondsPerTick);
     }
 #endif // end of #if (USING_TICKS_TO_MICROSECONDS_METHOD == 1)
 
 #if (USING_MICROSECONDS_TO_TICKS_METHOD == 1)  
     UINT32 MicrosecondsToTicks(UINT32 Microseconds)
     {
-        return (UINT32)((float)Microseconds * (float)((float)OS_TICK_RATE_IN_HZ / 1000000.0));
+        FLOAT32 MicrosecondsPerTick = (FLOAT32)((FLOAT32)((FLOAT32)1.0 / (FLOAT32)OS_TICK_RATE_IN_HZ) / (FLOAT32)0.000001);
+        
+        if(MicrosecondsPerTick > (FLOAT32)Microseconds)
+            return 1;
+        
+        return (UINT32)((FLOAT32)Microseconds / MicrosecondsPerTick);
     }
 #endif // end of #if (USING_MICROSECONDS_TO_TICKS_METHOD == 1)
     
@@ -1275,7 +1289,7 @@ OS_WORD *OS_InitializeTaskStack(TASK *Task, TASK_ENTRY_POINT StartingAddress, vo
 #endif // end of USING_RESTART_TASK
 
 #if (USING_TASK_DELAY_TICKS_METHOD == 1)
-	void OS_AddTaskToDelayQueue(TASK *Task, TASK_NODE *Node, UINT32 TicksToDelay, BOOL RemoveTaskFromReadyQueue)
+	void OS_AddTaskToDelayQueue(TASK *Task, TASK_NODE *Node, INT32 TicksToDelay, BOOL RemoveTaskFromReadyQueue)
 	{
 		Task->DelayInTicks = TicksToDelay;
 

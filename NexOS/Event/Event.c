@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.04
+    NexOS Kernel Version v1.01.05
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -79,7 +79,7 @@ BOOL OS_RaiseEvent(EVENT Event)
 OS_RESULT WaitOnEvent(	EVENT Event
 
 						#if (USING_TASK_DELAY_TICKS_METHOD == 1)
-							, UINT32 TimeoutInTicks
+							, INT32 TimeoutInTicks
 						#endif // end of #if (USING_TASK_DELAY_TICKS_METHOD == 1)
 
 						)
@@ -90,7 +90,7 @@ OS_RESULT WaitOnEvent(	EVENT Event
 		return OS_INVALID_ARGUMENT;
 
 	#if (USING_TASK_DELAY_TICKS_METHOD == 1)
-		if (TimeoutInTicks >= INVALID_TIMEOUT_TICKS_VALUE)
+		if (TimeoutInTicks == 0)
 			return OS_INVALID_ARGUMENT;
 	#endif // end of #if (USING_TASK_DELAY_TICKS_METHOD == 1)
 

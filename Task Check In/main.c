@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.00
+    NexOS Kernel Version v1.01.05
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -88,7 +88,7 @@ UINT32 CheckInTaskCode(void *Args)
     
     // first off we need to create and register for the TASK Check In capability
     // If we don't check in every 5 seconds, we will be deleted!
-    if(SetupTaskCheckIn((TASK_CHECK_IN*)NULL, MillisecondsToTicks(5000)) != OS_SUCCESS)
+    if(SetupTaskCheckIn((TASK_CHECK_IN*)NULL, MillisecondsToTicks(2000)) != OS_SUCCESS)
         while(1);
     
     while(1)
@@ -145,7 +145,7 @@ int main(int argc, char** argv)
 	#endif // end of #if SIMULATION
 
     // Now we are going to create our TASKs
-    if(CreateTask(CheckInTaskCode, 300, 1, (void*)NULL, FALSE, (TASK_EXIT_CALLBACK)CheckInTaskExitCallback, (TASK*)NULL) == (TASK*)NULL)
+    if(CreateTask(CheckInTaskCode, 1200, 1, (void*)NULL, FALSE, (TASK_EXIT_CALLBACK)CheckInTaskExitCallback, (TASK*)NULL) == (TASK*)NULL)
         while(1);
     
     // This starts the OS Scheduler and will begin executing the TASK with the highest priority.

@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.04
+    NexOS Kernel Version v1.01.05
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -52,7 +52,7 @@
 		TASK_ENTRY_POINT StartingAddress - A pointer to a valid TASK_ENTRY_POINT method.  This is where
 		the created TASK will begin execution from.  This parameter is required.
 
-		UINT32 StackSizeInWords - This is the number of words to allocate to the stack
+		UINT32 StackSizeInBytes - This is the number of bytes to allocate to the stack
 		of the TASK.  Insufficient stack space can cause unpredictable erratic behavior
 		by the TASK.  The stack space is allocated in the heap of the OS.  This parameter
 		is required.
@@ -107,7 +107,7 @@
 		- DeleteTask(), InitOS()
 */
 TASK *CreateTask(	TASK_ENTRY_POINT StartingAddress,
-					UINT32 StackSizeInWords,
+					UINT32 StackSizeInBytes,
 					BYTE Priority,
 					void *Args,
 
@@ -300,7 +300,7 @@ OS_RESULT HibernateTask(TASK *Task);
 OS_RESULT WakeTask(TASK *Task);
 
 /*
-	BOOL TaskDelayTicks(UINT32 TicksToDelay)
+	BOOL TaskDelayTicks(INT32 TicksToDelay)
 
 	Description: This method causes the current TASK to be taken out of the CPU scheduler for
 		the specified number of OS ticks.
@@ -310,9 +310,9 @@ OS_RESULT WakeTask(TASK *Task);
 	User Callable: Yes
 
 	Arguments:
-		UINT32 TicksToDelay - The number of OS ticks to delay.  Once this number has been 
+		INT32 TicksToDelay - The number of OS ticks to delay.  Once this number has been 
 		reached the TASK will be placed back into the CPU scheduler and eligible for 
-		execution.
+		execution.  Valid values are from 1 to (2 ^ 31) - 1.
 
 	Returns:
 		OS_RESULT - OS_SUCCESS if the TASK was delayed for the specified number of OS ticks, a failure
@@ -322,9 +322,9 @@ OS_RESULT WakeTask(TASK *Task);
 		- USING_TASK_DELAY_TICKS_METHOD in RTOSConfig.h must be defined as a 1 to use this method.
 
 	See Also:
-		TaskDelayMilliseconds()
+		TaskDelayMilliseconds(), TaskDelayMicroseconds()
 */
-OS_RESULT TaskDelayTicks(UINT32 TicksToDelay);
+OS_RESULT TaskDelayTicks(INT32 TicksToDelay);
 
 /*
 	BOOL TaskDelayMilliseconds(UINT32 MillisecondsToDelay)
@@ -348,9 +348,35 @@ OS_RESULT TaskDelayTicks(UINT32 TicksToDelay);
 		- None
 
 	See Also:
-		TaskDelayTicks()
+		TaskDelayTicks(), TaskDelayMicroseconds()
 */
-#define TaskDelayMilliseconds(MillisecondsToDelay)                         TaskDelayTicks(MillisecondsToTicks(MillisecondsToDelay))
+#define TaskDelayMilliseconds(MillisecondsToDelay)                         TaskDelayTicks((INT32)MillisecondsToTicks(MillisecondsToDelay))
+
+/*
+	BOOL TaskDelayMicroseconds(UINT32 MicrosecondsToDelay)
+
+	Description: This method causes the current TASK to be taken out of the CPU scheduler for
+		the specified number of microseconds.
+
+	Blocking: Yes
+
+	User Callable: Yes
+
+	Arguments:
+		UINT32 MicrosecondsToDelay - The number of microseconds to delay.  Once this number has been
+		reached the TASK will be placed back into the CPU scheduler and eligible for execution.
+
+	Returns:
+		OS_RESULT - OS_SUCCESS if the TASK was delayed for the specified number of microseconds, a failure 
+		value otherwise.
+
+	Notes:
+		- None
+
+	See Also:
+		TaskDelayTicks(), TaskDelayMilliseconds()
+*/
+#define TaskDelayMicroseconds(MicrosecondsToDelay)                         TaskDelayTicks((INT32)MicrosecondsToTicks(MicrosecondsToDelay))
 
 /*
 	BOOL RestartTask(TASK *Task)
@@ -659,7 +685,7 @@ void OS_BlockOnSignals(TASK *Task, BYTE TaskNodeIndex, BOOL RemoveFromReadyQueue
 BOOL OS_SetTaskSignals(TASK *Task, SIGNALS *TaskSignals, UINT16 SignalsToSet);
 
 /*
-	OS_RESULT TaskWaitOnSignals(UINT16 SignalsToWaitOn, UINT32 TimeoutInTicks)
+	OS_RESULT TaskWaitOnSignals(UINT16 SignalsToWaitOn, INT32 TimeoutInTicks)
 
 	Description: This method attempts to wait for the specified signals to be
 		set.  This method always pertains to the currently executing TASK.
@@ -672,15 +698,18 @@ BOOL OS_SetTaskSignals(TASK *Task, SIGNALS *TaskSignals, UINT16 SignalsToSet);
 		UINT16 SignalsToWaitOn - These are all the signals to wait to be set before TASK
 		execution resumes.
 
-		UINT32 TimeoutInTicks - This is a timeout value in ticks to wait
-		for the signal bits to be set.  Below are valid values for TimeoutInTicks.
+		INT32 TimeoutInTicks - This is a timeout value in ticks to wait
+		for the signal.  Below are valid values for TimeoutInTicks.
 
-			TimeoutInTicks = 1 to (2^32 - 1): The calling TASK will be placed onto the
-			Delayed Queue up to the specified number of ticks waiting for the
-			signal bits to be set.
+            TimeoutInTicks = 1 to (2^31 - 1): The calling TASK will be placed onto the
+            Delayed Queue up to the specified number of ticks if
+            the signals do not occur.
 
-			TimeoutInTicks = 0: The calling TASK will not be placed on the
-			Delay Queue and will wait forever.
+            TimeoutInTicks = 0: The calling TASK will not be placed on the
+            Delayed Queue and this method will return OS_INVALID_ARGUMENT.
+
+            TimeoutInTicks <= -1: The calling TASK will not be placed on the
+            Delay Queue and will wait forever for the signals.
 
 	Returns:
 		OS_RESULT - Returns OS_SUCCESS if the signals were set within the specified time.  A
@@ -698,7 +727,7 @@ BOOL OS_SetTaskSignals(TASK *Task, SIGNALS *TaskSignals, UINT16 SignalsToSet);
 OS_RESULT TaskWaitOnSignals(UINT16 SignalsToWaitOn
 
 							#if (USING_TASK_DELAY_TICKS_METHOD == 1)
-								, UINT32 TicksToDelay
+								, INT32 TimeoutInTicks
 							#endif // end of #if (USING_TASK_DELAY_TICKS_METHOD == 1)
 
 							);
@@ -884,7 +913,7 @@ UINT32 GetNumberOfTasks(void);
         TASK *Task - A valid TASK returned from CreateTask(), or (TASK*)NULL for the current TASK.
 
 	Returns:
-        UINT32 - The number of words unused in the TASK stack.
+        UINT32 - The number of bytes unused in the TASK stack.
 
 	Notes:
 		- ANALYZE_TASK_STACK_USAGE in RTOSConfig.h must be defined as a 1 to use this method.

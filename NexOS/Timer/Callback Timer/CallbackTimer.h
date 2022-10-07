@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.04
+    NexOS Kernel Version v1.01.05
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -122,7 +122,8 @@ BOOL OS_InitCallbackTimersLib(void);
 		CALLBACK_TIMER *CallbackTimer - A pointer to a valid CALLBACK_TIMER.  If this is (CALLBACK_TIMER*)NULL
 		this method will allocate a new CALLBACK_TIMER in the OS heap.
 		
-		UINT32 PeriodicityInTicks - The period in OS ticks to call the CallbackTimerCallback method.
+		UINT32 PeriodicityInTicks - The period in OS ticks to call the CallbackTimerCallback method.  This method
+        must be 1 to (2 ^ 32) - 1.
 		
 		CALLBACK_TIMER_CALLBACK CallbackTimerCallback - The method to call when PeriodicityInTicks have elapsed.
 		This method must not call any blocking function, or function which enters a critical section.
@@ -302,6 +303,34 @@ UINT32 CallbackTimerGetPeriodicityInTicks(CALLBACK_TIMER *CallbackTimer);
 OS_RESULT CallbackTimerSetPeriodicity(CALLBACK_TIMER *CallbackTimer, UINT32 PeriodicityInTicks);
 
 /*
+	OS_RESULT CallbackTimerSetCallback(CALLBACK_TIMER *CallbackTimer, CALLBACK_TIMER_CALLBACK CallbackTimerCallback)
+
+	Description:
+		This method attempts to set a new callback method for the associated CALLBACK_TIMER.
+
+	Blocking: No
+
+	User Callable: Yes
+
+	Arguments:
+		CALLBACK_TIMER *CallbackTimer - A pointer to a valid CALLBACK_TIMER returned from CreateCallbackTimer().
+
+		CALLBACK_TIMER_CALLBACK CallbackTimerCallback - The method to call when PeriodicityInTicks have elapsed.
+		This method must not call any blocking function, or function which enters a critical section.
+
+	Returns:
+		OS_RESULT - OS_SUCCESS if the operation was successful, or another value otherwise.
+
+	Notes:
+		- USING_CALLBACK_TIMER_SET_CALLBACK_METHOD inside of RTOSConfig.h must be defined as a 1 to use
+		  this method.
+
+	See Also:
+		- None
+*/
+OS_RESULT CallbackTimerSetCallback(CALLBACK_TIMER *CallbackTimer, CALLBACK_TIMER_CALLBACK CallbackTimerCallback);
+
+/*
 	OS_RESULT CallbackTimerDelete(CALLBACK_TIMER *CallbackTimer)
 
 	Description:
@@ -351,5 +380,61 @@ OS_RESULT CallbackTimerDelete(CALLBACK_TIMER *CallbackTimer);
 		- CallbackTimerEnable()
 */
 BOOL CallbackTimerIsRunning(CALLBACK_TIMER *CallbackTimer);
+
+/*
+	OS_RESULT CallbackTimerResetFromISR(CALLBACK_TIMER *CallbackTimer)
+
+	Description:
+		This method attempts to disable and reset the tick count of the specified CALLBACK_TIMER.
+        This method can be called from an ISR.
+
+	Blocking: No
+
+	User Callable: Yes
+
+	Arguments:
+		CALLBACK_TIMER *CallbackTimer - A pointer to a valid CALLBACK_TIMER returned from CreateCallbackTimer().
+
+	Returns:
+		OS_RESULT - OS_SUCCESS if the operation was successful, or another value otherwise.
+
+	Notes:
+		- USING_CALLBACK_TIMER_RESET_FROM_ISR_METHOD inside of RTOSConfig.h must be defined as a 1 to use this method.
+        - USING_CALLBACK_TIMER_ENABLE_FROM_ISR_METHOD inside of RTOSConfig.h must be defined as a 1 to use this method.
+
+	See Also:
+		- CallbackTimerEnableFromISR(), CallbackTimerReset()
+*/
+OS_RESULT CallbackTimerResetFromISR(CALLBACK_TIMER *CallbackTimer);
+
+/*
+	OS_RESULT CallbackTimerEnableFromISR(CALLBACK_TIMER *CallbackTimer, BOOL Enable)
+
+	Description:
+		This method attempts to enable or disable a CALLBACK_TIMER.
+        This method can be called from an ISR.
+
+	Blocking: No
+
+	User Callable: Yes
+
+	Arguments:
+		CALLBACK_TIMER *CallbackTimer - A pointer to a valid CALLBACK_TIMER returned from CreateCallbackTimer().
+
+		BOOL Enable - If TRUE the CALLBACK_TIMER will be enabled and start counting.  If FALSE the CALLBACK_TIMER
+		will be disabled and cease to count.  The current tick count of the CALLBACK_TIMER is unchanged after this
+		method is called.
+
+	Returns:
+		OS_RESULT - OS_SUCCESS if the operation was successful, or another value otherwise.
+
+	Notes:
+		- If the CALLBACK_TIMER is already in the requested enabled state, this method does nothing and returns
+		OS_SUCCESS.
+
+	See Also:
+		- CreateCallbackTimer()
+*/
+OS_RESULT CallbackTimerEnableFromISR(CALLBACK_TIMER *CallbackTimer, BOOL Enable);
 
 #endif // end of #ifndef CALLBACK_TIMERS_H

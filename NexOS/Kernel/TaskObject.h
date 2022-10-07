@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.04
+    NexOS Kernel Version v1.01.05
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -199,7 +199,7 @@ typedef struct
     TASK_INFO TaskInfo; // this stores various bits of information about the TASK
 
 	#if (USING_TASK_DELAY_TICKS_METHOD == 1)
-		UINT32 DelayInTicks; // This is how many ticks the TASK is delaying
+		INT32 DelayInTicks; // This is how many ticks the TASK is delaying
 	#endif // end of #if (USING_TASK_DELAY_TICKS_METHOD == 1)
 
 	#if(USING_TASK_CHECK_IN == 1)

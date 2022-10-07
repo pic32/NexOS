@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.04
+    NexOS Kernel Version v1.01.05
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -88,7 +88,7 @@ UINT32 EventTaskCode(void *Args)
     while(1)
     {
         // Now we will wait on the CHANGE_NOTIFICATION_INTERRUPT_EVENT to fire.
-        if(WaitOnEvent(CHANGE_NOTIFICATION_INTERRUPT_EVENT, 0) == OS_SUCCESS)
+        if(WaitOnEvent(CHANGE_NOTIFICATION_INTERRUPT_EVENT, WAIT_FOREVER) == OS_SUCCESS)
         {
             BOOL PortStatus;
             
@@ -144,7 +144,7 @@ int main(int argc, char** argv)
 	#endif // end of #if SIMULATION
 
     // Now we are going to create our TASKs
-    if(CreateTask(EventTaskCode, 300, 1, (void*)NULL, (TASK*)NULL) == (TASK*)NULL)
+    if(CreateTask(EventTaskCode, 1200, 1, (void*)NULL, (TASK*)NULL) == (TASK*)NULL)
         while(1);
     
     // This starts the OS Scheduler and will begin executing the TASK with the highest priority.

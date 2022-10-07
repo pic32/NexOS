@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.04
+    NexOS Kernel Version v1.01.05
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -242,15 +242,15 @@ int main(int argc, char** argv)
 	#endif // end of #if SIMULATION
 
     // Create a TASK which will cause the divide by zero error
-    if((gDivideByZeroTask = CreateTask(DivideByZeroTaskCode, 1000, 1, (void*)0, TRUE, (BYTE*)"DIVIDE BY ZERO", (TASK*)NULL)) == (TASK*)NULL)
+    if((gDivideByZeroTask = CreateTask(DivideByZeroTaskCode, 4000, 1, (void*)0, TRUE, (BYTE*)"DIVIDE BY ZERO", (TASK*)NULL)) == (TASK*)NULL)
         while(1);
     
     // Create a simple TASK which will generate a memory access violation error
-    if((CreateTask(MemoryAccessViolationTaskCode, 1000, 2, (void*)0, FALSE, (BYTE*)"ADDRESS EXCEPTION", (TASK*)NULL)) == (TASK*)NULL)
+    if((CreateTask(MemoryAccessViolationTaskCode, 4000, 2, (void*)0, FALSE, (BYTE*)"ADDRESS EXCEPTION", (TASK*)NULL)) == (TASK*)NULL)
         while(1);
     
     // This TASK waits on an OS_EXCEPTION to occur and then prints out the OS_EXCEPTION data.
-    if(CreateTask(EventSupervisorTaskCode, 200, 3, (void*)2, FALSE, (BYTE*)"EVENT MONITOR", (TASK*)NULL) == (TASK*)NULL)
+    if(CreateTask(EventSupervisorTaskCode, 800, 3, (void*)2, FALSE, (BYTE*)"EVENT MONITOR", (TASK*)NULL) == (TASK*)NULL)
         while(1);
     
     // This starts the OS Scheduler and will begin executing the TASK with the highest priority.

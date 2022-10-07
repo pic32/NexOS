@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.04
+    NexOS Kernel Version v1.01.05
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -99,7 +99,7 @@ OS_RESULT OS_TryGetBinarySemaphore(	BINARY_SEMAPHORE *BinarySemaphore
 					if (TimeoutInTicks > (INT32)0)
 					{
 						// place on timer list
-						OS_AddTaskToDelayQueue(gCurrentTask, &gCurrentTask->TaskNodeArray[SECONDARY_TASK_NODE], (UINT32)TimeoutInTicks, FALSE);
+						OS_AddTaskToDelayQueue(gCurrentTask, &gCurrentTask->TaskNodeArray[SECONDARY_TASK_NODE], TimeoutInTicks, FALSE);
 					}
 				#endif // end of #if (USING_TASK_DELAY_TICKS_METHOD == 1)
 			}

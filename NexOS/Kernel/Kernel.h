@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.04
+    NexOS Kernel Version v1.01.05
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -53,11 +53,9 @@
  * 
  */
 
-#define MINIMUM_STACK_SIZE												50
-#define INVALID_TIMEOUT_TICKS_VALUE										0xFFFFFFFE
-#define TASK_TIMEOUT_DONE_VALUE											0xFFFFFFFF
-#define WAIT_FOREVER                                                    -3
 #define DO_NOT_WAIT                                                     0
+#define WAIT_FOREVER                                                    -1
+#define TASK_TIMEOUT_DONE_VALUE											-2
 
 #if HIGHEST_USER_TASK_PRIORITY > 254
 	#error "HIGHEST_USER_TASK_PRIORITY cannot exceed 254!"
@@ -76,7 +74,7 @@
  */
 #define KERNEL_MAJOR_VERSION_NUMBER										0x01
 #define KERNEL_MINOR_VERSION_NUMBER										0x01
-#define KERNEL_TEST_VERSION_NUMBER                                      0x04
+#define KERNEL_TEST_VERSION_NUMBER                                      0x05
 
 #define INVALID_TASK_PRIORITY											255
 
@@ -673,7 +671,7 @@ void OS_IncrementTaskListPriorities(DOUBLE_LINKED_LIST_HEAD *ListHead);
 
 BOOL OS_ChangeTaskPriority(TASK *Task, BYTE Priority);
 
-void OS_AddTaskToDelayQueue(TASK *Task, TASK_NODE *Node, UINT32 TicksToDelay, BOOL RemoveTaskFromReadyQueue);
+void OS_AddTaskToDelayQueue(TASK *Task, TASK_NODE *Node, INT32 TicksToDelay, BOOL RemoveTaskFromReadyQueue);
 
 BOOL OS_AddTaskToRuntimeExecutionList(TASK *Task);
 

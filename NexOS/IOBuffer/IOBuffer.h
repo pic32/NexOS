@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.04
+    NexOS Kernel Version v1.01.05
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -258,9 +258,18 @@ OS_RESULT InitIOBuffer(IO_BUFFER_ID IOBufferID, BYTE *RXBuffer, UINT32 RXBufferS
 		IO_BUFFER_ID IOBufferID - A valid IO_BUFFER_ID which represents the IO_BUFFER
         to get.
 
-		INT32 TimeoutInTicks - If a timeout is desired a value greater than
-		zero should be specified.  Otherwise a value of zero means to wait
-		indefinitely for the data to be present.  The timeout is in OS timer ticks.
+		INT32 TimeoutInTicks - This is a timeout value in ticks to wait
+		for the IO_BUFFER.  Below are valid values for TimeoutInTicks.
+
+            TimeoutInTicks = 1 to (2^31 - 1): The calling TASK will be placed onto the
+            Delayed Queue up to the specified number of ticks if
+            the signals do not occur.
+
+            TimeoutInTicks = 0: The calling TASK will not be placed on the
+            Delayed Queue and this method will return OS_INVALID_ARGUMENT.
+
+            TimeoutInTicks <= -1: The calling TASK will not be placed on the
+            Delay Queue and will wait forever for the resource.
 
 	Returns: 
 		OS_RESULT - OS_SUCCESS is returned on success, an error code otherwise.
@@ -309,9 +318,19 @@ OS_RESULT GetIOBuffer(  IO_BUFFER_ID IOBufferID
 		*BytesRead = NumberOfBytesToRead.  If this method does not return OS_SUCCESS then
 		*BytesRead < NumberOfBytesToRead.
 		
-		INT32 TimeoutInTicks - If a timeout is desired a value greater than
-		zero should be specified.  Otherwise a value of zero means to wait
-		indefinitely for the data to be present.  The timeout is in OS timer ticks.
+		INT32 TimeoutInTicks - This is a timeout value in ticks to wait
+		for the data.  Below are valid values for TimeoutInTicks.
+
+            TimeoutInTicks = 1 to (2^31 - 1): The calling TASK will be placed onto the
+            Delayed Queue up to the specified number of ticks if all the data
+            isn't received.
+
+            TimeoutInTicks = 0: The calling TASK will not be placed on the
+            Delayed Queue and this method will return OS_RESOURCE_INSUFFICIENT_DATA
+            if not enough data is available in the resource.
+
+            TimeoutInTicks <= -1: The calling TASK will not be placed on the
+            Delay Queue and will wait forever for the resource.
 
 	Returns: 
 		OS_RESULT - OS_SUCCESS is returned if all specified bytes were successfully read.
@@ -368,9 +387,19 @@ OS_RESULT IOBufferReadBytes(IO_BUFFER_ID IOBufferID, BYTE *UserBuffer, UINT32 Us
 		UINT32 *BytesRead - This is an optional parameter.  If specified the number of
 		bytes read will be recorded here.
 		
-		INT32 TimeoutInTicks - If a timeout is desired a value greater than
-		zero should be specified.  Otherwise a value of zero means to wait
-		indefinitely for the data to be present.  The timeout is in OS timer ticks.
+		INT32 TimeoutInTicks - This is a timeout value in ticks to wait
+		for the data.  Below are valid values for TimeoutInTicks.
+
+            TimeoutInTicks = 1 to (2^31 - 1): The calling TASK will be placed onto the
+            Delayed Queue up to the specified number of ticks if all the data
+            isn't received.
+
+            TimeoutInTicks = 0: The calling TASK will not be placed on the
+            Delayed Queue and this method will return OS_RESOURCE_INSUFFICIENT_DATA
+            if not enough data is available in the resource.
+
+            TimeoutInTicks <= -1: The calling TASK will not be placed on the
+            Delay Queue and will wait forever for the resource.
 
 	Returns: 
 		OS_RESULT - OS_SUCCESS is returned if the ReadUntil byte was found and read.
@@ -424,9 +453,19 @@ OS_RESULT IOBufferReadUntil(IO_BUFFER_ID IOBufferID, BYTE *UserBuffer, UINT32 Us
 		UINT32 *BytesRead - This is an optional parameter.  If specified the number of
 		bytes read will be recorded here.
 		
-		INT32 TimeoutInTicks - If a timeout is desired a value greater than
-		zero should be specified.  Otherwise a value of zero means to wait
-		indefinitely for the event to occur.  The timeout is in OS timer ticks.
+		INT32 TimeoutInTicks - This is a timeout value in ticks to wait
+		for the data.  Below are valid values for TimeoutInTicks.
+
+            TimeoutInTicks = 1 to (2^31 - 1): The calling TASK will be placed onto the
+            Delayed Queue up to the specified number of ticks if all the data
+            isn't received.
+
+            TimeoutInTicks = 0: The calling TASK will not be placed on the
+            Delayed Queue and this method will return OS_RESOURCE_INSUFFICIENT_DATA
+            if not enough data is available in the resource.
+
+            TimeoutInTicks <= -1: The calling TASK will not be placed on the
+            Delay Queue and will wait forever for the resource.
 
 	Returns: 
 		OS_RESULT - OS_SUCCESS is returned if the new line sequence was found and read.
@@ -489,13 +528,22 @@ OS_RESULT IOBufferReadLine( IO_BUFFER_ID IOBufferID, BYTE *UserBuffer, UINT32 Us
 		specified IO_BUFFER to be transmitted out the hardware of the microcontroller
 		before returning from this method.
 
-		INT32 TimeoutInTicks - If a timeout is desired a value greater than
-		zero should be specified.  Otherwise a value of zero means to wait
-		indefinitely for the write to finish.  The timeout is in OS timer ticks.
-		If AsyncWrite is TRUE, the timeout specifies how long to wait before all
-		data is written to the TX buffer of the specified IO_BUFFER.  If AsyncWrite
-		is FALSE or not present, the timeout specifies how long to wait before all
-		data is transmitted out of the hardware of the microcontroller.
+        INT32 TimeoutInTicks - This is a timeout value in ticks to wait
+		for the data.  If AsyncWrite is TRUE, the timeout specifies how long to 
+        wait before all data is written to the TX buffer of the specified 
+        IO_BUFFER.  If AsyncWrite is FALSE or not present, the timeout specifies
+        how long to wait before all data is transmitted out of the hardware of 
+        the microcontroller.Below are valid values for TimeoutInTicks. 
+
+            TimeoutInTicks = 1 to (2^31 - 1): The calling TASK will be placed onto the
+            Delayed Queue up to the specified number of ticks if the data hasn't
+            finished transmitting.
+
+            TimeoutInTicks = 0: The calling TASK will not be placed on the
+            Delayed Queue and will wait for all data to finish transmitting.
+
+            TimeoutInTicks <= -1: The calling TASK will not be placed on the
+            Delay Queue and will wait forever for the resource.
 
 	Returns: 
 		OS_RESULT - OS_SUCCESS is returned if all bytes were successfully written to
@@ -567,13 +615,22 @@ OS_RESULT IOBufferWriteBytes(IO_BUFFER_ID IOBufferID, BYTE *UserBuffer, UINT32 N
 		specified IO_BUFFER to be transmitted out the hardware of the microcontroller
 		before returning from this method.
 
-		INT32 TimeoutInTicks - If a timeout is desired a value greater than
-		zero should be specified.  Otherwise a value of zero means to wait
-		indefinitely for the write to finish.  The timeout is in OS timer ticks.
-		If AsyncWrite is TRUE, the timeout specifies how long to wait before all
-		data is written to the TX buffer of the specified IO_BUFFER.  If AsyncWrite
-		is FALSE or not present, the timeout specifies how long to wait before all
-		data is transmitted out of the hardware of the microcontroller.
+		INT32 TimeoutInTicks - This is a timeout value in ticks to wait
+		for the data.  If AsyncWrite is TRUE, the timeout specifies how long to 
+        wait before all data is written to the TX buffer of the specified 
+        IO_BUFFER.  If AsyncWrite is FALSE or not present, the timeout specifies
+        how long to wait before all data is transmitted out of the hardware of 
+        the microcontroller.Below are valid values for TimeoutInTicks. 
+
+            TimeoutInTicks = 1 to (2^31 - 1): The calling TASK will be placed onto the
+            Delayed Queue up to the specified number of ticks if the data hasn't
+            finished transmitting.
+
+            TimeoutInTicks = 0: The calling TASK will not be placed on the
+            Delayed Queue and will wait for all data to finish transmitting.
+
+            TimeoutInTicks <= -1: The calling TASK will not be placed on the
+            Delay Queue and will wait forever for the resource.
 
 	Returns: 
 		OS_RESULT - OS_SUCCESS is returned if all bytes were successfully written to
@@ -643,13 +700,22 @@ OS_RESULT IOBufferWriteBytesUntil(IO_BUFFER_ID IOBufferID, BYTE *UserBuffer, UIN
 		specified IO_BUFFER to be transmitted out the hardware of the microcontroller
 		before returning from this method.
 
-		INT32 TimeoutInTicks - If a timeout is desired a value greater than
-		zero should be specified.  Otherwise a value of zero means to wait
-		indefinitely for the write to finish.  The timeout is in OS timer ticks.
-		If AsyncWrite is TRUE, the timeout specifies how long to wait before all
-		data is written to the TX buffer of the specified IO_BUFFER.  If AsyncWrite
-		is FALSE or not present, the timeout specifies how long to wait before all
-		data is transmitted out of the hardware of the microcontroller.
+		INT32 TimeoutInTicks - This is a timeout value in ticks to wait
+		for the data.  If AsyncWrite is TRUE, the timeout specifies how long to 
+        wait before all data is written to the TX buffer of the specified 
+        IO_BUFFER.  If AsyncWrite is FALSE or not present, the timeout specifies
+        how long to wait before all data is transmitted out of the hardware of 
+        the microcontroller.Below are valid values for TimeoutInTicks. 
+
+            TimeoutInTicks = 1 to (2^31 - 1): The calling TASK will be placed onto the
+            Delayed Queue up to the specified number of ticks if the data hasn't
+            finished transmitting.
+
+            TimeoutInTicks = 0: The calling TASK will not be placed on the
+            Delayed Queue and will wait for all data to finish transmitting.
+
+            TimeoutInTicks <= -1: The calling TASK will not be placed on the
+            Delay Queue and will wait forever for the resource.
 
 	Returns: 
 		OS_RESULT - OS_SUCCESS is returned if all bytes were successfully written to
