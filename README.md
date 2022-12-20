@@ -10,7 +10,7 @@ The NexOS RTOS offers a few sets of unique features which are either not common 
  - Real time heap monitoring (how much of the heap have I used?)
  - Starvation protection for certain resources
  - Exception handling and recovery (system at least wouldn't be totally halted if it occurs)
- - Buffers for the TX or RX of data (in progress)
+ - Buffers for the TX or RX of data
 
 The main design goals of the NexOS are as follows:
  - Runtime Safety
