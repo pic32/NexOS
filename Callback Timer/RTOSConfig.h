@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.05
+    NexOS Kernel Version v1.02.00
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -31,8 +31,8 @@
 // OS Configurations
 //----------------------------------------------------------------------------------------------------
 
-// This is version v1.01.05 release of the RTOSConfig.h file.
-#define RTOS_CONFIG_H_VERSION                                   0x00000007
+// This is version v1.02.00 release of the RTOSConfig.h file.
+#define RTOS_CONFIG_H_VERSION                                   0x00000008
 
 // OS_PRIORITY is the priority of the OS compared to interrupts.  When an OS call is made the
 // interrupt priority will be set to OS_PRIORITY so that interrupts of OS_PRIORITY level or lower
@@ -545,60 +545,87 @@
 
 // USING_CALLBACK_TIMERS must be set to 1 in order to use any
 // CALLBACK_TIMER related functionality.
-#define USING_CALLBACK_TIMERS									1
+#define USING_CALLBACK_TIMERS											1
 
 // USING_CHECK_CALLBACK_TIMER_PARAMETERS if set to 1 will enable the code 
 // which checks the parameters of data coming into any method in CallbackTimer.c.  
 // This is useful for debugging code to make sure junk isn't being put into
 // the system.  It is up to you if you want to use it during runtime.
-#define USING_CHECK_CALLBACK_TIMER_PARAMETERS                   0
+#define USING_CHECK_CALLBACK_TIMER_PARAMETERS                   		0
 
 // USING_CALLBACK_TIMER_DELETE_METHOD if set to a 1 will allow the user to delete a 
 // CALLBACK_TIMER which was created in the OS heap.
-#define USING_CALLBACK_TIMER_DELETE_METHOD						0
+#define USING_CALLBACK_TIMER_DELETE_METHOD								0
 
 // USING_CALLBACK_TIMER_SET_PERIODICITY_METHOD if set to a 1 will allow the user to
 // change the periodicity of the callback method in the CALLBACK_TIMER.
-#define USING_CALLBACK_TIMER_SET_PERIODICITY_METHOD				0
+#define USING_CALLBACK_TIMER_SET_PERIODICITY_METHOD						0
 
 // USING_CALLBACK_TIMER_SET_CALLBACK_METHOD if set to a 1 will allow the user to
 // change the callback method of a CALLBACK_TIMER.
-#define USING_CALLBACK_TIMER_SET_CALLBACK_METHOD                0
+#define USING_CALLBACK_TIMER_SET_CALLBACK_METHOD                		0
 
 // USING_CALLBACK_TIMER_GET_PERIODICITY_IN_TICKS_METHOD if set to a 1 will allow the user
 // to get the current periodicity of the callback method in the CALLBACK_TIMER.
-#define USING_CALLBACK_TIMER_GET_PERIODICITY_IN_TICKS_METHOD	0
+#define USING_CALLBACK_TIMER_GET_PERIODICITY_IN_TICKS_METHOD			0
 
 // USING_CALLBACK_TIMER_GET_TICKS_REMAINING_METHOD if set to a 1 will allow the user
 // to get how many OS ticks remain until the callback method in the CALLBACK_TIMER
 // is executed.
-#define USING_CALLBACK_TIMER_GET_TICKS_REMAINING_METHOD			0
+#define USING_CALLBACK_TIMER_GET_TICKS_REMAINING_METHOD					0
 
 // USING_CALLBACK_TIMER_RESTART_METHOD if set to a 1 will allow the user to 
 // reset the current OS tick count in CALLBACK_TIMER to a zero.  The CALLBACK_TIMER
 // will also be enabled if disabled.
-#define USING_CALLBACK_TIMER_RESTART_METHOD						0
+#define USING_CALLBACK_TIMER_RESTART_METHOD								0
 
 // USING_CALLBACK_TIMER_RESET_METHOD if set to a 1 will allow the user to 
 // reset the current OS tick count in CALLBACK_TIMER to a zero and disables
 // the CALLBACK_TIMER.
-#define USING_CALLBACK_TIMER_RESET_METHOD						0
+#define USING_CALLBACK_TIMER_RESET_METHOD								0
 
 // USING_CALLBACK_TIMER_ENABLE_METHOD if set to a 1 will allow the user to 
 // enable and disable a CALLBACK_TIMER.
-#define USING_CALLBACK_TIMER_ENABLE_METHOD						0
+#define USING_CALLBACK_TIMER_ENABLE_METHOD								0
 
 // USING_CALLBACK_TIMER_IS_RUNNING_METHOD if set to a 1 will allow the user to
 // know if a CALLBACK_TIMER is currently running (enabled).
-#define USING_CALLBACK_TIMER_IS_RUNNING_METHOD					0
+#define USING_CALLBACK_TIMER_IS_RUNNING_METHOD							0
 
 // USING_CALLBACK_TIMER_RESET_FROM_ISR_METHOD if set to a 1 will allow the user
 // to reset a CALLBACK_TIMER from an ISR or critical section.
-#define USING_CALLBACK_TIMER_RESET_FROM_ISR_METHOD              0
+#define USING_CALLBACK_TIMER_RESET_FROM_ISR_METHOD              		0
 
 // USING_CALLBACK_TIMER_ENABLE_FROM_ISR_METHOD if set to a 1 will allow the user
 // to enable or disable a CALLBACK_TIMER from an ISR or critical section.
-#define USING_CALLBACK_TIMER_ENABLE_FROM_ISR_METHOD             0
+#define USING_CALLBACK_TIMER_ENABLE_FROM_ISR_METHOD                     0
+
+// USING_CALLBACK_TIMER_RESTART_FROM_ISR_METHOD if set to a 1 will allow the user
+// to restart a CALLBACK_TIMER from an ISR or critical section.
+#define USING_CALLBACK_TIMER_RESTART_FROM_ISR_METHOD                    0
+
+// USING_CALLBACK_TIMER_GET_TICKS_REMAINING_FROM_ISR_METHOD if set to a 1 will 
+// allow the user to get the number of ticks remaining in a CALLBACK_TIMER 
+// until the callback method is called from an ISR or critical section.
+#define USING_CALLBACK_TIMER_GET_TICKS_REMAINING_FROM_ISR_METHOD        0
+
+// USING_CALLBACK_TIMER_GET_PERIODICITY_IN_TICKS_FROM_ISR_METHOD if set to a 1
+// will allow the user to get the periodicity in ticks of the CALLBACK_TIMER
+// from an ISR or critical section
+#define USING_CALLBACK_TIMER_GET_PERIODICITY_IN_TICKS_FROM_ISR_METHOD   0
+
+// USING_CALLBACK_TIMER_SET_PERIODICITY_FROM_ISR_METHOD if set to a 1 will allow
+// the user to set the periodicity of the CALLBACK_TIMER from an ISR or critical
+// section.
+#define USING_CALLBACK_TIMER_SET_PERIODICITY_FROM_ISR_METHOD            0
+
+// USING_CALLBACK_TIMER_SET_CALLBACK_FROM_ISR_METHOD if set to a 1 will allow
+// the user to set the callback to a CALLBACK_TIMER from an ISR or critical section.
+#define USING_CALLBACK_TIMER_SET_CALLBACK_FROM_ISR_METHOD               0
+
+// USING_CALLBACK_TIMER_IS_RUNNING_FROM_ISR_METHOD if set to a 1 will allow the
+// user to see if a CALLBACK_TIMER is running from an ISR or critical section.
+#define USING_CALLBACK_TIMER_IS_RUNNING_FROM_ISR_METHOD                 0
 //----------------------------------------------------------------------------------------------------
 
 

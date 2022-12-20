@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.05
+    NexOS Kernel Version v1.02.00
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -313,18 +313,14 @@ EVENT_TIMER *CreateEventTimer   (EVENT_TIMER *EventTimer, EVENT StartEvent, EVEN
 		if (EventTimer->EventTimerEnabled != Enable)
 		{
 			if (Enable == TRUE)
-			{
 				InsertNodeAtEndOfDoubleLinkedList(&gEventTimerList, &EventTimer->Node);
-			}
 			else
-			{
 				RemoveNodeFromDoubleLinkedList(&gEventTimerList, &EventTimer->Node);
 
-				// if we are disabling the software timer, take it off the SOFTWARE_TIMER list
-				SoftwareTimerEnable(&(EventTimer->Timer), Enable);
-			}
-
 			EventTimer->EventTimerEnabled = Enable;
+            
+            // if we are disabling the software timer, take it off the SOFTWARE_TIMER list
+            OS_SoftwareTimerEnable(&(EventTimer->Timer), Enable);
 		}
 
 		ExitCritical();

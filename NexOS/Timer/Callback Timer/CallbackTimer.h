@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.05
+    NexOS Kernel Version v1.02.00
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -168,7 +168,7 @@ CALLBACK_TIMER *CreateCallbackTimer(CALLBACK_TIMER *CallbackTimer, UINT32 Period
 		OS_SUCCESS.
 
 	See Also:
-		- CreateCallbackTimer()
+		- CreateCallbackTimer(), CallbackTimerEnableFromISR()
 */
 OS_RESULT CallbackTimerEnable(CALLBACK_TIMER *CallbackTimer, BOOL Enable);
 
@@ -193,7 +193,7 @@ OS_RESULT CallbackTimerEnable(CALLBACK_TIMER *CallbackTimer, BOOL Enable);
         - USING_CALLBACK_TIMER_ENABLE_METHOD inside of RTOSConfig.h must be defined as a 1 to use this method.
 
 	See Also:
-		- CallbackTimerEnable()
+		- CallbackTimerEnable(), CallbackTimerResetFromISR()
 */
 OS_RESULT CallbackTimerReset(CALLBACK_TIMER *CallbackTimer);
 
@@ -217,9 +217,10 @@ OS_RESULT CallbackTimerReset(CALLBACK_TIMER *CallbackTimer);
 	Notes:
 		- USING_CALLBACK_TIMER_RESTART_METHOD inside of RTOSConfig.h must be defined as a 1 to use this method.
         - USING_CALLBACK_TIMER_ENABLE_METHOD inside of RTOSConfig.h must be defined as a 1 to use this method.
+        - USING_CALLBACK_TIMER_RESTART_FROM_ISR_METHOD inside of RTOSConfig.h must be defined as 1 to use this method.
 
 	See Also:
-		None
+		CallbackTimerRestartFromISR()
 */
 OS_RESULT CallbackTimerRestart(CALLBACK_TIMER *CallbackTimer);
 
@@ -244,7 +245,7 @@ OS_RESULT CallbackTimerRestart(CALLBACK_TIMER *CallbackTimer);
 		- USING_CALLBACK_TIMER_GET_TICKS_REMAINING_METHOD inside of RTOSConfig.h must be defined as a 1 to use this method.
 
 	See Also:
-		CallbackTimerGetPeriodicityInTicks(), CallbackTimerSetPeriodicity()
+		CallbackTimerGetPeriodicityInTicks(), CallbackTimerSetPeriodicity(), CallbackTimerGetTicksRemainingFromISR()
 */
 UINT32 CallbackTimerGetTicksRemaining(CALLBACK_TIMER *CallbackTimer);
 
@@ -268,9 +269,11 @@ UINT32 CallbackTimerGetTicksRemaining(CALLBACK_TIMER *CallbackTimer);
 	Notes:
 		- USING_CALLBACK_TIMER_GET_PERIODICITY_IN_TICKS_METHOD inside of RTOSConfig.h must be defined as a 1 to use 
 		  this method.
+        - USING_CALLBACK_TIMER_GET_PERIODICITY_IN_TICKS_FROM_ISR_METHOD inside of RTOSConfig.h must be defined as a 1 to use 
+		  this method.
 
 	See Also:
-		CallbackTimerGetTicksRemaining(), CallbackTimerSetPeriodicity()
+		CallbackTimerGetTicksRemaining(), CallbackTimerSetPeriodicity(), CallbackTimerGetPeriodicityInTicksFromISR()
 */
 UINT32 CallbackTimerGetPeriodicityInTicks(CALLBACK_TIMER *CallbackTimer);
 
@@ -296,9 +299,11 @@ UINT32 CallbackTimerGetPeriodicityInTicks(CALLBACK_TIMER *CallbackTimer);
 	Notes:
 		- USING_CALLBACK_TIMER_SET_PERIODICITY_METHOD inside of RTOSConfig.h must be defined as a 1 to use
 		  this method.
+        - USING_CALLBACK_TIMER_SET_TICKS_REMAINING_FROM_ISR_METHOD inside of RTOSConfig.h must be defined 
+          as a 1 to use this method.
 
 	See Also:
-		- CallbackTimerGetTicksRemaining(), CallbackTimerGetPeriodicityInTicks()
+		- CallbackTimerGetTicksRemaining(), CallbackTimerGetPeriodicityInTicks(), CallbackTimerSetTicksRemainingFromISR()
 */
 OS_RESULT CallbackTimerSetPeriodicity(CALLBACK_TIMER *CallbackTimer, UINT32 PeriodicityInTicks);
 
@@ -324,9 +329,11 @@ OS_RESULT CallbackTimerSetPeriodicity(CALLBACK_TIMER *CallbackTimer, UINT32 Peri
 	Notes:
 		- USING_CALLBACK_TIMER_SET_CALLBACK_METHOD inside of RTOSConfig.h must be defined as a 1 to use
 		  this method.
+        - USING_CALLBACK_TIMER_SET_CALLBACK_FROM_ISR_METHOD inside of RTOSConfig.h must be defined as a 1 to use
+		  this method.
 
 	See Also:
-		- None
+		- CallbackTimerSetCallbackFromISR()
 */
 OS_RESULT CallbackTimerSetCallback(CALLBACK_TIMER *CallbackTimer, CALLBACK_TIMER_CALLBACK CallbackTimerCallback);
 
@@ -375,9 +382,11 @@ OS_RESULT CallbackTimerDelete(CALLBACK_TIMER *CallbackTimer);
 	Notes:
 		- USING_CALLBACK_TIMER_IS_RUNNING_METHOD inside of RTOSConfig.h must be defined as a 1 to use
 		  this method.
+        - USING_CALLBACK_TIMER_IS_RUNNING_FROM_ISR_METHOD inside of RTOSConfig.h must be defined as a 1 to use
+		  this method.
 
 	See Also:
-		- CallbackTimerEnable()
+		- CallbackTimerEnable(), CallbackTimerIsRunningFromISR()
 */
 BOOL CallbackTimerIsRunning(CALLBACK_TIMER *CallbackTimer);
 
@@ -436,5 +445,178 @@ OS_RESULT CallbackTimerResetFromISR(CALLBACK_TIMER *CallbackTimer);
 		- CreateCallbackTimer()
 */
 OS_RESULT CallbackTimerEnableFromISR(CALLBACK_TIMER *CallbackTimer, BOOL Enable);
+
+/*
+	OS_RESULT CallbackTimerRestartFromISR(CALLBACK_TIMER *CallbackTimer)
+
+    Description:
+		This method attempts to clear the current tick count of the CALLBACK_TIMER to zero and then enables
+		the CALLBACK_TIMER if disabled.
+
+	Blocking: No
+
+	User Callable: Yes
+
+	Arguments:
+		CALLBACK_TIMER *CallbackTimer - A pointer to a valid CALLBACK_TIMER returned from CreateCallbackTimer().
+
+	Returns:
+		OS_RESULT - OS_SUCCESS if the operation was successful, or another value otherwise.
+
+	Notes:
+		- If the CALLBACK_TIMER is already in the requested enabled state, this method does nothing and returns
+		OS_SUCCESS.
+        - USING_CALLBACK_TIMER_RESTART_FROM_ISR_METHOD inside of RTOSConfig.h must be defined as a 1 to use 
+          this method.
+
+	See Also:
+		- CreateCallbackTimer()
+*/
+OS_RESULT CallbackTimerRestartFromISR(CALLBACK_TIMER *CallbackTimer);
+
+/*
+	OS_RESULT CallbackTimerGetTicksRemainingFromISR(CALLBACK_TIMER *CallbackTimer, UINT32 PeriodicityInTicks)
+
+	Description:
+		This method attempts to set a new periodicity for the CALLBACK_TIMER callback method.  This method also
+		clears the current tick count of the CALLBACK_TIMER after changing the periodicity.
+
+	Blocking: No
+
+	User Callable: Yes
+
+	Arguments:
+		CALLBACK_TIMER *CallbackTimer - A pointer to a valid CALLBACK_TIMER returned from CreateCallbackTimer().
+
+		UINT32 PeriodicityInTicks - The new CALLBACK_TIMER periodicity.  This value cannot be zero.
+
+	Returns:
+		OS_RESULT - OS_SUCCESS if the operation was successful, or another value otherwise.
+
+	Notes:
+		- USING_CALLBACK_TIMER_SET_PERIODICITY_METHOD inside of RTOSConfig.h must be defined as a 1 to use
+		  this method.
+        - USING_CALLBACK_TIMER_GET_TICKS_REMAINING_FROM_ISR_METHOD inside of RTOSConfig.h must be defined 
+          as a 1 to use this method.
+
+	See Also:
+		- CallbackTimerGetTicksRemaining(), CallbackTimerGetPeriodicityInTicks()
+*/
+UINT32 CallbackTimerGetTicksRemainingFromISR(CALLBACK_TIMER *CallbackTimer);
+
+/*
+	OS_RESULT CallbackTimerGetPeriodicityInTicksFromISR(CALLBACK_TIMER *CallbackTimer, UINT32 *PeriodicityInTicks)
+
+	Description:
+		This method attempts to get the number of OS ticks needed to elapse each time for the callback 
+		method of the CALLBACK_TIMER to be executed.
+
+	Blocking: No
+
+	User Callable: Yes
+
+	Arguments:
+		CALLBACK_TIMER *CallbackTimer - A pointer to a valid CALLBACK_TIMER returned from CreateCallbackTimer().
+
+	Returns:
+        UINT32 - The CALLBACK_TIMER periodicity in OS ticks.
+
+	Notes:
+		- USING_CALLBACK_TIMER_GET_PERIODICITY_IN_TICKS_METHOD inside of RTOSConfig.h must be defined as a 1 to use 
+		  this method.
+        - USING_CALLBACK_TIMER_GET_PERIODICITY_IN_TICKS_FROM_ISR_METHOD inside of RTOSConfig.h must be defined as a 1 to use 
+		  this method.
+
+	See Also:
+		CallbackTimerGetTicksRemaining(), CallbackTimerSetPeriodicity(), CallbackTimerGetPeriodicityInTicksFromISR()
+*/
+UINT32 CallbackTimerGetPeriodicityInTicksFromISR(CALLBACK_TIMER *CallbackTimer);
+
+/*
+	OS_RESULT CallbackTimerSetPeriodicityFromISR(CALLBACK_TIMER *CallbackTimer, UINT32 PeriodicityInTicks)
+
+	Description:
+		This method attempts to set a new periodicity for the CALLBACK_TIMER callback method.  This method also
+		clears the current tick count of the CALLBACK_TIMER after changing the periodicity.
+
+	Blocking: No
+
+	User Callable: Yes
+
+	Arguments:
+		CALLBACK_TIMER *CallbackTimer - A pointer to a valid CALLBACK_TIMER returned from CreateCallbackTimer().
+
+		UINT32 PeriodicityInTicks - The new CALLBACK_TIMER periodicity.  This value cannot be zero.
+
+	Returns:
+		OS_RESULT - OS_SUCCESS if the operation was successful, or another value otherwise.
+
+	Notes:
+		- USING_CALLBACK_TIMER_SET_PERIODICITY_METHOD inside of RTOSConfig.h must be defined as a 1 to use
+		  this method.
+        - USING_CALLBACK_TIMER_SET_TICKS_REMAINING_FROM_ISR_METHOD inside of RTOSConfig.h must be defined 
+          as a 1 to use this method.
+
+	See Also:
+		- CallbackTimerGetTicksRemaining(), CallbackTimerGetPeriodicityInTicks(), CallbackTimerSetTicksRemainingFromISR()
+*/
+OS_RESULT CallbackTimerSetPeriodicityFromISR(CALLBACK_TIMER *CallbackTimer, UINT32 PeriodicityInTicks);
+
+/*
+	OS_RESULT CallbackTimerSetCallbackFromISR(CALLBACK_TIMER *CallbackTimer, CALLBACK_TIMER_CALLBACK CallbackTimerCallback)
+
+	Description:
+		This method attempts to set a new callback method for the associated CALLBACK_TIMER.
+
+	Blocking: No
+
+	User Callable: Yes
+
+	Arguments:
+		CALLBACK_TIMER *CallbackTimer - A pointer to a valid CALLBACK_TIMER returned from CreateCallbackTimer().
+
+		CALLBACK_TIMER_CALLBACK CallbackTimerCallback - The method to call when PeriodicityInTicks have elapsed.
+		This method must not call any blocking function, or function which enters a critical section.
+
+	Returns:
+		OS_RESULT - OS_SUCCESS if the operation was successful, or another value otherwise.
+
+	Notes:
+		- USING_CALLBACK_TIMER_SET_CALLBACK_METHOD inside of RTOSConfig.h must be defined as a 1 to use
+		  this method.
+        - USING_CALLBACK_TIMER_SET_CALLBACK_FROM_ISR_METHOD inside of RTOSConfig.h must be defined as a 1 to use
+		  this method.
+
+	See Also:
+		- None
+*/
+OS_RESULT CallbackTimerSetCallbackFromISR(CALLBACK_TIMER *CallbackTimer, CALLBACK_TIMER_CALLBACK CallbackTimerCallback);
+
+/*
+	BOOL CallbackTimerIsRunningFromISR(CALLBACK_TIMER *CallbackTimer)
+
+	Description:
+		This method attempts to get the enabled status of the CALLBACK_TIMER.
+
+	Blocking: No
+
+	User Callable: Yes
+
+	Arguments:
+		CALLBACK_TIMER *CallbackTimer - A pointer to a valid CALLBACK_TIMER returned from CreateCallbackTimer().
+
+	Returns:
+		OS_RESULT - TRUE if the CALLBACK_TIMER is running, FALSE otherwise.
+
+	Notes:
+		- USING_CALLBACK_TIMER_IS_RUNNING_METHOD inside of RTOSConfig.h must be defined as a 1 to use
+		  this method.
+        - USING_CALLBACK_TIMER_IS_RUNNING_FROM_ISR_METHOD inside of RTOSConfig.h must be defined as a 1 to use
+		  this method.
+
+	See Also:
+		- CallbackTimerEnable()
+*/
+BOOL CallbackTimerIsRunningFromISR(CALLBACK_TIMER *CallbackTimer);
 
 #endif // end of #ifndef CALLBACK_TIMERS_H

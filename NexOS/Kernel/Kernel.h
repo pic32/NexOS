@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.05
+    NexOS Kernel Version v1.02.00
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -73,8 +73,8 @@
  * a field deployable project.
  */
 #define KERNEL_MAJOR_VERSION_NUMBER										0x01
-#define KERNEL_MINOR_VERSION_NUMBER										0x01
-#define KERNEL_TEST_VERSION_NUMBER                                      0x05
+#define KERNEL_MINOR_VERSION_NUMBER										0x02
+#define KERNEL_TEST_VERSION_NUMBER                                      0x00
 
 #define INVALID_TASK_PRIORITY											255
 
@@ -103,6 +103,7 @@ typedef enum
 	OS_INVALID_EVENT,
 	OS_RESOURCE_FULL,
     OS_IO_BUFFER_INVALID_STATE, // the requested operation cannot be completed due to the IO Buffer being in the wrong state
+    OS_INVALID_OBJECT_STATE,
 
 	// These are all returned during InitOS()
 	OS_HEAP_INITIALIZATION_FAILED,

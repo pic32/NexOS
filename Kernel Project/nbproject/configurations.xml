@@ -68,7 +68,6 @@
         <logicalFolder name="f1" displayName="Port" projectFiles="true">
           <itemPath>CriticalSection.c</itemPath>
           <itemPath>IOBufferPort.c</itemPath>
-          <itemPath>InterruptHandler.c</itemPath>
           <itemPath>Port.c</itemPath>
           <itemPath>ContextSwitch.S</itemPath>
           <itemPath>Interrupt.S</itemPath>
@@ -77,6 +76,7 @@
         <itemPath>../NexOS/Kernel/Memory.c</itemPath>
         <itemPath>../NexOS/Kernel/Task.c</itemPath>
         <itemPath>../NexOS/Kernel/KernelTasks.c</itemPath>
+        <itemPath>InterruptHandler.c</itemPath>
       </logicalFolder>
       <logicalFolder name="f2" displayName="Semaphore" projectFiles="true">
         <itemPath>../NexOS/Semaphore/OS_BinarySemaphore.c</itemPath>

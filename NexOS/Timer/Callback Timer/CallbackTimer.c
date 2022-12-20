@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.05
+    NexOS Kernel Version v1.02.00
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -111,11 +111,6 @@ CALLBACK_TIMER *CreateCallbackTimer(CALLBACK_TIMER *CallbackTimer, UINT32 Period
 	OS_RESULT CallbackTimerEnable(CALLBACK_TIMER *CallbackTimer, BOOL Enable)
 	{
         OS_RESULT Result;
-        
-        #if (USING_CHECK_CALLBACK_TIMER_PARAMETERS == 1)
-            if(RAMAddressValid((OS_WORD)CallbackTimer) == FALSE)
-                return OS_INVALID_ARGUMENT_ADDRESS;
-        #endif // end of #if (USING_CHECK_CALLBACK_TIMER_PARAMETERS == 1)
 
 		EnterCritical();
 
@@ -132,11 +127,6 @@ CALLBACK_TIMER *CreateCallbackTimer(CALLBACK_TIMER *CallbackTimer, UINT32 Period
 	OS_RESULT CallbackTimerReset(CALLBACK_TIMER *CallbackTimer)
 	{
         OS_RESULT Result;
-        
-        #if (USING_CHECK_CALLBACK_TIMER_PARAMETERS == 1)
-            if(RAMAddressValid((OS_WORD)CallbackTimer) == FALSE)
-                return OS_INVALID_ARGUMENT_ADDRESS;
-        #endif // end of #if (USING_CHECK_CALLBACK_TIMER_PARAMETERS == 1)
 
 		EnterCritical();
 
@@ -152,22 +142,15 @@ CALLBACK_TIMER *CreateCallbackTimer(CALLBACK_TIMER *CallbackTimer, UINT32 Period
 	// puts the current count to 0 and enables the counter if disabled
 	OS_RESULT CallbackTimerRestart(CALLBACK_TIMER *CallbackTimer)
 	{
-        #if (USING_CHECK_CALLBACK_TIMER_PARAMETERS == 1)
-            if(RAMAddressValid((OS_WORD)CallbackTimer) == FALSE)
-                return OS_INVALID_ARGUMENT_ADDRESS;
-        #endif // end of #if (USING_CHECK_CALLBACK_TIMER_PARAMETERS == 1)
+        OS_RESULT Result;
 
 		EnterCritical();
 
-		OS_SoftwareTimerClear(&CallbackTimer->Timer);
-
-        // if it was off, turn it on
-		if (OS_SoftwareTimerIsRunning(&CallbackTimer->Timer) == FALSE)
-			CallbackTimerEnable(CallbackTimer, TRUE);
+        Result = CallbackTimerRestartFromISR(CallbackTimer);
 
 		ExitCritical();
 
-		return OS_SUCCESS;
+		return Result;
 	}
 #endif // end of #if (USING_CALLBACK_TIMER_RESTART_METHOD == 1)
 
@@ -176,15 +159,10 @@ CALLBACK_TIMER *CreateCallbackTimer(CALLBACK_TIMER *CallbackTimer, UINT32 Period
 	UINT32 CallbackTimerGetTicksRemaining(CALLBACK_TIMER *CallbackTimer)
 	{
         UINT32 TicksRemaining;
-                
-        #if (USING_CHECK_CALLBACK_TIMER_PARAMETERS == 1)
-            if(RAMAddressValid((OS_WORD)CallbackTimer) == FALSE)
-                return 0;
-        #endif // end of #if (USING_CHECK_CALLBACK_TIMER_PARAMETERS == 1)
 
 		EnterCritical();
 
-		TicksRemaining = CallbackTimer->PeriodicityInTicks - CallbackTimer->Timer.Ticks;
+		TicksRemaining = CallbackTimerGetTicksRemainingFromISR(CallbackTimer);
 
 		ExitCritical();
 
@@ -196,15 +174,10 @@ CALLBACK_TIMER *CreateCallbackTimer(CALLBACK_TIMER *CallbackTimer, UINT32 Period
 	UINT32 CallbackTimerGetPeriodicityInTicks(CALLBACK_TIMER *CallbackTimer)
 	{
         UINT32 PeriodicityInTicks;
-        
-        #if (USING_CHECK_CALLBACK_TIMER_PARAMETERS == 1)
-            if(RAMAddressValid((OS_WORD)CallbackTimer) == FALSE)
-                return 0;
-        #endif // end of #if (USING_CHECK_CALLBACK_TIMER_PARAMETERS == 1)
 
 		EnterCritical();
 
-		PeriodicityInTicks = CallbackTimer->PeriodicityInTicks;
+		PeriodicityInTicks = CallbackTimerGetPeriodicityInTicksFromISR(CallbackTimer);
 
 		ExitCritical();
 
@@ -215,44 +188,30 @@ CALLBACK_TIMER *CreateCallbackTimer(CALLBACK_TIMER *CallbackTimer, UINT32 Period
 #if (USING_CALLBACK_TIMER_SET_PERIODICITY_METHOD == 1)
 	OS_RESULT CallbackTimerSetPeriodicity(CALLBACK_TIMER *CallbackTimer, UINT32 PeriodicityInTicks)
 	{
-        #if (USING_CHECK_CALLBACK_TIMER_PARAMETERS == 1)
-            if(RAMAddressValid((OS_WORD)CallbackTimer) == FALSE)
-                return OS_INVALID_ARGUMENT_ADDRESS;
-
-            if (PeriodicityInTicks == 0)
-                return OS_INVALID_ARGUMENT;
-        #endif // end of #if (USING_CHECK_CALLBACK_TIMER_PARAMETERS == 1)
-
+        OS_RESULT Result;
+        
 		EnterCritical();
 
-		CallbackTimer->PeriodicityInTicks = PeriodicityInTicks;
-
-		OS_SoftwareTimerClear(&CallbackTimer->Timer);
+		Result = CallbackTimerSetPeriodicityFromISR(CallbackTimer, PeriodicityInTicks);
 
 		ExitCritical();
 
-		return OS_SUCCESS;
+		return Result;
 	}
 #endif // end of #if (USING_CALLBACK_TIMER_SET_PERIODICITY_METHOD == 1)
 
 #if(USING_CALLBACK_TIMER_SET_CALLBACK_METHOD == 1)
     OS_RESULT CallbackTimerSetCallback(CALLBACK_TIMER *CallbackTimer, CALLBACK_TIMER_CALLBACK CallbackTimerCallback)
 	{
-        #if (USING_CHECK_CALLBACK_TIMER_PARAMETERS == 1)
-            if(RAMAddressValid((OS_WORD)CallbackTimer) == FALSE)
-                return OS_INVALID_ARGUMENT_ADDRESS;
-
-            if (ProgramAddressValid((OS_WORD)CallbackTimerCallback) == FALSE)
-                return OS_INVALID_ARGUMENT_ADDRESS;
-        #endif // end of #if (USING_CHECK_CALLBACK_TIMER_PARAMETERS == 1)
-
+        OS_RESULT Result;
+        
 		EnterCritical();
 
-		CallbackTimer->CallbackTimerCallback = CallbackTimerCallback;
+		Result = CallbackTimerSetCallbackFromISR(CallbackTimer, CallbackTimerCallback);
 
 		ExitCritical();
 
-		return OS_SUCCESS;
+		return Result;
 	}
 #endif // end of #if(USING_CALLBACK_TIMER_SET_CALLBACK_METHOD == 1)
     
@@ -269,7 +228,7 @@ CALLBACK_TIMER *CreateCallbackTimer(CALLBACK_TIMER *CallbackTimer, UINT32 Period
 		EnterCritical();
 
 		// this will remove it from any lists it might be on
-		CallbackTimerEnable(CallbackTimer, FALSE);
+		CallbackTimerEnableFromISR(CallbackTimer, FALSE);
         
 		// now we can attempt to release the callback timer
 		if (ReleaseMemory((void*)CallbackTimer) == TRUE)
@@ -286,12 +245,15 @@ CALLBACK_TIMER *CreateCallbackTimer(CALLBACK_TIMER *CallbackTimer, UINT32 Period
 #if (USING_CALLBACK_TIMER_IS_RUNNING_METHOD == 1)
 	BOOL CallbackTimerIsRunning(CALLBACK_TIMER *CallbackTimer)
 	{
-        #if (USING_CHECK_CALLBACK_TIMER_PARAMETERS == 1)
-            if (RAMAddressValid((OS_WORD)CallbackTimer) == FALSE)
-                return FALSE;
-        #endif // end of #if (USING_CHECK_CALLBACK_TIMER_PARAMETERS == 1)
-
-		return SoftwareTimerIsRunning(&CallbackTimer->Timer);
+        BOOL Result;
+        
+        EnterCritical();
+        
+        Result = CallbackTimerIsRunningFromISR(CallbackTimer);
+        
+        ExitCritical();
+        
+        return Result;
 	}
 #endif // end of #if (USING_CALLBACK_TIMER_IS_RUNNING_METHOD == 1)
 
@@ -325,13 +287,117 @@ CALLBACK_TIMER *CreateCallbackTimer(CALLBACK_TIMER *CallbackTimer, UINT32 Period
 		if (OS_SoftwareTimerIsRunning(&CallbackTimer->Timer) == Enable)
 			return OS_SUCCESS;
 
-		if(Enable == TRUE)
-			InsertNodeAtEndOfDoubleLinkedList(&gCallbackTimerList, &CallbackTimer->Node);
-		else
-			RemoveNodeFromDoubleLinkedList(&gCallbackTimerList, &CallbackTimer->Node);
-
-		SoftwareTimerEnableFromISR(&(CallbackTimer->Timer), Enable);
+		if(Enable != OS_SoftwareTimerIsRunning(&CallbackTimer->Timer))
+        {
+            // they want to enable it and it is disabled, this is valid
+            if(Enable == TRUE)
+                InsertNodeAtEndOfDoubleLinkedList(&gCallbackTimerList, &CallbackTimer->Node);
+            else
+                RemoveNodeFromDoubleLinkedList(&gCallbackTimerList, &CallbackTimer->Node);
+            
+            // clear and then enable the SOFTWARE_TIMER
+            OS_SoftwareTimerClear(&(CallbackTimer->Timer));
+            
+            OS_SoftwareTimerEnable(&(CallbackTimer->Timer), Enable);
+        }
 
 		return OS_SUCCESS;
 	}
 #endif // end of #if (USING_CALLBACK_TIMER_ENABLE_METHOD == 1)
+    
+#if (USING_CALLBACK_TIMER_RESTART_FROM_ISR_METHOD == 1)
+	// puts the current count to 0 and enables the counter if disabled
+	OS_RESULT CallbackTimerRestartFromISR(CALLBACK_TIMER *CallbackTimer)
+	{
+        #if (USING_CHECK_CALLBACK_TIMER_PARAMETERS == 1)
+            if(RAMAddressValid((OS_WORD)CallbackTimer) == FALSE)
+                return OS_INVALID_ARGUMENT_ADDRESS;
+        #endif // end of #if (USING_CHECK_CALLBACK_TIMER_PARAMETERS == 1)
+
+		OS_SoftwareTimerClear(&CallbackTimer->Timer);
+
+        // if it was off, turn it on
+		if (OS_SoftwareTimerIsRunning(&CallbackTimer->Timer) == FALSE)
+			CallbackTimerEnableFromISR(CallbackTimer, TRUE);
+
+		return OS_SUCCESS;
+	}
+#endif // end of #if (USING_CALLBACK_TIMER_RESTART_FROM_ISR_METHOD == 1)
+    
+#if (USING_CALLBACK_TIMER_GET_TICKS_REMAINING_FROM_ISR_METHOD == 1)
+	// gets how long until the method fires in ticks
+	UINT32 CallbackTimerGetTicksRemainingFromISR(CALLBACK_TIMER *CallbackTimer)
+	{
+        #if (USING_CHECK_CALLBACK_TIMER_PARAMETERS == 1)
+            if(RAMAddressValid((OS_WORD)CallbackTimer) == FALSE)
+                return 0;
+        #endif // end of #if (USING_CHECK_CALLBACK_TIMER_PARAMETERS == 1)
+
+		return CallbackTimer->PeriodicityInTicks - OS_SoftwareTimerGetTicks(&CallbackTimer->Timer);
+	}
+#endif // end of #if (USING_CALLBACK_TIMER_GET_TICKS_REMAINING_FROM_ISR_METHOD == 1)
+    
+#if (USING_CALLBACK_TIMER_GET_PERIODICITY_IN_TICKS_FROM_ISR_METHOD == 1)
+	UINT32 CallbackTimerGetPeriodicityInTicksFromISR(CALLBACK_TIMER *CallbackTimer)
+	{
+        UINT32 PeriodicityInTicks;
+        
+        #if (USING_CHECK_CALLBACK_TIMER_PARAMETERS == 1)
+            if(RAMAddressValid((OS_WORD)CallbackTimer) == FALSE)
+                return 0;
+        #endif // end of #if (USING_CHECK_CALLBACK_TIMER_PARAMETERS == 1)
+
+		PeriodicityInTicks = CallbackTimer->PeriodicityInTicks;
+
+		return PeriodicityInTicks;
+	}
+#endif // end of #if (USING_CALLBACK_TIMER_GET_PERIODICITY_IN_TICKS_FROM_ISR_METHOD == 1)
+    
+#if (USING_CALLBACK_TIMER_SET_PERIODICITY_FROM_ISR_METHOD == 1)
+	OS_RESULT CallbackTimerSetPeriodicityFromISR(CALLBACK_TIMER *CallbackTimer, UINT32 PeriodicityInTicks)
+	{
+        #if (USING_CHECK_CALLBACK_TIMER_PARAMETERS == 1)
+            if(RAMAddressValid((OS_WORD)CallbackTimer) == FALSE)
+                return OS_INVALID_ARGUMENT_ADDRESS;
+
+            if (PeriodicityInTicks == 0)
+                return OS_INVALID_ARGUMENT;
+        #endif // end of #if (USING_CHECK_CALLBACK_TIMER_PARAMETERS == 1)
+
+        if(OS_SoftwareTimerGetTicks(&CallbackTimer->Timer) < PeriodicityInTicks)
+            CallbackTimer->PeriodicityInTicks = PeriodicityInTicks;
+        else
+            return OS_INVALID_OBJECT_STATE;
+
+		return OS_SUCCESS;
+	}
+#endif // end of #if (USING_CALLBACK_TIMER_SET_PERIODICITY_FROM_ISR_METHOD == 1)
+    
+#if(USING_CALLBACK_TIMER_SET_CALLBACK_FROM_ISR_METHOD == 1)
+    OS_RESULT CallbackTimerSetCallbackFromISR(CALLBACK_TIMER *CallbackTimer, CALLBACK_TIMER_CALLBACK CallbackTimerCallback)
+	{
+        #if (USING_CHECK_CALLBACK_TIMER_PARAMETERS == 1)
+            if(RAMAddressValid((OS_WORD)CallbackTimer) == FALSE)
+                return OS_INVALID_ARGUMENT_ADDRESS;
+
+            if (ProgramAddressValid((OS_WORD)CallbackTimerCallback) == FALSE)
+                return OS_INVALID_ARGUMENT_ADDRESS;
+        #endif // end of #if (USING_CHECK_CALLBACK_TIMER_PARAMETERS == 1)
+
+		CallbackTimer->CallbackTimerCallback = CallbackTimerCallback;
+
+		return OS_SUCCESS;
+	}
+#endif // end of #if(USING_CALLBACK_TIMER_SET_CALLBACK_FROM_ISR_METHOD == 1)
+    
+#if (USING_CALLBACK_TIMER_IS_RUNNING_FROM_ISR_METHOD == 1)
+	BOOL CallbackTimerIsRunningFromISR(CALLBACK_TIMER *CallbackTimer)
+	{
+        #if (USING_CHECK_CALLBACK_TIMER_PARAMETERS == 1)
+            if (RAMAddressValid((OS_WORD)CallbackTimer) == FALSE)
+                return FALSE;
+        #endif // end of #if (USING_CHECK_CALLBACK_TIMER_PARAMETERS == 1)
+
+		return SoftwareTimerIsRunningFromISR(&CallbackTimer->Timer);
+	}
+#endif // end of #if (USING_CALLBACK_TIMER_IS_RUNNING_FROM_ISR_METHOD == 1)

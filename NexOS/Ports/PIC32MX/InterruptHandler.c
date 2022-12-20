@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.04
+    NexOS Kernel Version v1.02.00
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -478,6 +478,15 @@
                             // read 1 byte from the IO_BUFFER which will be TX'ed out!
                             BytesRead = OS_ReadFromIOBuffer(&gUART1IOBuffer, Data, sizeof(Data), PortIOBufferGetTXSpaceAvailable(IO_BUFFER_UART_1_ID));
 
+                            #if (USING_UART_1_TX_CALLBACK == 1)
+                            {
+                                UINT32 i;
+                                
+                                for(i = 0; i < BytesRead; i++)
+                                    UART1InterruptTXCallback(Data[i]);
+                            }
+                            #endif // end of #if (USING_UART_1_TX_CALLBACK == 1)
+
                             // otherwise write the data out the hardware
                             if(PortIOBufferWriteData(IO_BUFFER_UART_1_ID, Data, BytesRead) == FALSE)
                             {
@@ -512,10 +521,6 @@
                         gUART1IOBuffer.TXState = IO_BUFFER_OPEN;
                     }
                 #endif // end of #if (USING_IO_BUFFER_WRITE_BYTES_METHOD == 1 || USING_IO_BUFFER_WRITE_UNTIL_METHOD == 1 || USING_IO_BUFFER_WRITE_LINE_METHOD == 1)
-
-                #if (USING_UART_1_TX_CALLBACK == 1)
-                    UART1InterruptTXCallback();
-                #endif // end of #if (USING_UART_1_TX_CALLBACK == 1)
 
                 #if (USING_UART_1_TX_DONE_EVENT == 1)
                     if(OS_RaiseEvent(UART_1_TX_DONE_EVENT) == TRUE)
@@ -688,6 +693,15 @@
                             // read 1 byte from the IO_BUFFER which will be TX'ed out!
                             BytesRead = OS_ReadFromIOBuffer(&gUART2IOBuffer, Data, sizeof(Data), PortIOBufferGetTXSpaceAvailable(IO_BUFFER_UART_2_ID));
 
+                            #if (USING_UART_2_TX_CALLBACK == 1)
+                            {
+                                UINT32 i;
+                                
+                                for(i = 0; i < BytesRead; i++)
+                                    UART2InterruptTXCallback(Data[i]);
+                            }
+                            #endif // end of #if (USING_UART_2_TX_CALLBACK == 1)
+
                             // otherwise write the data out the hardware
                             if(PortIOBufferWriteData(IO_BUFFER_UART_2_ID, Data, BytesRead) == FALSE)
                             {
@@ -722,10 +736,6 @@
                         gUART2IOBuffer.TXState = IO_BUFFER_OPEN;
                     }
                 #endif // end of #if (USING_IO_BUFFER_WRITE_BYTES_METHOD == 1 || USING_IO_BUFFER_WRITE_UNTIL_METHOD == 1 || USING_IO_BUFFER_WRITE_LINE_METHOD == 1)
-
-                #if (USING_UART_2_TX_CALLBACK == 1)
-                    UART2InterruptTXCallback();
-                #endif // end of #if (USING_UART_2_TX_CALLBACK == 1)
 
                 #if (USING_UART_2_TX_DONE_EVENT == 1)
                     if(OS_RaiseEvent(UART_2_TX_DONE_EVENT) == TRUE)
@@ -898,6 +908,15 @@
                             // read 1 byte from the IO_BUFFER which will be TX'ed out!
                             BytesRead = OS_ReadFromIOBuffer(&gUART3IOBuffer, Data, sizeof(Data), PortIOBufferGetTXSpaceAvailable(IO_BUFFER_UART_3_ID));
 
+                            #if (USING_UART_3_TX_CALLBACK == 1)
+                            {
+                                UINT32 i;
+                                
+                                for(i = 0; i < BytesRead; i++)
+                                    UART3InterruptTXCallback(Data[i]);
+                            }
+                            #endif // end of #if (USING_UART_3_TX_CALLBACK == 1)
+
                             // otherwise write the data out the hardware
                             if(PortIOBufferWriteData(IO_BUFFER_UART_3_ID, Data, BytesRead) == FALSE)
                             {
@@ -933,10 +952,6 @@
                         gUART3IOBuffer.TXState = IO_BUFFER_OPEN;
                     }
                 #endif // end of #if (USING_IO_BUFFER_WRITE_BYTES_METHOD == 1 || USING_IO_BUFFER_WRITE_UNTIL_METHOD == 1 || USING_IO_BUFFER_WRITE_LINE_METHOD == 1)
-
-                #if (USING_UART_3_TX_CALLBACK == 1)
-                    UART3InterruptTXCallback();
-                #endif // end of #if (USING_UART_3_TX_CALLBACK == 1)
 
                 #if (USING_UART_3_TX_DONE_EVENT == 1)
                     if(OS_RaiseEvent(UART_3_TX_DONE_EVENT) == TRUE)
@@ -1109,6 +1124,15 @@
                             // read 1 byte from the IO_BUFFER which will be TX'ed out!
                             BytesRead = OS_ReadFromIOBuffer(&gUART4IOBuffer, Data, sizeof(Data), PortIOBufferGetTXSpaceAvailable(IO_BUFFER_UART_4_ID));
 
+                            #if (USING_UART_4_TX_CALLBACK == 1)
+                            {
+                                UINT32 i;
+                                
+                                for(i = 0; i < BytesRead; i++)
+                                    UART4InterruptTXCallback(Data[i]);
+                            }
+                            #endif // end of #if (USING_UART_4_TX_CALLBACK == 1)
+
                             // otherwise write the data out the hardware
                             if(PortIOBufferWriteData(IO_BUFFER_UART_4_ID, Data, BytesRead) == FALSE)
                             {
@@ -1143,10 +1167,6 @@
                         gUART4IOBuffer.TXState = IO_BUFFER_OPEN;
                     }
                 #endif // end of #if (USING_IO_BUFFER_WRITE_BYTES_METHOD == 1 || USING_IO_BUFFER_WRITE_UNTIL_METHOD == 1 || USING_IO_BUFFER_WRITE_LINE_METHOD == 1)
-
-                #if (USING_UART_4_TX_CALLBACK == 1)
-                    UART4InterruptTXCallback();
-                #endif // end of #if (USING_UART_4_TX_CALLBACK == 1)
 
                 #if (USING_UART_4_TX_DONE_EVENT == 1)
                     if(OS_RaiseEvent(UART_4_TX_DONE_EVENT) == TRUE)
@@ -1319,6 +1339,15 @@
                             // read 1 byte from the IO_BUFFER which will be TX'ed out!
                             BytesRead = OS_ReadFromIOBuffer(&gUART5IOBuffer, Data, sizeof(Data), PortIOBufferGetTXSpaceAvailable(IO_BUFFER_UART_5_ID));
 
+                            #if (USING_UART_5_TX_CALLBACK == 1)
+                            {
+                                UINT32 i;
+                                
+                                for(i = 0; i < BytesRead; i++)
+                                    UART5InterruptTXCallback(Data[i]);
+                            }
+                            #endif // end of #if (USING_UART_5_TX_CALLBACK == 1)
+
                             // otherwise write the data out the hardware
                             if(PortIOBufferWriteData(IO_BUFFER_UART_5_ID, Data, BytesRead) == FALSE)
                             {
@@ -1353,10 +1382,6 @@
                         gUART5IOBuffer.TXState = IO_BUFFER_OPEN;
                     }
                 #endif // end of #if (USING_IO_BUFFER_WRITE_BYTES_METHOD == 1 || USING_IO_BUFFER_WRITE_UNTIL_METHOD == 1 || USING_IO_BUFFER_WRITE_LINE_METHOD == 1)
-
-                #if (USING_UART_5_TX_CALLBACK == 1)
-                    UART5InterruptTXCallback();
-                #endif // end of #if (USING_UART_5_TX_CALLBACK == 1)
 
                 #if (USING_UART_5_TX_DONE_EVENT == 1)
                     if(OS_RaiseEvent(UART_5_TX_DONE_EVENT) == TRUE)
@@ -1529,6 +1554,15 @@
                             // read 1 byte from the IO_BUFFER which will be TX'ed out!
                             BytesRead = OS_ReadFromIOBuffer(&gUART6IOBuffer, Data, sizeof(Data), PortIOBufferGetTXSpaceAvailable(IO_BUFFER_UART_6_ID));
 
+                            #if (USING_UART_6_TX_CALLBACK == 1)
+                            {
+                                UINT32 i;
+                                
+                                for(i = 0; i < BytesRead; i++)
+                                    UART6InterruptTXCallback(Data[i]);
+                            }
+                            #endif // end of #if (USING_UART_6_TX_CALLBACK == 1)
+
                             // otherwise write the data out the hardware
                             if(PortIOBufferWriteData(IO_BUFFER_UART_6_ID, Data, BytesRead) == FALSE)
                             {
@@ -1563,10 +1597,6 @@
                         gUART6IOBuffer.TXState = IO_BUFFER_OPEN;
                     }
                 #endif // end of #if (USING_IO_BUFFER_WRITE_BYTES_METHOD == 1 || USING_IO_BUFFER_WRITE_UNTIL_METHOD == 1 || USING_IO_BUFFER_WRITE_LINE_METHOD == 1)
-
-                #if (USING_UART_6_TX_CALLBACK == 1)
-                    UART6InterruptTXCallback();
-                #endif // end of #if (USING_UART_6_TX_CALLBACK == 1)
 
                 #if (USING_UART_6_TX_DONE_EVENT == 1)
                     if(OS_RaiseEvent(UART_6_TX_DONE_EVENT) == TRUE)

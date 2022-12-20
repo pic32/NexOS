@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.05
+    NexOS Kernel Version v1.02.00
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -84,13 +84,9 @@ void OS_SoftwareTimerEnable(SOFTWARE_TIMER *SoftwareTimer, BOOL Enable)
 		SoftwareTimer->Active = Enable;
 
 		if (Enable == TRUE)
-		{
 			InsertNodeAtEndOfDoubleLinkedList(&gSoftwareTimerList, &(SoftwareTimer->TimerListNode));
-		}
 		else
-		{
 			RemoveNodeFromDoubleLinkedList(&gSoftwareTimerList, &(SoftwareTimer->TimerListNode));
-		}
 	}
 }
 
@@ -134,18 +130,15 @@ SOFTWARE_TIMER *CreateSoftwareTimer(SOFTWARE_TIMER *SoftwareTimer, BOOL Enable)
 #if (USING_SOFTWARE_TIMER_ENABLE_METHOD == 1)
 	OS_RESULT SoftwareTimerEnable(SOFTWARE_TIMER *SoftwareTimer, BOOL Enable)
 	{
-        #if (USING_CHECK_SOFTWARE_TIMER_PARAMETERS == 1)
-            if (RAMAddressValid((OS_WORD)SoftwareTimer) == FALSE)
-                return OS_INVALID_ARGUMENT_ADDRESS;
-        #endif // end of #if (USING_CHECK_SOFTWARE_TIMER_PARAMETERS == 1)
-
+        OS_RESULT Result;
+        
 		EnterCritical();
 
-		OS_SoftwareTimerEnable(SoftwareTimer, Enable);
+		Result = SoftwareTimerEnableFromISR(SoftwareTimer, Enable);
 
 		ExitCritical();
 
-		return OS_SUCCESS;
+		return Result;
 	}
 #endif // end of #if (USING_SOFTWARE_TIMER_ENABLE_METHOD == 1)
 	
@@ -154,12 +147,7 @@ SOFTWARE_TIMER *CreateSoftwareTimer(SOFTWARE_TIMER *SoftwareTimer, BOOL Enable)
 	OS_RESULT SoftwareTimerReset(SOFTWARE_TIMER *SoftwareTimer)
 	{
         OS_RESULT Result;
-        
-		#if (USING_CHECK_SOFTWARE_TIMER_PARAMETERS == 1)
-            if (RAMAddressValid((OS_WORD)SoftwareTimer) == FALSE)
-                return OS_INVALID_ARGUMENT_ADDRESS;
-        #endif // end of #if (USING_CHECK_SOFTWARE_TIMER_PARAMETERS == 1)
-		
+
 		EnterCritical();
 
 		Result = SoftwareTimerResetFromISR(SoftwareTimer);
@@ -175,11 +163,6 @@ SOFTWARE_TIMER *CreateSoftwareTimer(SOFTWARE_TIMER *SoftwareTimer, BOOL Enable)
 	OS_RESULT SoftwareTimerRestart(SOFTWARE_TIMER *SoftwareTimer)
 	{
         OS_RESULT Result;
-
-		#if (USING_CHECK_SOFTWARE_TIMER_PARAMETERS == 1)
-            if (RAMAddressValid((OS_WORD)SoftwareTimer) == FALSE)
-                return OS_INVALID_ARGUMENT_ADDRESS;
-        #endif // end of #if (USING_CHECK_SOFTWARE_TIMER_PARAMETERS == 1)
 
     	EnterCritical();
 
@@ -197,11 +180,6 @@ SOFTWARE_TIMER *CreateSoftwareTimer(SOFTWARE_TIMER *SoftwareTimer, BOOL Enable)
 	{
 		OS_RESULT Result;
 
-        #if (USING_CHECK_SOFTWARE_TIMER_PARAMETERS == 1)
-            if (RAMAddressValid((OS_WORD)SoftwareTimer) == FALSE)
-                return OS_INVALID_ARGUMENT_ADDRESS;
-        #endif // end of #if (USING_CHECK_SOFTWARE_TIMER_PARAMETERS == 1)
-
 		EnterCritical();
 
 		// just clear the ticks
@@ -217,11 +195,6 @@ SOFTWARE_TIMER *CreateSoftwareTimer(SOFTWARE_TIMER *SoftwareTimer, BOOL Enable)
 	UINT32 SoftwareTimerGetTicks(SOFTWARE_TIMER *SoftwareTimer)
 	{
         UINT32 Ticks;
-        
-        #if (USING_CHECK_SOFTWARE_TIMER_PARAMETERS == 1)
-            if (RAMAddressValid((OS_WORD)SoftwareTimer) == FALSE)
-                return 0;
-        #endif // end of #if (USING_CHECK_SOFTWARE_TIMER_PARAMETERS == 1)
 
 		EnterCritical();
 
@@ -248,11 +221,6 @@ SOFTWARE_TIMER *CreateSoftwareTimer(SOFTWARE_TIMER *SoftwareTimer, BOOL Enable)
 	BOOL SoftwareTimerIsRunning(SOFTWARE_TIMER *SoftwareTimer)
 	{
         BOOL Running;
-        
-        #if (USING_CHECK_SOFTWARE_TIMER_PARAMETERS == 1)
-            if (RAMAddressValid((OS_WORD)SoftwareTimer) == FALSE)
-                return FALSE;
-        #endif // end of #if (USING_CHECK_SOFTWARE_TIMER_PARAMETERS == 1)
 
 		EnterCritical();
 

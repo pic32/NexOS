@@ -1,3 +1,10 @@
+v1.02.00 12/19/2022
+ - Changed the UART TX Callbacks so that they got the data being transmitted out.
+ - Added all applicable FromISR methods to CallbackTimer.c
+ - Removed parameter checking in non ISR methods for SoftwareTimer.c and 
+   CallbackTimer.c.  The parameter checking is only done in the FromISR methods.
+   This same policy will be brought over to all modules if not done already.
+
 v1.01.05 10/07/2022
  - Changed the stack units from words to bytes.
  - Fixed bugs in the calculations of all methods converting to or from OS ticks.

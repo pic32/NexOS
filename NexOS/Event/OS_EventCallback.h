@@ -1,5 +1,5 @@
 /*
-    NexOS Kernel Version v1.01.05
+    NexOS Kernel Version v1.02.00
     Copyright (c) 2022 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -378,17 +378,17 @@ void Timer5InterruptCallback(void);
 void RTCCInterruptCallback(void);
 
 /*
-	void UART1InterruptTXCallback(void)
+	void UART1InterruptTXCallback(BYTE Data)
 
-	Description: This method is called when the UART 1 TX interrupt handler
-    is triggered.  It is a means to allow the user a callback when this interrupt occurs.
+	Description: This method is called each time there is a BYTE transmitted out
+    the UART 1 port.
 
 	Blocking: No
 
 	User Callable: No
 
 	Arguments:
-		None
+        BYTE Data - The data being transmitted out the UART.
 
 	Returns: 
         None
@@ -400,20 +400,20 @@ void RTCCInterruptCallback(void);
 	See Also:
 		- None
 */
-void UART1InterruptTXCallback(void);
+void UART1InterruptTXCallback(BYTE Data);
 
 /*
-	void UART2InterruptTXCallback(void)
+	void UART2InterruptTXCallback(BYTE Data)
 
-	Description: This method is called when the UART 2 TX interrupt handler
-    is triggered.  It is a means to allow the user a callback when this interrupt occurs.
+	Description: This method is called each time there is a BYTE transmitted out
+    the UART 2 port.
 
 	Blocking: No
 
 	User Callable: No
 
 	Arguments:
-		None
+		BYTE Data - The data being transmitted out the UART.
 
 	Returns: 
         None
@@ -425,20 +425,20 @@ void UART1InterruptTXCallback(void);
 	See Also:
 		- None
 */
-void UART2InterruptTXCallback(void);
+void UART2InterruptTXCallback(BYTE Data);
 
 /*
-	void UART3InterruptTXCallback(void)
+	void UART3InterruptTXCallback(BYTE Data)
 
-	Description: This method is called when the UART 3 TX interrupt handler
-    is triggered.  It is a means to allow the user a callback when this interrupt occurs.
+	Description: This method is called each time there is a BYTE transmitted out
+    the UART 3 port.
 
 	Blocking: No
 
 	User Callable: No
 
 	Arguments:
-		None
+		BYTE Data - The data being transmitted out the UART.
 
 	Returns: 
         None
@@ -450,20 +450,20 @@ void UART2InterruptTXCallback(void);
 	See Also:
 		- None
 */
-void UART3InterruptTXCallback(void);
+void UART3InterruptTXCallback(BYTE Data);
 
 /*
-	void UART4InterruptTXCallback(void)
+	void UART4InterruptTXCallback(BYTE Data)
 
-	Description: This method is called when the UART 4 TX interrupt handler
-    is triggered.  It is a means to allow the user a callback when this interrupt occurs.
+	Description: This method is called each time there is a BYTE transmitted out
+    the UART 4 port.
 
 	Blocking: No
 
 	User Callable: No
 
 	Arguments:
-		None
+		BYTE Data - The data being transmitted out the UART.
 
 	Returns: 
         None
@@ -475,20 +475,20 @@ void UART3InterruptTXCallback(void);
 	See Also:
 		- None
 */
-void UART4InterruptTXCallback(void);
+void UART4InterruptTXCallback(BYTE Data);
 
 /*
-	void UART5InterruptTXCallback(void)
+	void UART5InterruptTXCallback(BYTE Data)
 
-	Description: This method is called when the UART 5 TX interrupt handler
-    is triggered.  It is a means to allow the user a callback when this interrupt occurs.
+	Description: This method is called each time there is a BYTE transmitted out
+    the UART 5 port.
 
 	Blocking: No
 
 	User Callable: No
 
 	Arguments:
-		None
+		BYTE Data - The data being transmitted out the UART.
 
 	Returns: 
         None
@@ -500,20 +500,20 @@ void UART4InterruptTXCallback(void);
 	See Also:
 		- None
 */
-void UART5InterruptTXCallback(void);
+void UART5InterruptTXCallback(BYTE Data);
 
 /*
-	void UART6InterruptTXCallback(void)
+	void UART6InterruptTXCallback(BYTE Data)
 
-	Description: This method is called when the UART 6 TX interrupt handler
-    is triggered.  It is a means to allow the user a callback when this interrupt occurs.
+	Description: This method is called each time there is a BYTE transmitted out
+    the UART 6 port.
 
 	Blocking: No
 
 	User Callable: No
 
 	Arguments:
-		None
+		BYTE Data - The data being transmitted out the UART.
 
 	Returns: 
         None
@@ -525,7 +525,7 @@ void UART5InterruptTXCallback(void);
 	See Also:
 		- None
 */
-void UART6InterruptTXCallback(void);
+void UART6InterruptTXCallback(BYTE Data);
 
 /*
 	void UART1InterruptRXCallback(BYTE Data)
