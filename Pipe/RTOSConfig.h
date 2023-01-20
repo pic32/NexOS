@@ -1,6 +1,6 @@
 /*
-    NexOS Kernel Version v1.02.00
-    Copyright (c) 2022 brodie
+    NexOS Kernel Version v1.02.01
+    Copyright (c) 2023 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
@@ -31,8 +31,8 @@
 // OS Configurations
 //----------------------------------------------------------------------------------------------------
 
-// This is version v1.02.00 release of the RTOSConfig.h file.
-#define RTOS_CONFIG_H_VERSION                                   0x00000008
+// This is version v1.02.01 release of the RTOSConfig.h file.
+#define RTOS_CONFIG_H_VERSION                                   0x00000009
 
 // OS_PRIORITY is the priority of the OS compared to interrupts.  When an OS call is made the
 // interrupt priority will be set to OS_PRIORITY so that interrupts of OS_PRIORITY level or lower

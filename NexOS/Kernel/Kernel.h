@@ -1,6 +1,6 @@
 /*
-    NexOS Kernel Version v1.02.00
-    Copyright (c) 2022 brodie
+    NexOS Kernel Version v1.02.01
+    Copyright (c) 2023 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
@@ -74,7 +74,7 @@
  */
 #define KERNEL_MAJOR_VERSION_NUMBER										0x01
 #define KERNEL_MINOR_VERSION_NUMBER										0x02
-#define KERNEL_TEST_VERSION_NUMBER                                      0x00
+#define KERNEL_TEST_VERSION_NUMBER                                      0x01
 
 #define INVALID_TASK_PRIORITY											255
 

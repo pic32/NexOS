@@ -1,13 +1,15 @@
-5/25/2022
+12/20/2022
 
 Below are a list of the example projects which can be opened in MPLAB X IDE:
 	- Advanced Task Creation
 	- Callback Timer
 	- Event Timer
 	- External Event
+	- File System
 	- Handling Exceptions
 	- Heap Event and Monitoring
 	- IO Buffer
+	- Kernel Project
 	- Pipe
 	- Simple Semaphore
 	- Simple Task Creation

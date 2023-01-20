@@ -1,6 +1,6 @@
 /*
-    NexOS Kernel Version v1.02.00
-    Copyright (c) 2022 brodie
+    NexOS Kernel Version v1.02.01
+    Copyright (c) 2023 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
@@ -48,7 +48,7 @@
 	#include "../Event/Event.h"
 #endif // end of USING_EVENTS
 
-#if (RTOS_CONFIG_H_VERSION != 0x00000008)
+#if (RTOS_CONFIG_H_VERSION != 0x00000009)
     #error "Wrong RTOSConfig.h file version being used!"
 #endif // end of #if (RTOS_CONFIG_H_VERSION != 0xXXXXXXXX)
 

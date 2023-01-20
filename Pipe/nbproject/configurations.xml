@@ -7,11 +7,11 @@
       <logicalFolder name="f2" displayName="Generic Libraries" projectFiles="true">
         <logicalFolder name="f1" displayName="Double Linked List" projectFiles="true">
           <itemPath>../Generic Libraries/Double Linked List/DoubleLinkedList.h</itemPath>
-          <itemPath>GenericBufferConfig.h</itemPath>
         </logicalFolder>
         <logicalFolder name="f2" displayName="Generic Buffer" projectFiles="true">
           <itemPath>../Generic Libraries/Generic Buffer/GenericBuffer.h</itemPath>
           <itemPath>../Generic Libraries/Generic Buffer/GenericBufferObject.h</itemPath>
+          <itemPath>GenericBufferConfig.h</itemPath>
         </logicalFolder>
       </logicalFolder>
       <logicalFolder name="f1" displayName="NexOS" projectFiles="true">

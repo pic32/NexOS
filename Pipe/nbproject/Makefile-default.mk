@@ -57,17 +57,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED="../Generic Libraries/Double Linked List/DoubleLinkedList.c" "../Generic Libraries/Generic Buffer/GenericBuffer.c" ../NexOS/Kernel/Kernel.c ../NexOS/Kernel/Memory.c ../NexOS/Kernel/Task.c ../NexOS/Kernel/KernelTasks.c ../NexOS/Pipe/Pipe.c main.c HardwareProfile.c CriticalSection.c Port.c ContextSwitch.S
+SOURCEFILES_QUOTED_IF_SPACED="../Generic Libraries/Double Linked List/DoubleLinkedList.c" "../Generic Libraries/Generic Buffer/GenericBuffer.c" CriticalSection.c Port.c ContextSwitch.S ../NexOS/Kernel/Kernel.c ../NexOS/Kernel/Memory.c ../NexOS/Kernel/Task.c ../NexOS/Kernel/KernelTasks.c ../NexOS/Pipe/Pipe.c main.c HardwareProfile.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/_ext/1079146332/DoubleLinkedList.o ${OBJECTDIR}/_ext/935638537/GenericBuffer.o ${OBJECTDIR}/_ext/918398346/Kernel.o ${OBJECTDIR}/_ext/918398346/Memory.o ${OBJECTDIR}/_ext/918398346/Task.o ${OBJECTDIR}/_ext/918398346/KernelTasks.o ${OBJECTDIR}/_ext/365677095/Pipe.o ${OBJECTDIR}/main.o ${OBJECTDIR}/HardwareProfile.o ${OBJECTDIR}/CriticalSection.o ${OBJECTDIR}/Port.o ${OBJECTDIR}/ContextSwitch.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/_ext/1079146332/DoubleLinkedList.o.d ${OBJECTDIR}/_ext/935638537/GenericBuffer.o.d ${OBJECTDIR}/_ext/918398346/Kernel.o.d ${OBJECTDIR}/_ext/918398346/Memory.o.d ${OBJECTDIR}/_ext/918398346/Task.o.d ${OBJECTDIR}/_ext/918398346/KernelTasks.o.d ${OBJECTDIR}/_ext/365677095/Pipe.o.d ${OBJECTDIR}/main.o.d ${OBJECTDIR}/HardwareProfile.o.d ${OBJECTDIR}/CriticalSection.o.d ${OBJECTDIR}/Port.o.d ${OBJECTDIR}/ContextSwitch.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/_ext/1079146332/DoubleLinkedList.o ${OBJECTDIR}/_ext/935638537/GenericBuffer.o ${OBJECTDIR}/CriticalSection.o ${OBJECTDIR}/Port.o ${OBJECTDIR}/ContextSwitch.o ${OBJECTDIR}/_ext/918398346/Kernel.o ${OBJECTDIR}/_ext/918398346/Memory.o ${OBJECTDIR}/_ext/918398346/Task.o ${OBJECTDIR}/_ext/918398346/KernelTasks.o ${OBJECTDIR}/_ext/365677095/Pipe.o ${OBJECTDIR}/main.o ${OBJECTDIR}/HardwareProfile.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/_ext/1079146332/DoubleLinkedList.o.d ${OBJECTDIR}/_ext/935638537/GenericBuffer.o.d ${OBJECTDIR}/CriticalSection.o.d ${OBJECTDIR}/Port.o.d ${OBJECTDIR}/ContextSwitch.o.d ${OBJECTDIR}/_ext/918398346/Kernel.o.d ${OBJECTDIR}/_ext/918398346/Memory.o.d ${OBJECTDIR}/_ext/918398346/Task.o.d ${OBJECTDIR}/_ext/918398346/KernelTasks.o.d ${OBJECTDIR}/_ext/365677095/Pipe.o.d ${OBJECTDIR}/main.o.d ${OBJECTDIR}/HardwareProfile.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/_ext/1079146332/DoubleLinkedList.o ${OBJECTDIR}/_ext/935638537/GenericBuffer.o ${OBJECTDIR}/_ext/918398346/Kernel.o ${OBJECTDIR}/_ext/918398346/Memory.o ${OBJECTDIR}/_ext/918398346/Task.o ${OBJECTDIR}/_ext/918398346/KernelTasks.o ${OBJECTDIR}/_ext/365677095/Pipe.o ${OBJECTDIR}/main.o ${OBJECTDIR}/HardwareProfile.o ${OBJECTDIR}/CriticalSection.o ${OBJECTDIR}/Port.o ${OBJECTDIR}/ContextSwitch.o
+OBJECTFILES=${OBJECTDIR}/_ext/1079146332/DoubleLinkedList.o ${OBJECTDIR}/_ext/935638537/GenericBuffer.o ${OBJECTDIR}/CriticalSection.o ${OBJECTDIR}/Port.o ${OBJECTDIR}/ContextSwitch.o ${OBJECTDIR}/_ext/918398346/Kernel.o ${OBJECTDIR}/_ext/918398346/Memory.o ${OBJECTDIR}/_ext/918398346/Task.o ${OBJECTDIR}/_ext/918398346/KernelTasks.o ${OBJECTDIR}/_ext/365677095/Pipe.o ${OBJECTDIR}/main.o ${OBJECTDIR}/HardwareProfile.o
 
 # Source Files
-SOURCEFILES=../Generic Libraries/Double Linked List/DoubleLinkedList.c ../Generic Libraries/Generic Buffer/GenericBuffer.c ../NexOS/Kernel/Kernel.c ../NexOS/Kernel/Memory.c ../NexOS/Kernel/Task.c ../NexOS/Kernel/KernelTasks.c ../NexOS/Pipe/Pipe.c main.c HardwareProfile.c CriticalSection.c Port.c ContextSwitch.S
+SOURCEFILES=../Generic Libraries/Double Linked List/DoubleLinkedList.c ../Generic Libraries/Generic Buffer/GenericBuffer.c CriticalSection.c Port.c ContextSwitch.S ../NexOS/Kernel/Kernel.c ../NexOS/Kernel/Memory.c ../NexOS/Kernel/Task.c ../NexOS/Kernel/KernelTasks.c ../NexOS/Pipe/Pipe.c main.c HardwareProfile.c
 
 
 
@@ -133,6 +133,18 @@ ${OBJECTDIR}/_ext/935638537/GenericBuffer.o: ../Generic\ Libraries/Generic\ Buff
 	@${RM} ${OBJECTDIR}/_ext/935638537/GenericBuffer.o 
 	@${FIXDEPS} "${OBJECTDIR}/_ext/935638537/GenericBuffer.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1  -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -D_SUPPRESS_PLIB_WARNING -DSIMULATION -I"../Pipe" -Wall -MMD -MF "${OBJECTDIR}/_ext/935638537/GenericBuffer.o.d" -o ${OBJECTDIR}/_ext/935638537/GenericBuffer.o "../Generic Libraries/Generic Buffer/GenericBuffer.c"    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -mdfp=${DFP_DIR}  
 	
+${OBJECTDIR}/CriticalSection.o: CriticalSection.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/CriticalSection.o.d 
+	@${RM} ${OBJECTDIR}/CriticalSection.o 
+	@${FIXDEPS} "${OBJECTDIR}/CriticalSection.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1  -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -D_SUPPRESS_PLIB_WARNING -DSIMULATION -I"../Pipe" -Wall -MMD -MF "${OBJECTDIR}/CriticalSection.o.d" -o ${OBJECTDIR}/CriticalSection.o CriticalSection.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -mdfp=${DFP_DIR}  
+	
+${OBJECTDIR}/Port.o: Port.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/Port.o.d 
+	@${RM} ${OBJECTDIR}/Port.o 
+	@${FIXDEPS} "${OBJECTDIR}/Port.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1  -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -D_SUPPRESS_PLIB_WARNING -DSIMULATION -I"../Pipe" -Wall -MMD -MF "${OBJECTDIR}/Port.o.d" -o ${OBJECTDIR}/Port.o Port.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -mdfp=${DFP_DIR}  
+	
 ${OBJECTDIR}/_ext/918398346/Kernel.o: ../NexOS/Kernel/Kernel.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}/_ext/918398346" 
 	@${RM} ${OBJECTDIR}/_ext/918398346/Kernel.o.d 
@@ -175,18 +187,6 @@ ${OBJECTDIR}/HardwareProfile.o: HardwareProfile.c  nbproject/Makefile-${CND_CONF
 	@${RM} ${OBJECTDIR}/HardwareProfile.o 
 	@${FIXDEPS} "${OBJECTDIR}/HardwareProfile.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1  -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -D_SUPPRESS_PLIB_WARNING -DSIMULATION -I"../Pipe" -Wall -MMD -MF "${OBJECTDIR}/HardwareProfile.o.d" -o ${OBJECTDIR}/HardwareProfile.o HardwareProfile.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -mdfp=${DFP_DIR}  
 	
-${OBJECTDIR}/CriticalSection.o: CriticalSection.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} "${OBJECTDIR}" 
-	@${RM} ${OBJECTDIR}/CriticalSection.o.d 
-	@${RM} ${OBJECTDIR}/CriticalSection.o 
-	@${FIXDEPS} "${OBJECTDIR}/CriticalSection.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1  -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -D_SUPPRESS_PLIB_WARNING -DSIMULATION -I"../Pipe" -Wall -MMD -MF "${OBJECTDIR}/CriticalSection.o.d" -o ${OBJECTDIR}/CriticalSection.o CriticalSection.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -mdfp=${DFP_DIR}  
-	
-${OBJECTDIR}/Port.o: Port.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} "${OBJECTDIR}" 
-	@${RM} ${OBJECTDIR}/Port.o.d 
-	@${RM} ${OBJECTDIR}/Port.o 
-	@${FIXDEPS} "${OBJECTDIR}/Port.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1  -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -D_SUPPRESS_PLIB_WARNING -DSIMULATION -I"../Pipe" -Wall -MMD -MF "${OBJECTDIR}/Port.o.d" -o ${OBJECTDIR}/Port.o Port.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -mdfp=${DFP_DIR}  
-	
 else
 ${OBJECTDIR}/_ext/1079146332/DoubleLinkedList.o: ../Generic\ Libraries/Double\ Linked\ List/DoubleLinkedList.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}/_ext/1079146332" 
@@ -199,6 +199,18 @@ ${OBJECTDIR}/_ext/935638537/GenericBuffer.o: ../Generic\ Libraries/Generic\ Buff
 	@${RM} ${OBJECTDIR}/_ext/935638537/GenericBuffer.o.d 
 	@${RM} ${OBJECTDIR}/_ext/935638537/GenericBuffer.o 
 	@${FIXDEPS} "${OBJECTDIR}/_ext/935638537/GenericBuffer.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -D_SUPPRESS_PLIB_WARNING -DSIMULATION -I"../Pipe" -Wall -MMD -MF "${OBJECTDIR}/_ext/935638537/GenericBuffer.o.d" -o ${OBJECTDIR}/_ext/935638537/GenericBuffer.o "../Generic Libraries/Generic Buffer/GenericBuffer.c"    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -mdfp=${DFP_DIR}  
+	
+${OBJECTDIR}/CriticalSection.o: CriticalSection.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/CriticalSection.o.d 
+	@${RM} ${OBJECTDIR}/CriticalSection.o 
+	@${FIXDEPS} "${OBJECTDIR}/CriticalSection.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -D_SUPPRESS_PLIB_WARNING -DSIMULATION -I"../Pipe" -Wall -MMD -MF "${OBJECTDIR}/CriticalSection.o.d" -o ${OBJECTDIR}/CriticalSection.o CriticalSection.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -mdfp=${DFP_DIR}  
+	
+${OBJECTDIR}/Port.o: Port.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/Port.o.d 
+	@${RM} ${OBJECTDIR}/Port.o 
+	@${FIXDEPS} "${OBJECTDIR}/Port.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -D_SUPPRESS_PLIB_WARNING -DSIMULATION -I"../Pipe" -Wall -MMD -MF "${OBJECTDIR}/Port.o.d" -o ${OBJECTDIR}/Port.o Port.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -mdfp=${DFP_DIR}  
 	
 ${OBJECTDIR}/_ext/918398346/Kernel.o: ../NexOS/Kernel/Kernel.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}/_ext/918398346" 
@@ -241,18 +253,6 @@ ${OBJECTDIR}/HardwareProfile.o: HardwareProfile.c  nbproject/Makefile-${CND_CONF
 	@${RM} ${OBJECTDIR}/HardwareProfile.o.d 
 	@${RM} ${OBJECTDIR}/HardwareProfile.o 
 	@${FIXDEPS} "${OBJECTDIR}/HardwareProfile.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -D_SUPPRESS_PLIB_WARNING -DSIMULATION -I"../Pipe" -Wall -MMD -MF "${OBJECTDIR}/HardwareProfile.o.d" -o ${OBJECTDIR}/HardwareProfile.o HardwareProfile.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -mdfp=${DFP_DIR}  
-	
-${OBJECTDIR}/CriticalSection.o: CriticalSection.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} "${OBJECTDIR}" 
-	@${RM} ${OBJECTDIR}/CriticalSection.o.d 
-	@${RM} ${OBJECTDIR}/CriticalSection.o 
-	@${FIXDEPS} "${OBJECTDIR}/CriticalSection.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -D_SUPPRESS_PLIB_WARNING -DSIMULATION -I"../Pipe" -Wall -MMD -MF "${OBJECTDIR}/CriticalSection.o.d" -o ${OBJECTDIR}/CriticalSection.o CriticalSection.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -mdfp=${DFP_DIR}  
-	
-${OBJECTDIR}/Port.o: Port.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} "${OBJECTDIR}" 
-	@${RM} ${OBJECTDIR}/Port.o.d 
-	@${RM} ${OBJECTDIR}/Port.o 
-	@${FIXDEPS} "${OBJECTDIR}/Port.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -D_SUPPRESS_PLIB_WARNING -DSIMULATION -I"../Pipe" -Wall -MMD -MF "${OBJECTDIR}/Port.o.d" -o ${OBJECTDIR}/Port.o Port.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -mdfp=${DFP_DIR}  
 	
 endif
 

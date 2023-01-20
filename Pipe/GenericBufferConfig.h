@@ -49,62 +49,62 @@
 	*Set USING_GENERIC_BUFFER_PEEK_METHOD to 1 to enable the
 	GenericBufferPeek() method.
 */
-//#define USING_GENERIC_BUFFER_PEEK_METHOD					1
+#define USING_GENERIC_BUFFER_PEEK_METHOD					0
 
 /**
 *Set USING_GENERIC_BUFFER_CONTAINS_METHOD to 1 to enable the
 GenericBufferContains() method.
 */
-//#define USING_GENERIC_BUFFER_CONTAINS_METHOD				1
+#define USING_GENERIC_BUFFER_CONTAINS_METHOD				0
 
 /**
  Set USING_GENERIC_BUFFER_CONTAINS_SEQUENCE_METHOD to 1 to 
  enable the GenericBufferContainsSequence() method.
 */
-//#define USING_GENERIC_BUFFER_CONTAINS_SEQUENCE_METHOD		1
+#define USING_GENERIC_BUFFER_CONTAINS_SEQUENCE_METHOD		0
 
 /**
  Set USING_GENERIC_BUFFER_SEEK_METHOD to 1 to enable the
  GenericBufferSeek() method.
 */
-//#define USING_GENERIC_BUFFER_SEEK_METHOD					1
+#define USING_GENERIC_BUFFER_SEEK_METHOD					0
 
 /**
 	*Set USING_GENERIC_BUFFER_FLUSH_METHOD to 1 to enable the
 	GenericBufferFlush() method.
 */
-//#define USING_GENERIC_BUFFER_FLUSH_METHOD					1
+#define USING_GENERIC_BUFFER_FLUSH_METHOD					0
 
 /**
 	*Set USING_GENERIC_BUFFER_GET_SIZE_METHOD to 1 to enable the
 	GenericBufferGetSize() method.
 */
-//#define USING_GENERIC_BUFFER_GET_SIZE_METHOD				1
+#define USING_GENERIC_BUFFER_GET_SIZE_METHOD				0
 
 /**
 	*Set USING_GENERIC_BUFFER_GET_CAPACITY_METHOD to 1 to enable the
 	GenericBufferGetCapacity() method.
 */
-//#define USING_GENERIC_BUFFER_GET_CAPACITY_METHOD			1
+#define USING_GENERIC_BUFFER_GET_CAPACITY_METHOD			0
 
 /**
 	*Set USING_GENERIC_BUFFER_DELETE_METHOD to 1 to enable the
 	GenericBufferDelete() method.
 */
-//#define USING_GENERIC_BUFFER_DELETE_METHOD					1
+#define USING_GENERIC_BUFFER_DELETE_METHOD					0
 
 /**
 	*Set USING_GENERIC_BUFFER_GET_REMAINING_BYTES_METHOD to 1 to enable the
 	GenericBufferGetRemainingBytes() method.
 */
-//#define USING_GENERIC_BUFFER_GET_REMAINING_BYTES_METHOD		1
+#define USING_GENERIC_BUFFER_GET_REMAINING_BYTES_METHOD		0
 
 /**
 	*Set USING_GENERIC_BUFFER_GET_LIBRARY_VERSION to 1 to endable the 
 	GenericBufferGetLibraryVersion() method.
 */
 
-#//define USING_GENERIC_BUFFER_GET_LIBRARY_VERSION			1
+#define USING_GENERIC_BUFFER_GET_LIBRARY_VERSION			0
 
 /**
 	*Set GENERIC_BUFFER_SAFE_MODE to 1 to enable the portions of code

@@ -1,6 +1,6 @@
 /*
-    NexOS Kernel Version v1.02.00
-    Copyright (c) 2022 brodie
+    NexOS Kernel Version v1.02.01
+    Copyright (c) 2023 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
@@ -55,14 +55,14 @@ void OS_StartFirstTask(OS_WORD *FirstTaskStackPointer);
 void PortStartOSScheduler(void)
 {
     // configure the core software interrupt, this is used for SurrenderCPU()
-    INTSetVectorPriority(INT_CORE_SOFTWARE_0_VECTOR, INT_PRIORITY_LEVEL_2);
+    INTSetVectorPriority(INT_CORE_SOFTWARE_0_VECTOR, OS_PRIORITY + 1);
     INTSetVectorSubPriority(INT_CORE_SOFTWARE_0_VECTOR, INT_SUB_PRIORITY_LEVEL_0);
 
     INTClearFlag(INT_CS0);
     INTEnable(INT_CS0, INT_ENABLED);
 
     // configure up the core timer interrupt, this is the RTOS Tick
-    INTSetVectorPriority(INT_CORE_TIMER_VECTOR, INT_PRIORITY_LEVEL_1);
+    INTSetVectorPriority(INT_CORE_TIMER_VECTOR, OS_PRIORITY);
     INTSetVectorSubPriority(INT_CORE_TIMER_VECTOR, INT_SUB_PRIORITY_LEVEL_0);
 
     // it is a very good idea to use OS_TICK_RATE_IN_HZ in our calculation here
@@ -120,7 +120,7 @@ OS_WORD *PortInitializeTaskStack(OS_WORD *Stack, UINT32 StackSizeInWords, TASK_E
     *Stack-- = (OS_WORD)StartingAddress;
 
     // Starting SR value for a Task
-    *Stack-- = 0x00000003;
+    *Stack-- = INITIAL_STATUS_REGISTER_VALUE;
 
     // The high and lo registers.
     *Stack-- = 0;

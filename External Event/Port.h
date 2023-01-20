@@ -1,6 +1,6 @@
 /*
-    NexOS Kernel Version v1.02.00
-    Copyright (c) 2022 brodie
+    NexOS Kernel Version v1.02.01
+    Copyright (c) 2023 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
@@ -48,6 +48,8 @@
 // These are used in Memory.h for knowing if a variable is in a valid memory range.
 #define USER_PROGRAM_SIZE_IN_BYTES                                  GetProgramMemorySizeInBytes()
 #define USER_RAM_SIZE_IN_BYTES                                      GetRAMSizeInBytes()
+    
+#define INITIAL_STATUS_REGISTER_VALUE                               0x00000003
     
     /*
  * This function is unique to the PIC32 and gets the global pointer value in register 28.

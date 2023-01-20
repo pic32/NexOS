@@ -1,6 +1,6 @@
 /*
-    NexOS Kernel Version v1.02.00
-    Copyright (c) 2022 brodie
+    NexOS Kernel Version v1.02.01
+    Copyright (c) 2023 brodie
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,7 @@
 #include <sys/asm.h>
 #include "RTOSConfig.h"
 
-	.equ		TASK_CONTEXT_SIZE_IN_BYTES,		140
+	.equ		TASK_CONTEXT_SIZE_IN_BYTES,		144
 
 	.set		nomips16
  	.set		noreorder
@@ -64,7 +64,6 @@ ContextSwitch:
 		CP0 Registers.
 	*/
 	sw k1, 36(sp)
-
 	sw k0, 32(sp)
 
 	mfc0 k1, _CP0_EPC
@@ -147,8 +146,6 @@ ContextSwitch:
 	lw ra, 20(sp)
 	lw fp, 24(sp)
 	lw gp, 28(sp)
-	lw k0, 32(sp)
-	lw k1, 36(sp)
 	lw t9, 40(sp)
 	lw t8, 44(sp)
 	lw s7, 48(sp)
@@ -177,6 +174,9 @@ ContextSwitch:
 
 	lw k0, 12(sp)
 	mtc0 k0, _CP0_STATUS
+	
+	lw k0, 32(sp)
+	lw k1, 36(sp)
 
 	addi $29, $29, TASK_CONTEXT_SIZE_IN_BYTES /* Return stack to previous position */
 
